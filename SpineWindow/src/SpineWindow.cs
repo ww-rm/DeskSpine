@@ -5,8 +5,30 @@ using System.Runtime.InteropServices;
 
 namespace SpineWindow
 {
-    public abstract class SpineWindow
+    public abstract partial class SpineWindow
     {
+        /// <summary>
+        /// Spine 动画窗口
+        /// </summary>
+        /// <param name="skelPath">skel 文件路径</param>
+        /// <param name="atlasPath">atlas 文件路径</param>
+        public SpineWindow(string skelPath, string? atlasPath = null)
+        {
+            spine = Spine.Spine.New(SpineVersion, skelPath, atlasPath);
+            windowCreatedEvent.Reset();
+            windowLoopTask = Task.Run(() => SpineWindowTask(this), cancelTokenSrc.Token);
+            windowCreatedEvent.WaitOne();
+        }
+
+        /// <summary>
+        /// 析构函数, 停止窗口
+        /// </summary>
+        ~SpineWindow()
+        {
+            cancelTokenSrc.Cancel();
+            windowLoopTask.Wait();
+        }
+
         /// <summary>
         /// Spine 版本
         /// </summary>
@@ -18,14 +40,32 @@ namespace SpineWindow
         protected Spine.Spine spine;
 
         /// <summary>
-        /// 互斥锁, 子类访问内部数据时必须通过锁同步
+        /// 加载 Spine 资源
         /// </summary>
-        protected Mutex mutex = new();
+        /// <param name="skelPath">skel 文件路径</param>
+        /// <param name="atlasPath">atlas 文件路径</param>
+        public void LoadSpine(string skelPath, string? atlasPath = null)
+        {
+            mutex.WaitOne();
+            try
+            {
+                spine = Spine.Spine.New(SpineVersion, skelPath, atlasPath);
+            }
+            finally
+            {
+                mutex.ReleaseMutex();
+            }
+        }
 
         /// <summary>
         /// 窗口对象
         /// </summary>
         protected SFML.Graphics.RenderWindow window;
+
+        /// <summary>
+        /// 互斥锁, 子类访问内部数据时必须通过锁同步
+        /// </summary>
+        protected Mutex mutex = new();
 
         /// <summary>
         /// 取消令牌
@@ -55,7 +95,7 @@ namespace SpineWindow
             get { mutex.WaitOne(); var v = _Visible; mutex.ReleaseMutex(); return v; }
             set { mutex.WaitOne(); _Visible = value; mutex.ReleaseMutex(); window.SetVisible(value); }
         }
-        private bool _Visible = false;
+        private bool _Visible = true;
 
         /// <summary>
         /// 不透明度, 取值范围 0-1
@@ -99,140 +139,99 @@ namespace SpineWindow
         }
         private SFML.Graphics.Color _TransparencyKey = new SFML.Graphics.Color(128, 128, 128);
 
-
         /// <summary>
-        /// Spine 动画窗口
+        /// 最大帧率
         /// </summary>
-        /// <param name="skelPath">skel 文件路径</param>
-        /// <param name="atlasPath">atlas 文件路径</param>
-        public SpineWindow(string skelPath, string? atlasPath = null)
+        public uint MaxFps
         {
-            spine = Spine.Spine.New(SpineVersion, skelPath, atlasPath);
-            windowCreatedEvent.Reset();
-            windowLoopTask = Task.Run(() => SpineWindowTask(this), cancelTokenSrc.Token);
-            windowCreatedEvent.WaitOne();
+            get { mutex.WaitOne(); var v = _MaxFps; mutex.ReleaseMutex(); return v; }
+            set { mutex.WaitOne(); _MaxFps = value; mutex.ReleaseMutex(); window.SetFramerateLimit(value); }
         }
+        private uint _MaxFps = 30;
 
-        /// <summary>
-        /// 析构函数, 停止窗口
-        /// </summary>
-        ~SpineWindow()
-        {
-            cancelTokenSrc.Cancel();
-            windowLoopTask.Wait();
-        }
-
-        /// <summary>
-        /// 加载 Spine 资源
-        /// </summary>
-        /// <param name="skelPath">skel 文件路径</param>
-        /// <param name="atlasPath">atlas 文件路径</param>
-        public void LoadSpine(string skelPath, string? atlasPath = null)
-        {
-            mutex.WaitOne();
-            try
-            {
-                spine = Spine.Spine.New(SpineVersion, skelPath, atlasPath);
-            }
-            finally
-            {
-                mutex.ReleaseMutex();
-            }
-        }
+        private SFML.System.Vector2i? pressedPosition = null;
 
         /// <summary>
         /// 窗口任务, 窗口创建和窗口循环必须在同一个线程完成
         /// </summary>
         private static void SpineWindowTask(SpineWindow self)
         {
-            CreateWindow(self);
-            WindowLoop(self);
+            self.CreateWindow();
+            self.WindowLoop();
         }
 
         /// <summary>
         /// 创建窗口
         /// </summary>
-        private static void CreateWindow(SpineWindow self)
+        private void CreateWindow()
         {
-            self.mutex.WaitOne();
+            mutex.WaitOne();
             try
             {
                 // 创建窗口
-                self.window = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(1000, 1000), "spine");
+                window = new SFML.Graphics.RenderWindow(
+                    new SFML.Window.VideoMode(512, 512),
+                    "spine",
+                    SFML.Window.Styles.Default
+                 );
 
                 // 设置分层属性
-                var handle = self.window.SystemHandle;
+                var handle = window.SystemHandle;
                 var exStyle = Win32.GetWindowLong(handle, Win32.GWL_EXSTYLE);
                 Win32.SetWindowLong(handle, Win32.GWL_EXSTYLE, exStyle | Win32.WS_EX_LAYERED);
-                Debug.WriteLine(self._TransparencyKey.ToInteger());
                 Win32.SetLayeredWindowAttributes(
                     handle,
-                    BinaryPrimitives.ReverseEndianness(self._TransparencyKey.ToInteger()),
-                    (byte)(255 * self._Opacity),
-                    Win32.LWA_COLORKEY | Win32.LWA_ALPHA
+                    BinaryPrimitives.ReverseEndianness(_TransparencyKey.ToInteger()),
+                    (byte)(255 * _Opacity),
+                    Win32.LWA_ALPHA
                 );
 
                 // 设置窗口属性
-                self.window.SetVisible(false);
-                self.window.SetFramerateLimit(30);
-                var view = self.window.GetView();
-                view.Move(new SFML.System.Vector2f(-500, -500));
-                view.Rotate(180);
-                self.window.SetView(view);
+                window.SetVisible(_Visible);
+                window.SetFramerateLimit(_MaxFps);
+                FixView();
 
                 // 注册窗口事件
-                self.window.Resized += Window_Resized;
+                RegisterEvents();
             }
             finally
             {
-                self.windowCreatedEvent.Set();
-                self.mutex.ReleaseMutex();
+                windowCreatedEvent.Set();
+                mutex.ReleaseMutex();
             }
         }
 
         /// <summary>
         /// 窗口循环
         /// </summary>
-        private static void WindowLoop(SpineWindow self)
+        private void WindowLoop()
         {
             while (true)
             {
-                self.mutex.WaitOne();
+                mutex.WaitOne();
                 try
                 {
-                    if (self.cancelTokenSrc.Token.IsCancellationRequested)
+                    if (cancelTokenSrc.Token.IsCancellationRequested)
                     {
-                        self.window.Close();
-                        self.window = null;
-                        self.cancelTokenSrc.Token.ThrowIfCancellationRequested();
+                        window.Close();
+                        window = null;
+                        cancelTokenSrc.Token.ThrowIfCancellationRequested();
                     }
 
-                    self.window.DispatchEvents();
-                    self.Update();
-                    if (self._Visible)
+                    window.DispatchEvents();
+                    Update();
+                    if (_Visible)
                     {
-                        self.window.Clear(self._TransparencyKey);
-                        self.Render();
-                        self.window.Display();
+                        window.Clear(_TransparencyKey);
+                        Render();
+                        window.Display();
                     }
                 }
                 finally
                 {
-                    self.mutex.ReleaseMutex();
+                    mutex.ReleaseMutex();
                 }
             }
-        }
-
-        /// <summary>
-        /// 窗口大小调整事件
-        /// </summary>
-        private static void Window_Resized(object? sender, SFML.Window.SizeEventArgs e)
-        {
-            var window = (SFML.Graphics.RenderWindow)sender;
-            var view = window.GetView();
-            view.Reset(new SFML.Graphics.FloatRect(-e.Width / 2, -e.Height / 2, e.Width, e.Height));
-            view.Rotate(180);
-            window.SetView(view);
         }
 
         /// <summary>
@@ -252,6 +251,71 @@ namespace SpineWindow
         {
             window.Draw(spine);
         }
+
+        /// <summary>
+        /// 修正窗口视窗
+        /// </summary>
+        public void FixView()
+        {
+            var view = window.GetView();
+            view.Center = new SFML.System.Vector2f(0, 200);
+            view.Size = new SFML.System.Vector2f(window.Size.X, -window.Size.Y);
+            window.SetView(view);
+        }
+
+        private void RegisterEvents()
+        {
+            window.Resized += (object? s, SFML.Window.SizeEventArgs e) => Resized(this, e);
+            window.MouseButtonPressed += (object? s, SFML.Window.MouseButtonEventArgs e) => MouseButtonPressed(this, e);
+            window.MouseMoved += (object? s, SFML.Window.MouseMoveEventArgs e) => MouseMoved(this, e);
+            window.MouseButtonReleased += (object? s, SFML.Window.MouseButtonEventArgs e) => MouseButtonReleased(this, e);
+        }
+
+
+        private void Resized(SFML.Window.SizeEventArgs e)
+        {
+            FixView();
+        }
+
+        private void MouseButtonPressed(SFML.Window.MouseButtonEventArgs e)
+        {
+            switch (e.Button)
+            {
+                case SFML.Window.Mouse.Button.Left:
+                    pressedPosition = new SFML.System.Vector2i(e.X, e.Y);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void MouseMoved(SFML.Window.MouseMoveEventArgs e)
+        {
+            if (SFML.Window.Mouse.IsButtonPressed(SFML.Window.Mouse.Button.Left))
+            {
+                if (pressedPosition is not null)
+                {
+                    window.Position = (SFML.System.Vector2i)(window.Position + new SFML.System.Vector2i(e.X, e.Y) - pressedPosition);
+                }
+            }
+        }
+
+        private void MouseButtonReleased(SFML.Window.MouseButtonEventArgs e)
+        {
+            switch (e.Button)
+            {
+                case SFML.Window.Mouse.Button.Left:
+                    pressedPosition = null;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private static void Resized(SpineWindow self, SFML.Window.SizeEventArgs e) { self.Resized(e); }
+        private static void MouseButtonPressed(SpineWindow self, SFML.Window.MouseButtonEventArgs e) { self.MouseButtonPressed(e); }
+        private static void MouseMoved(SpineWindow self, SFML.Window.MouseMoveEventArgs e) { self.MouseMoved(e); }
+        private static void MouseButtonReleased(SpineWindow self, SFML.Window.MouseButtonEventArgs e) { self.MouseButtonReleased(e); }
     }
 
     internal static class Win32
