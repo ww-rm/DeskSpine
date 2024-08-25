@@ -70,6 +70,9 @@ namespace SpineWindow
                         bgColor.B = (byte)rnd.Next(118, 138);
                         break;
                 }
+                // 调整大小的边框是 0x808080, 需要避开
+                if (bgColor.R == 128 && bgColor.G == 128 && bgColor.B == 128)
+                    bgColor.R += 1;
                 if (!colors.Contains(bgColor.ToInteger()))
                     break;
             }
@@ -199,17 +202,17 @@ namespace SpineWindow
             {
                 // 创建窗口
                 window = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(1000, 1000), "spine", SFML.Window.Styles.None);
-                clearColor = new(128, 128, 128);
 
                 // 设置窗口特殊属性
                 var hWnd = window.SystemHandle;
-                Win32.SetWindowPos(hWnd, Win32.HWND_TOPMOST, 0, 0, 0, 0, Win32.SWP_NOMOVE | Win32.SWP_NOSIZE);
                 var style = Win32.GetWindowLong(hWnd, Win32.GWL_STYLE);
                 Win32.SetWindowLong(hWnd, Win32.GWL_STYLE, style | Win32.WS_POPUP);
                 var exStyle = Win32.GetWindowLong(hWnd, Win32.GWL_EXSTYLE);
                 Win32.SetWindowLong(hWnd, Win32.GWL_EXSTYLE, exStyle | Win32.WS_EX_LAYERED | Win32.WS_EX_TOOLWINDOW | Win32.WS_EX_TOPMOST);
+                clearColor = GetProperBackgroudColor(spine.PngPath, backgroudColor);
                 var crKey = BinaryPrimitives.ReverseEndianness(clearColor.ToInteger());
                 Win32.SetLayeredWindowAttributes(hWnd, crKey, 255, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
+                Win32.SetWindowPos(hWnd, Win32.HWND_TOPMOST, 0, 0, 0, 0, Win32.SWP_NOMOVE | Win32.SWP_NOSIZE);
 
                 // 设置窗口属性
                 window.SetVisible(visible);
