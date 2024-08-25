@@ -13,8 +13,50 @@ namespace SpineWindow
 
     public abstract class SpineWindow
     {
+        public string ResFolder { get; private set; }
+
+        public SpineWindow(string skelPath, string? atlasPath = null, string? resFolder = null)
+        {
+            spine = Spine.Spine.New(SpineVersion, skelPath, atlasPath);
+            Debug.WriteLine($"AtlasPath: {spine.AtlasPath}");
+            foreach (var a in spine.AnimationNames) Debug.Write($"{a}; ");
+            Debug.WriteLine("");
+            resFolder ??= Path.ChangeExtension(spine.SkelPath, null);
+            ResFolder = resFolder;
+            windowCreatedEvent.Reset();
+            windowLoopTask = Task.Run(() => SpineWindowTask(this), cancelTokenSrc.Token);
+            windowCreatedEvent.WaitOne();
+        }
+
+        ~SpineWindow()
+        {
+            cancelTokenSrc.Cancel();
+            windowLoopTask.Wait();
+        }
+
         public abstract string SpineVersion { get; }
+        public abstract bool FaceToRight { get; set; }
         protected Spine.Spine spine;
+
+        public void LoadSpine(string skelPath, string? atlasPath = null)
+        {
+            mutex.WaitOne();
+            try
+            {
+                spine = Spine.Spine.New(SpineVersion, skelPath, atlasPath);
+                Debug.WriteLine($"AtlasPath: {spine.AtlasPath}");
+                foreach (var a in spine.AnimationNames) Debug.Write($"{a}; ");
+                Debug.WriteLine("");
+                clearColor = GetProperBackgroudColor(spine.PngPath, backgroudColor);
+                var crKey = BinaryPrimitives.ReverseEndianness(clearColor.ToInteger());
+                Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, 255, Win32.LWA_COLORKEY);
+            }
+            finally
+            {
+                mutex.ReleaseMutex();
+            }
+            SpineLoaded();
+        }
 
         protected Mutex mutex = new();
         private CancellationTokenSource cancelTokenSrc = new();
@@ -32,6 +74,7 @@ namespace SpineWindow
         private SFML.System.Vector2f? spinePressedPosition = null;
         private SFML.System.Clock doubleClickClock = new();
         private bool doubleClickChecking = false;
+        private bool isDragging = false;
 
         private static SFML.Graphics.Color GetProperBackgroudColor(string pngPath, BackgroudColor backgroudColor)
         {
@@ -83,36 +126,6 @@ namespace SpineWindow
         {
             self.CreateWindow();
             self.WindowLoop();
-        }
-
-        public SpineWindow(string skelPath, string? atlasPath = null)
-        {
-            spine = Spine.Spine.New(SpineVersion, skelPath, atlasPath);
-            windowCreatedEvent.Reset();
-            windowLoopTask = Task.Run(() => SpineWindowTask(this), cancelTokenSrc.Token);
-            windowCreatedEvent.WaitOne();
-        }
-
-        ~SpineWindow()
-        {
-            cancelTokenSrc.Cancel();
-            windowLoopTask.Wait();
-        }
-
-        public void LoadSpine(string skelPath, string? atlasPath = null)
-        {
-            mutex.WaitOne();
-            try
-            {
-                spine = Spine.Spine.New(SpineVersion, skelPath, atlasPath);
-                clearColor = GetProperBackgroudColor(spine.PngPath, backgroudColor);
-                var crKey = BinaryPrimitives.ReverseEndianness(clearColor.ToInteger());
-                Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, 255, Win32.LWA_COLORKEY);
-            }
-            finally
-            {
-                mutex.ReleaseMutex();
-            }
         }
 
         public BackgroudColor BackgroudColor 
@@ -285,6 +298,7 @@ namespace SpineWindow
             window.MouseButtonPressed += (object? s, SFML.Window.MouseButtonEventArgs e) => MouseButtonPressed(this, e);
             window.MouseMoved += (object? s, SFML.Window.MouseMoveEventArgs e) => MouseMoved(this, e);
             window.MouseButtonReleased += (object? s, SFML.Window.MouseButtonEventArgs e) => MouseButtonReleased(this, e);
+            window.MouseWheelScrolled += (object? s, SFML.Window.MouseWheelScrollEventArgs e) => MouseWheelScrolled(this, e);
         }
 
         private void Resized(SFML.Window.SizeEventArgs e)
@@ -294,6 +308,11 @@ namespace SpineWindow
 
         private void MouseButtonPressed(SFML.Window.MouseButtonEventArgs e)
         {
+            // 记录点击位置
+            windowPressedPosition = new(e.X, e.Y);
+            spinePressedPosition = new(spine.X, spine.Y);
+
+            // 双击检测
             var isDoubleClick = false;
             if (!doubleClickChecking)
                 doubleClickClock.Restart();
@@ -301,49 +320,68 @@ namespace SpineWindow
                 isDoubleClick = doubleClickClock.ElapsedTime.AsMilliseconds() < Win32.GetDoubleClickTime();
             doubleClickChecking = !doubleClickChecking;
 
-            windowPressedPosition = new(e.X, e.Y);
-            spinePressedPosition = new(spine.X, spine.Y);
+            // 事件处理
             switch (e.Button)
             {
+                case SFML.Window.Mouse.Button.Left:
+                    break;
+                // 右键按下时显示边框
+                // 右键双击时显示/隐藏缩放框
                 case SFML.Window.Mouse.Button.Right:
                     var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
-                    if (isDoubleClick)
-                    {
-                        style ^= Win32.WS_SIZEBOX;
-                    }
+                    if (isDoubleClick) style ^= Win32.WS_SIZEBOX;
                     Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style | Win32.WS_BORDER);
                     Win32.SetWindowPos(window.SystemHandle, IntPtr.Zero, 0, 0, 0, 0, Win32.SWP_REFRESHLONG);
                     break;
                 default:
                     break;
             }
+
+            if (isDoubleClick) MouseButtonDoubleClick(e);
         }
 
         private void MouseMoved(SFML.Window.MouseMoveEventArgs e)
         {
+            // 计算移动距离
             var delta = new SFML.System.Vector2i(0, 0);
             if (windowPressedPosition is not null)
                 delta = (SFML.System.Vector2i)(new SFML.System.Vector2i(e.X, e.Y) - windowPressedPosition);
 
-            if (SFML.Window.Mouse.IsButtonPressed(SFML.Window.Mouse.Button.Left))
+            // 判断是否处于拖动状态
+            if (!isDragging && (Math.Abs(delta.X) > 4 || Math.Abs(delta.Y) > 4))
+                isDragging = true; 
+
+            // 如果左键被按下则拖动窗口
+            // 否则右键被按下则拖动内部精灵
+            if (isDragging)
             {
-                window.Position = window.Position + delta;
+                if (SFML.Window.Mouse.IsButtonPressed(SFML.Window.Mouse.Button.Left))
+                {
+                    window.Position = window.Position + delta;
+                }
+                else if (SFML.Window.Mouse.IsButtonPressed(SFML.Window.Mouse.Button.Right) && spinePressedPosition is not null)
+                {
+                    spine.X = ((SFML.System.Vector2f)spinePressedPosition).X + delta.X;
+                    spine.Y = ((SFML.System.Vector2f)spinePressedPosition).Y - delta.Y;
+                }
             }
-            else if (SFML.Window.Mouse.IsButtonPressed(SFML.Window.Mouse.Button.Right) && spinePressedPosition is not null)
-            {
-                spine.X = ((SFML.System.Vector2f)spinePressedPosition).X + delta.X;
-                spine.Y = ((SFML.System.Vector2f)spinePressedPosition).Y - delta.Y;
-            }
+
+
+            if (isDragging) MouseDragging(e);
         }
 
         private void MouseButtonReleased(SFML.Window.MouseButtonEventArgs e)
         {
-            var clickDelta = doubleClickClock.ElapsedTime.AsMilliseconds();
+            // 清除位置记录
             windowPressedPosition = null;
             spinePressedPosition = null;
 
+            // 事件处理
             switch (e.Button)
             {
+                case SFML.Window.Mouse.Button.Left:
+                    break;
+                // 右键释放隐藏边框显示
                 case SFML.Window.Mouse.Button.Right:
                     var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
                     Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style & ~Win32.WS_BORDER);
@@ -352,12 +390,29 @@ namespace SpineWindow
                 default:
                     break;
             }
+
+            if (!isDragging) MouseButtonClick(e);
+
+            // 清除拖动状态
+            isDragging = false;
         }
+
+        private void MouseWheelScrolled(SFML.Window.MouseWheelScrollEventArgs e)
+        {
+            MouseWheelScroll(e);
+        }
+
+        protected virtual void SpineLoaded() { }
+        protected virtual void MouseButtonClick(SFML.Window.MouseButtonEventArgs e) { }
+        protected virtual void MouseButtonDoubleClick(SFML.Window.MouseButtonEventArgs e) { }
+        protected virtual void MouseDragging(SFML.Window.MouseMoveEventArgs e) { }
+        protected virtual void MouseWheelScroll(SFML.Window.MouseWheelScrollEventArgs e) { }
 
         private static void Resized(SpineWindow self, SFML.Window.SizeEventArgs e) { self.Resized(e); }
         private static void MouseButtonPressed(SpineWindow self, SFML.Window.MouseButtonEventArgs e) { self.MouseButtonPressed(e); }
         private static void MouseMoved(SpineWindow self, SFML.Window.MouseMoveEventArgs e) { self.MouseMoved(e); }
         private static void MouseButtonReleased(SpineWindow self, SFML.Window.MouseButtonEventArgs e) { self.MouseButtonReleased(e); }
+        private static void MouseWheelScrolled(SpineWindow self, SFML.Window.MouseWheelScrollEventArgs e) { self.MouseWheelScrolled(e); }
     }
 
     internal static class Win32
