@@ -95,6 +95,7 @@ namespace SpineWindow
             var bgColor = SFML.Graphics.Color.Black;
             for (int i = 0; i < 10; i++)
             {
+                // BUG: SetLayeredWindowAttributes 的 R 和 B 分量必须相等才能让背景部分的透明和穿透同时生效
                 bgColor = SFML.Graphics.Color.Black;
                 switch (backgroudColor)
                 {
@@ -111,9 +112,6 @@ namespace SpineWindow
                         bgColor.G = (byte)rnd.Next(118, 138);
                         break;
                 }
-                // 调整大小的边框是 0x808080, 需要避开
-                if (bgColor.R == 128 && bgColor.G == 128 && bgColor.B == 128)
-                    bgColor.G += 1;
                 if (!colors.Contains(bgColor.ToInteger()))
                     break;
             }
