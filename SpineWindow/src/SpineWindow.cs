@@ -307,11 +307,11 @@ namespace SpineWindow
             {
                 case SFML.Window.Mouse.Button.Right:
                     var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
-                    Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style | Win32.WS_BORDER);
                     if (isDoubleClick)
                     {
                         style ^= Win32.WS_SIZEBOX;
                     }
+                    Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style | Win32.WS_BORDER);
                     Win32.SetWindowPos(window.SystemHandle, IntPtr.Zero, 0, 0, 0, 0, Win32.SWP_REFRESHLONG);
                     break;
                 default:
