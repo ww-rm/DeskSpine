@@ -30,6 +30,8 @@ namespace SpineWindow
 
         private SFML.System.Vector2i? windowPressedPosition = null;
         private SFML.System.Vector2f? spinePressedPosition = null;
+        private SFML.System.Clock doubleClickClock = new();
+        private bool doubleClickChecking = false;
 
         private static SFML.Graphics.Color GetProperBackgroudColor(string pngPath, BackgroudColor backgroudColor)
         {
@@ -54,24 +56,21 @@ namespace SpineWindow
                 switch (backgroudColor)
                 {
                     case BackgroudColor.Black:
-                        bgColor.R = (byte)rnd.Next(0, 20);
+                        bgColor.R = bgColor.B = (byte)rnd.Next(0, 20);
                         bgColor.G = (byte)rnd.Next(0, 20);
-                        bgColor.B = (byte)rnd.Next(0, 20);
                         break;
                     case BackgroudColor.White:
-                        bgColor.R = (byte)rnd.Next(235, 255);
+                        bgColor.R = bgColor.B = (byte)rnd.Next(235, 255);
                         bgColor.G = (byte)rnd.Next(235, 255);
-                        bgColor.B = (byte)rnd.Next(235, 255);
                         break;
                     case BackgroudColor.Gray:
-                        bgColor.R = (byte)rnd.Next(118, 138);
+                        bgColor.R = bgColor.B = (byte)rnd.Next(118, 138);
                         bgColor.G = (byte)rnd.Next(118, 138);
-                        bgColor.B = (byte)rnd.Next(118, 138);
                         break;
                 }
                 // 调整大小的边框是 0x808080, 需要避开
                 if (bgColor.R == 128 && bgColor.G == 128 && bgColor.B == 128)
-                    bgColor.R += 1;
+                    bgColor.G += 1;
                 if (!colors.Contains(bgColor.ToInteger()))
                     break;
             }
@@ -147,7 +146,7 @@ namespace SpineWindow
             }
         }
 
-        public bool MousePassable
+        public bool MouseClickThrough
         {
             get => (Win32.GetWindowLong(window.SystemHandle, Win32.GWL_EXSTYLE) & Win32.WS_EX_TRANSPARENT) != 0;
             set
@@ -158,21 +157,6 @@ namespace SpineWindow
                 else
                     exStyle &= ~Win32.WS_EX_TRANSPARENT;
                 Win32.SetWindowLong(window.SystemHandle, Win32.GWL_EXSTYLE, exStyle);
-            }
-        }
-
-        public bool Resizable
-        {
-            get => (Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE) & Win32.WS_SIZEBOX) != 0;
-            set
-            {
-                var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
-                if (value)
-                    style |= Win32.WS_SIZEBOX;
-                else
-                    style &= ~Win32.WS_SIZEBOX;
-                Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style);
-                Win32.SetWindowPos(window.SystemHandle, 0, 0, 0, 0, 0, Win32.SWP_NOMOVE | Win32.SWP_NOSIZE | Win32.SWP_NOZORDER | Win32.SWP_FRAMECHANGED);
             }
         }
 
@@ -220,15 +204,15 @@ namespace SpineWindow
                 window = new(new(1000, 1000), "spine", SFML.Window.Styles.None);
 
                 // 设置窗口特殊属性
-                var hWnd = window.SystemHandle;
-                var style = Win32.GetWindowLong(hWnd, Win32.GWL_STYLE);
-                Win32.SetWindowLong(hWnd, Win32.GWL_STYLE, style | Win32.WS_POPUP);
-                var exStyle = Win32.GetWindowLong(hWnd, Win32.GWL_EXSTYLE);
+                    var hWnd = window.SystemHandle;
+                    var style = Win32.GetWindowLong(hWnd, Win32.GWL_STYLE);
+                    Win32.SetWindowLong(hWnd, Win32.GWL_STYLE, style | Win32.WS_POPUP);
+                    var exStyle = Win32.GetWindowLong(hWnd, Win32.GWL_EXSTYLE);
                 Win32.SetWindowLong(hWnd, Win32.GWL_EXSTYLE, exStyle | Win32.WS_EX_LAYERED | Win32.WS_EX_TOOLWINDOW | Win32.WS_EX_TOPMOST);
-                clearColor = GetProperBackgroudColor(spine.PngPath, backgroudColor);
-                var crKey = BinaryPrimitives.ReverseEndianness(clearColor.ToInteger());
-                Win32.SetLayeredWindowAttributes(hWnd, crKey, 255, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
-                Win32.SetWindowPos(hWnd, Win32.HWND_TOPMOST, 0, 0, 0, 0, Win32.SWP_NOMOVE | Win32.SWP_NOSIZE);
+                    clearColor = GetProperBackgroudColor(spine.PngPath, backgroudColor);
+                    var crKey = BinaryPrimitives.ReverseEndianness(clearColor.ToInteger());
+                    Win32.SetLayeredWindowAttributes(hWnd, crKey, 255, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
+                    Win32.SetWindowPos(hWnd, Win32.HWND_TOPMOST, 0, 0, 0, 0, Win32.SWP_NOMOVE | Win32.SWP_NOSIZE);
 
                 // 设置窗口属性
                 window.SetVisible(visible);
@@ -310,6 +294,13 @@ namespace SpineWindow
 
         private void MouseButtonPressed(SFML.Window.MouseButtonEventArgs e)
         {
+            var isDoubleClick = false;
+            if (!doubleClickChecking)
+                doubleClickClock.Restart();
+            else
+                isDoubleClick = doubleClickClock.ElapsedTime.AsMilliseconds() < Win32.GetDoubleClickTime();
+            doubleClickChecking = !doubleClickChecking;
+
             windowPressedPosition = new(e.X, e.Y);
             spinePressedPosition = new(spine.X, spine.Y);
             switch (e.Button)
@@ -317,6 +308,10 @@ namespace SpineWindow
                 case SFML.Window.Mouse.Button.Right:
                     var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
                     Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style | Win32.WS_BORDER);
+                    if (isDoubleClick)
+                    {
+                        style ^= Win32.WS_SIZEBOX;
+                    }
                     Win32.SetWindowPos(window.SystemHandle, IntPtr.Zero, 0, 0, 0, 0, Win32.SWP_REFRESHLONG);
                     break;
                 default:
@@ -343,6 +338,7 @@ namespace SpineWindow
 
         private void MouseButtonReleased(SFML.Window.MouseButtonEventArgs e)
         {
+            var clickDelta = doubleClickClock.ElapsedTime.AsMilliseconds();
             windowPressedPosition = null;
             spinePressedPosition = null;
 
@@ -405,6 +401,9 @@ namespace SpineWindow
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern uint GetDoubleClickTime();
     }
 }
 
