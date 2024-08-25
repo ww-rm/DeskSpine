@@ -26,13 +26,12 @@ namespace SpineWindow
 
         private BackgroudColor backgroudColor = BackgroudColor.Gray;
         private bool visible = false;
-        private uint maxFps = 300;
+        private uint maxFps = 30;
 
         private SFML.System.Vector2i? windowPressedPosition = null;
         private SFML.System.Vector2f? spinePressedPosition = null;
 
-
-        protected static SFML.Graphics.Color GetProperBackgroudColor(string pngPath, BackgroudColor backgroudColor)
+        private static SFML.Graphics.Color GetProperBackgroudColor(string pngPath, BackgroudColor backgroudColor)
         {
             var png = new SFML.Graphics.Image(pngPath);
             var colors = new HashSet<uint>();
@@ -195,13 +194,30 @@ namespace SpineWindow
             set { maxFps = value; window.SetFramerateLimit(value); }
         }
 
+        public float Scale
+        {
+            get { mutex.WaitOne(); var v = spine.Scale; mutex.ReleaseMutex(); return v; }
+            set { mutex.WaitOne(); spine.Scale = value; mutex.ReleaseMutex(); }
+        }
+
+        public void Reset()
+        {
+            mutex.WaitOne();
+            spine.X = spine.Y = 0;
+            spine.Scale = 1;
+            mutex.ReleaseMutex();
+            window.Position = new(0, 0);
+            window.Size = new(1000, 1000);
+            FixView();
+        }
+
         private void CreateWindow()
         {
             mutex.WaitOne();
             try
             {
                 // 创建窗口
-                window = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(1000, 1000), "spine", SFML.Window.Styles.None);
+                window = new(new(1000, 1000), "spine", SFML.Window.Styles.None);
 
                 // 设置窗口特殊属性
                 var hWnd = window.SystemHandle;
@@ -271,11 +287,11 @@ namespace SpineWindow
             window.Draw(spine);
         }
 
-        public void FixView()
+        private void FixView()
         {
             var view = window.GetView();
-            view.Center = new SFML.System.Vector2f(0, 200);
-            view.Size = new SFML.System.Vector2f(window.Size.X, -window.Size.Y);
+            view.Center = new(0, 200);
+            view.Size = new(window.Size.X, -window.Size.Y);
             window.SetView(view);
         }
 
@@ -294,8 +310,8 @@ namespace SpineWindow
 
         private void MouseButtonPressed(SFML.Window.MouseButtonEventArgs e)
         {
-            windowPressedPosition = new SFML.System.Vector2i(e.X, e.Y);
-            spinePressedPosition = new SFML.System.Vector2f(spine.X, spine.Y);
+            windowPressedPosition = new(e.X, e.Y);
+            spinePressedPosition = new(spine.X, spine.Y);
             switch (e.Button)
             {
                 case SFML.Window.Mouse.Button.Right:
