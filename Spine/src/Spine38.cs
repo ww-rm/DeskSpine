@@ -82,6 +82,7 @@ namespace Spine
             }
             set
             {
+                var currentAnime = CurrentAnimation;
                 var val = Math.Clamp(value, ScaleMin, ScaleMax);
                 if (skeletonBinary is not null)
                 {
@@ -98,6 +99,8 @@ namespace Spine
                 animationStateData = new AnimationStateData(skeletonData);
                 skeleton = new Skeleton(skeletonData);
                 animationState = new AnimationState(animationStateData);
+
+                CurrentAnimation = currentAnime;
             }
         }
 
