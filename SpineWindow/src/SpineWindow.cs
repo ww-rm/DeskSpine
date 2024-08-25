@@ -1,6 +1,5 @@
 ﻿using System.Buffers.Binary;
 using System.Diagnostics;
-using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 
 namespace SpineWindow
@@ -21,17 +20,17 @@ namespace SpineWindow
         private CancellationTokenSource cancelTokenSrc = new();
         private ManualResetEvent windowCreatedEvent = new(false);
         private SFML.System.Clock clock = new();
+        private SFML.Graphics.Color clearColor = new(128, 128, 128);
         protected SFML.Graphics.RenderWindow window;
         private Task windowLoopTask;
 
         private BackgroudColor backgroudColor = BackgroudColor.Gray;
-        private SFML.Graphics.Color transparencyKey = new(128, 128, 128);
-        private uint crKey { get => BinaryPrimitives.ReverseEndianness(transparencyKey.ToInteger()); }
-        private bool visible = true;
-        private byte opacity = 255;
-        private uint maxFps = 30;
+        private bool visible = false;
+        private uint maxFps = 300;
 
-        private SFML.System.Vector2i? pressedPosition = null;
+        private SFML.System.Vector2i? windowPressedPosition = null;
+        private SFML.System.Vector2f? spinePressedPosition = null;
+
 
         protected static SFML.Graphics.Color GetProperBackgroudColor(string pngPath, BackgroudColor backgroudColor)
         {
@@ -88,7 +87,6 @@ namespace SpineWindow
         public SpineWindow(string skelPath, string? atlasPath = null)
         {
             spine = Spine.Spine.New(SpineVersion, skelPath, atlasPath);
-            transparencyKey = GetProperBackgroudColor(spine.PngPath, backgroudColor);
             windowCreatedEvent.Reset();
             windowLoopTask = Task.Run(() => SpineWindowTask(this), cancelTokenSrc.Token);
             windowCreatedEvent.WaitOne();
@@ -106,8 +104,9 @@ namespace SpineWindow
             try
             {
                 spine = Spine.Spine.New(SpineVersion, skelPath, atlasPath);
-                transparencyKey = GetProperBackgroudColor(spine.PngPath, backgroudColor);
-                Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, opacity, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
+                clearColor = GetProperBackgroudColor(spine.PngPath, backgroudColor);
+                var crKey = BinaryPrimitives.ReverseEndianness(clearColor.ToInteger());
+                Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, 255, Win32.LWA_COLORKEY);
             }
             finally
             {
@@ -121,15 +120,64 @@ namespace SpineWindow
             set
             {
                 backgroudColor = value;
-                transparencyKey = GetProperBackgroudColor(spine.PngPath, value);
-                Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, opacity, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
+                clearColor = GetProperBackgroudColor(spine.PngPath, value);
+                var crKey = BinaryPrimitives.ReverseEndianness(clearColor.ToInteger());
+                Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, 255, Win32.LWA_COLORKEY);
             }
         }
 
         public byte Opacity
         {
-            get => opacity;
-            set { opacity = value; Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, value, Win32.LWA_COLORKEY | Win32.LWA_ALPHA); }
+            get
+            {
+                uint crKey = 0;
+                byte bAlpha = 0;
+                uint dwFlags = 0;
+                Win32.GetLayeredWindowAttributes(window.SystemHandle, ref crKey, ref bAlpha, ref dwFlags);
+                if ((dwFlags & Win32.LWA_ALPHA) != 0)
+                    return bAlpha;
+                else
+                    return 255;
+            }
+            set
+            {
+                Win32.SetLayeredWindowAttributes(window.SystemHandle, 0, value, Win32.LWA_ALPHA);
+            }
+        }
+
+        public bool MousePassable
+        {
+            get => (Win32.GetWindowLong(window.SystemHandle, Win32.GWL_EXSTYLE) & Win32.WS_EX_TRANSPARENT) != 0;
+            set
+            {
+                var exStyle = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_EXSTYLE);
+                if (value)
+                    exStyle |= Win32.WS_EX_TRANSPARENT;
+                else
+                    exStyle &= ~Win32.WS_EX_TRANSPARENT;
+                Win32.SetWindowLong(window.SystemHandle, Win32.GWL_EXSTYLE, exStyle);
+            }
+        }
+
+        public bool Resizable
+        {
+            get => (Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE) & Win32.WS_SIZEBOX) != 0;
+            set
+            {
+                var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
+                if (value)
+                    style |= Win32.WS_SIZEBOX;
+                else
+                    style &= ~Win32.WS_SIZEBOX;
+                Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style);
+                Win32.SetWindowPos(window.SystemHandle, 0, 0, 0, 0, 0, Win32.SWP_NOMOVE | Win32.SWP_NOSIZE | Win32.SWP_NOZORDER | Win32.SWP_FRAMECHANGED);
+            }
+        }
+
+        public SFML.System.Vector2i Position 
+        { 
+            get => window.Position; 
+            set => window.Position = value; 
         }
 
         public bool Visible
@@ -150,13 +198,18 @@ namespace SpineWindow
             try
             {
                 // 创建窗口
-                window = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(512, 512), "spine", SFML.Window.Styles.Default);
+                window = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(1000, 1000), "spine", SFML.Window.Styles.None);
+                clearColor = new(128, 128, 128);
 
-                // 设置分层属性
+                // 设置窗口特殊属性
                 var hWnd = window.SystemHandle;
+                Win32.SetWindowPos(hWnd, Win32.HWND_TOPMOST, 0, 0, 0, 0, Win32.SWP_NOMOVE | Win32.SWP_NOSIZE);
+                var style = Win32.GetWindowLong(hWnd, Win32.GWL_STYLE);
+                Win32.SetWindowLong(hWnd, Win32.GWL_STYLE, style | Win32.WS_POPUP);
                 var exStyle = Win32.GetWindowLong(hWnd, Win32.GWL_EXSTYLE);
-                Win32.SetWindowLong(hWnd, Win32.GWL_EXSTYLE, exStyle | Win32.WS_EX_LAYERED);
-                Win32.SetLayeredWindowAttributes(hWnd, crKey, opacity, Win32.LWA_ALPHA);
+                Win32.SetWindowLong(hWnd, Win32.GWL_EXSTYLE, exStyle | Win32.WS_EX_LAYERED | Win32.WS_EX_TOOLWINDOW | Win32.WS_EX_TOPMOST);
+                var crKey = BinaryPrimitives.ReverseEndianness(clearColor.ToInteger());
+                Win32.SetLayeredWindowAttributes(hWnd, crKey, 255, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
 
                 // 设置窗口属性
                 window.SetVisible(visible);
@@ -191,7 +244,7 @@ namespace SpineWindow
                     Update();
                     if (visible)
                     {
-                        window.Clear(transparencyKey);
+                        window.Clear(clearColor);
                         Render();
                         window.Display();
                     }
@@ -238,10 +291,14 @@ namespace SpineWindow
 
         private void MouseButtonPressed(SFML.Window.MouseButtonEventArgs e)
         {
+            windowPressedPosition = new SFML.System.Vector2i(e.X, e.Y);
+            spinePressedPosition = new SFML.System.Vector2f(spine.X, spine.Y);
             switch (e.Button)
             {
-                case SFML.Window.Mouse.Button.Left:
-                    pressedPosition = new SFML.System.Vector2i(e.X, e.Y);
+                case SFML.Window.Mouse.Button.Right:
+                    var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
+                    Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style | Win32.WS_BORDER);
+                    Win32.SetWindowPos(window.SystemHandle, IntPtr.Zero, 0, 0, 0, 0, Win32.SWP_REFRESHLONG);
                     break;
                 default:
                     break;
@@ -250,21 +307,32 @@ namespace SpineWindow
 
         private void MouseMoved(SFML.Window.MouseMoveEventArgs e)
         {
+            var delta = new SFML.System.Vector2i(0, 0);
+            if (windowPressedPosition is not null)
+                delta = (SFML.System.Vector2i)(new SFML.System.Vector2i(e.X, e.Y) - windowPressedPosition);
+
             if (SFML.Window.Mouse.IsButtonPressed(SFML.Window.Mouse.Button.Left))
             {
-                if (pressedPosition is not null)
-                {
-                    window.Position = (SFML.System.Vector2i)(window.Position + new SFML.System.Vector2i(e.X, e.Y) - pressedPosition);
-                }
+                window.Position = window.Position + delta;
+            }
+            else if (SFML.Window.Mouse.IsButtonPressed(SFML.Window.Mouse.Button.Right) && spinePressedPosition is not null)
+            {
+                spine.X = ((SFML.System.Vector2f)spinePressedPosition).X + delta.X;
+                spine.Y = ((SFML.System.Vector2f)spinePressedPosition).Y - delta.Y;
             }
         }
 
         private void MouseButtonReleased(SFML.Window.MouseButtonEventArgs e)
         {
+            windowPressedPosition = null;
+            spinePressedPosition = null;
+
             switch (e.Button)
             {
-                case SFML.Window.Mouse.Button.Left:
-                    pressedPosition = null;
+                case SFML.Window.Mouse.Button.Right:
+                    var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
+                    Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style & ~Win32.WS_BORDER);
+                    Win32.SetWindowPos(window.SystemHandle, 0, 0, 0, 0, 0, Win32.SWP_REFRESHLONG);
                     break;
                 default:
                     break;
@@ -280,15 +348,30 @@ namespace SpineWindow
     internal static class Win32
     {
         public const int GWL_STYLE = -16;
+        public const int WS_SIZEBOX = 0x40000;
+        public const int WS_BORDER = 0x800000;
+        public const int WS_POPUP = unchecked((int)0x80000000);
+
         public const int GWL_EXSTYLE = -20;
+        public const int WS_EX_TOPMOST = 0x8;
         public const int WS_EX_TRANSPARENT = 0x20;
         public const int WS_EX_TOOLWINDOW = 0x80;
+        public const int WS_EX_WINDOWEDGE = 0x100;
+        public const int WS_EX_CLIENTEDGE = 0x200;
         public const int WS_EX_LAYERED = 0x80000;
-        public const int WS_POPUP = unchecked((int)0x80000000);
+        public const int WS_EX_OVERLAPPEDWINDOW = WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE;
+
         public const uint LWA_COLORKEY = 0x1;
         public const uint LWA_ALPHA = 0x2;
 
-        // Windows API functions and constants
+        public const IntPtr HWND_TOPMOST = -1;
+
+        public const uint SWP_NOSIZE = 0x0001;
+        public const uint SWP_NOMOVE = 0x0002;
+        public const uint SWP_NOZORDER = 0x0004;
+        public const uint SWP_FRAMECHANGED = 0x0020;
+        public const uint SWP_REFRESHLONG = SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED;
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
@@ -296,7 +379,13 @@ namespace SpineWindow
         public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool SetLayeredWindowAttributes(IntPtr hWnd, uint crKey, byte bAlpha, uint dwFlags);
+        public static extern bool GetLayeredWindowAttributes(IntPtr hWnd, ref uint crKey, ref byte bAlpha, ref uint dwFlags);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool SetLayeredWindowAttributes(IntPtr hWnd, uint pcrKey, byte pbAlpha, uint pdwFlags);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
     }
 }
 
