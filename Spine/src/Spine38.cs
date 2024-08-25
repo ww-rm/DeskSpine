@@ -82,7 +82,13 @@ namespace Spine
             }
             set
             {
-                var currentAnime = CurrentAnimation;
+                // 保存状态
+                var flipX = FlipX;
+                var flipY = FlipY;
+                var x = X;
+                var y = Y;
+                var currentAnimation = CurrentAnimation;
+
                 var val = Math.Clamp(value, ScaleMin, ScaleMax);
                 if (skeletonBinary is not null)
                 {
@@ -100,7 +106,12 @@ namespace Spine
                 skeleton = new Skeleton(skeletonData);
                 animationState = new AnimationState(animationStateData);
 
-                CurrentAnimation = currentAnime;
+                // 恢复状态
+                FlipX = flipX;
+                FlipY = flipY;
+                X = x;
+                Y = y;
+                CurrentAnimation = currentAnimation;
             }
         }
 
