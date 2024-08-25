@@ -94,6 +94,11 @@ namespace Spine
         public string AtlasPath { get; private set; }
 
         /// <summary>
+        /// png 文件完整路径
+        /// </summary>
+        public string PngPath { get; private set; }
+
+        /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="skelPath">skel 文件路径</param>
@@ -103,6 +108,7 @@ namespace Spine
             atlasPath ??= Path.ChangeExtension(skelPath, ".atlas");
             SkelPath = Path.GetFullPath(skelPath);
             AtlasPath = Path.GetFullPath(atlasPath);
+            PngPath = Path.ChangeExtension(AtlasPath, ".png");
         }
 
         /// <summary>

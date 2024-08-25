@@ -5,51 +5,109 @@ using System.Runtime.InteropServices;
 
 namespace SpineWindow
 {
-    public abstract partial class SpineWindow
+    public enum BackgroudColor
     {
-        /// <summary>
-        /// Spine 动画窗口
-        /// </summary>
-        /// <param name="skelPath">skel 文件路径</param>
-        /// <param name="atlasPath">atlas 文件路径</param>
+        Black = 0,
+        White = 1,
+        Gray = 2
+    }
+
+    public abstract class SpineWindow
+    {
+        public abstract string SpineVersion { get; }
+        protected Spine.Spine spine;
+
+        protected Mutex mutex = new();
+        private CancellationTokenSource cancelTokenSrc = new();
+        private ManualResetEvent windowCreatedEvent = new(false);
+        private SFML.System.Clock clock = new();
+        protected SFML.Graphics.RenderWindow window;
+        private Task windowLoopTask;
+
+        private BackgroudColor backgroudColor = BackgroudColor.Gray;
+        private SFML.Graphics.Color transparencyKey = new(128, 128, 128);
+        private uint crKey { get => BinaryPrimitives.ReverseEndianness(transparencyKey.ToInteger()); }
+        private bool visible = true;
+        private byte opacity = 255;
+        private uint maxFps = 30;
+
+        private SFML.System.Vector2i? pressedPosition = null;
+
+        protected static SFML.Graphics.Color GetProperBackgroudColor(string pngPath, BackgroudColor backgroudColor)
+        {
+            var png = new SFML.Graphics.Image(pngPath);
+            var colors = new HashSet<uint>();
+            for (uint i = 0; i < png.Size.X; i++)
+            {
+                for (uint j = 0; j < png.Size.Y; j++)
+                {
+                    var c = png.GetPixel(i, j);
+                    if (c.A <= 0)
+                        continue;
+                    colors.Add(c.ToInteger());
+                }
+            }
+
+            var rnd = new Random();
+            var bgColor = SFML.Graphics.Color.Black;
+            for (int i = 0; i < 10; i++)
+            {
+                bgColor = SFML.Graphics.Color.Black;
+                switch (backgroudColor)
+                {
+                    case BackgroudColor.Black:
+                        bgColor.R = (byte)rnd.Next(0, 20);
+                        bgColor.G = (byte)rnd.Next(0, 20);
+                        bgColor.B = (byte)rnd.Next(0, 20);
+                        break;
+                    case BackgroudColor.White:
+                        bgColor.R = (byte)rnd.Next(235, 255);
+                        bgColor.G = (byte)rnd.Next(235, 255);
+                        bgColor.B = (byte)rnd.Next(235, 255);
+                        break;
+                    case BackgroudColor.Gray:
+                        bgColor.R = (byte)rnd.Next(118, 138);
+                        bgColor.G = (byte)rnd.Next(118, 138);
+                        bgColor.B = (byte)rnd.Next(118, 138);
+                        break;
+                }
+                if (!colors.Contains(bgColor.ToInteger()))
+                    break;
+            }
+
+            Debug.WriteLine($"bgColor: {bgColor}");
+            return bgColor;
+        }
+
+        private static void SpineWindowTask(SpineWindow self)
+        {
+            self.CreateWindow();
+            self.WindowLoop();
+        }
+
         public SpineWindow(string skelPath, string? atlasPath = null)
         {
             spine = Spine.Spine.New(SpineVersion, skelPath, atlasPath);
+            transparencyKey = GetProperBackgroudColor(spine.PngPath, backgroudColor);
             windowCreatedEvent.Reset();
             windowLoopTask = Task.Run(() => SpineWindowTask(this), cancelTokenSrc.Token);
             windowCreatedEvent.WaitOne();
         }
 
-        /// <summary>
-        /// 析构函数, 停止窗口
-        /// </summary>
         ~SpineWindow()
         {
             cancelTokenSrc.Cancel();
             windowLoopTask.Wait();
         }
 
-        /// <summary>
-        /// Spine 版本
-        /// </summary>
-        public abstract string SpineVersion { get; }
-
-        /// <summary>
-        /// spine 对象
-        /// </summary>
-        protected Spine.Spine spine;
-
-        /// <summary>
-        /// 加载 Spine 资源
-        /// </summary>
-        /// <param name="skelPath">skel 文件路径</param>
-        /// <param name="atlasPath">atlas 文件路径</param>
         public void LoadSpine(string skelPath, string? atlasPath = null)
         {
             mutex.WaitOne();
             try
             {
                 spine = Spine.Spine.New(SpineVersion, skelPath, atlasPath);
+                transparencyKey = GetProperBackgroudColor(spine.PngPath, backgroudColor);
+                Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, opacity, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
             }
             finally
             {
@@ -57,138 +115,52 @@ namespace SpineWindow
             }
         }
 
-        /// <summary>
-        /// 窗口对象
-        /// </summary>
-        protected SFML.Graphics.RenderWindow window;
+        public BackgroudColor BackgroudColor 
+        {
+            get => backgroudColor;
+            set
+            {
+                backgroudColor = value;
+                transparencyKey = GetProperBackgroudColor(spine.PngPath, value);
+                Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, opacity, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
+            }
+        }
 
-        /// <summary>
-        /// 互斥锁, 子类访问内部数据时必须通过锁同步
-        /// </summary>
-        protected Mutex mutex = new();
+        public byte Opacity
+        {
+            get => opacity;
+            set { opacity = value; Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, value, Win32.LWA_COLORKEY | Win32.LWA_ALPHA); }
+        }
 
-        /// <summary>
-        /// 取消令牌
-        /// </summary>
-        private CancellationTokenSource cancelTokenSrc = new();
-
-        /// <summary>
-        /// 窗口创建通知事件
-        /// </summary>
-        private ManualResetEvent windowCreatedEvent = new(false);
-
-        /// <summary>
-        /// 计时器
-        /// </summary>
-        private SFML.System.Clock clock = new();
-
-        /// <summary>
-        /// 窗口主循环线程
-        /// </summary>
-        private Task windowLoopTask;
-
-        /// <summary>
-        /// 窗口是否可见
-        /// </summary>
         public bool Visible
         {
-            get { mutex.WaitOne(); var v = _Visible; mutex.ReleaseMutex(); return v; }
-            set { mutex.WaitOne(); _Visible = value; mutex.ReleaseMutex(); window.SetVisible(value); }
+            get { mutex.WaitOne(); var v = visible; mutex.ReleaseMutex(); return v; }
+            set { mutex.WaitOne(); visible = value; mutex.ReleaseMutex(); window.SetVisible(value); }
         }
-        private bool _Visible = true;
 
-        /// <summary>
-        /// 不透明度, 取值范围 0-1
-        /// </summary>
-        public float Opacity
-        {
-            get { mutex.WaitOne(); var v = _Opacity; mutex.ReleaseMutex(); return v; }
-            set
-            {
-                mutex.WaitOne();
-                _Opacity = Math.Clamp(value, 0, 1);
-                mutex.ReleaseMutex();
-                Win32.SetLayeredWindowAttributes(
-                    window.SystemHandle,
-                    BinaryPrimitives.ReverseEndianness(_TransparencyKey.ToInteger()),
-                    (byte)(255 * _Opacity),
-                    Win32.LWA_COLORKEY | Win32.LWA_ALPHA
-                );
-            }
-        }
-        private float _Opacity = 1f;
-
-        /// <summary>
-        /// 用作抠透明背景的 RGB 颜色
-        /// </summary>
-        public SFML.Graphics.Color TransparencyKey
-        {
-            get { mutex.WaitOne(); var v = _TransparencyKey; mutex.ReleaseMutex(); return v; }
-            set
-            {
-                mutex.WaitOne();
-                _TransparencyKey = value;
-                mutex.ReleaseMutex();
-                Win32.SetLayeredWindowAttributes(
-                    window.SystemHandle,
-                    BinaryPrimitives.ReverseEndianness(_TransparencyKey.ToInteger()),
-                    (byte)(255 * _Opacity),
-                    Win32.LWA_COLORKEY | Win32.LWA_ALPHA
-                );
-            }
-        }
-        private SFML.Graphics.Color _TransparencyKey = new SFML.Graphics.Color(128, 128, 128);
-
-        /// <summary>
-        /// 最大帧率
-        /// </summary>
         public uint MaxFps
         {
-            get { mutex.WaitOne(); var v = _MaxFps; mutex.ReleaseMutex(); return v; }
-            set { mutex.WaitOne(); _MaxFps = value; mutex.ReleaseMutex(); window.SetFramerateLimit(value); }
-        }
-        private uint _MaxFps = 30;
-
-        private SFML.System.Vector2i? pressedPosition = null;
-
-        /// <summary>
-        /// 窗口任务, 窗口创建和窗口循环必须在同一个线程完成
-        /// </summary>
-        private static void SpineWindowTask(SpineWindow self)
-        {
-            self.CreateWindow();
-            self.WindowLoop();
+            get => maxFps;
+            set { maxFps = value; window.SetFramerateLimit(value); }
         }
 
-        /// <summary>
-        /// 创建窗口
-        /// </summary>
         private void CreateWindow()
         {
             mutex.WaitOne();
             try
             {
                 // 创建窗口
-                window = new SFML.Graphics.RenderWindow(
-                    new SFML.Window.VideoMode(512, 512),
-                    "spine",
-                    SFML.Window.Styles.Default
-                 );
+                window = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(512, 512), "spine", SFML.Window.Styles.Default);
 
                 // 设置分层属性
-                var handle = window.SystemHandle;
-                var exStyle = Win32.GetWindowLong(handle, Win32.GWL_EXSTYLE);
-                Win32.SetWindowLong(handle, Win32.GWL_EXSTYLE, exStyle | Win32.WS_EX_LAYERED);
-                Win32.SetLayeredWindowAttributes(
-                    handle,
-                    BinaryPrimitives.ReverseEndianness(_TransparencyKey.ToInteger()),
-                    (byte)(255 * _Opacity),
-                    Win32.LWA_ALPHA
-                );
+                var hWnd = window.SystemHandle;
+                var exStyle = Win32.GetWindowLong(hWnd, Win32.GWL_EXSTYLE);
+                Win32.SetWindowLong(hWnd, Win32.GWL_EXSTYLE, exStyle | Win32.WS_EX_LAYERED);
+                Win32.SetLayeredWindowAttributes(hWnd, crKey, opacity, Win32.LWA_ALPHA);
 
                 // 设置窗口属性
-                window.SetVisible(_Visible);
-                window.SetFramerateLimit(_MaxFps);
+                window.SetVisible(visible);
+                window.SetFramerateLimit(maxFps);
                 FixView();
 
                 // 注册窗口事件
@@ -201,9 +173,6 @@ namespace SpineWindow
             }
         }
 
-        /// <summary>
-        /// 窗口循环
-        /// </summary>
         private void WindowLoop()
         {
             while (true)
@@ -220,9 +189,9 @@ namespace SpineWindow
 
                     window.DispatchEvents();
                     Update();
-                    if (_Visible)
+                    if (visible)
                     {
-                        window.Clear(_TransparencyKey);
+                        window.Clear(transparencyKey);
                         Render();
                         window.Display();
                     }
@@ -234,9 +203,6 @@ namespace SpineWindow
             }
         }
 
-        /// <summary>
-        /// 更新状态
-        /// </summary>
         private void Update()
         {
             var delta = clock.ElapsedTime.AsSeconds();
@@ -244,17 +210,11 @@ namespace SpineWindow
             spine.Update(delta);
         }
 
-        /// <summary>
-        /// 渲染画面
-        /// </summary>
         private void Render()
         {
             window.Draw(spine);
         }
 
-        /// <summary>
-        /// 修正窗口视窗
-        /// </summary>
         public void FixView()
         {
             var view = window.GetView();
@@ -270,7 +230,6 @@ namespace SpineWindow
             window.MouseMoved += (object? s, SFML.Window.MouseMoveEventArgs e) => MouseMoved(this, e);
             window.MouseButtonReleased += (object? s, SFML.Window.MouseButtonEventArgs e) => MouseButtonReleased(this, e);
         }
-
 
         private void Resized(SFML.Window.SizeEventArgs e)
         {
