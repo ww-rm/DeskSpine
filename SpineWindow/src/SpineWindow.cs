@@ -313,23 +313,37 @@ namespace SpineWindow
             // 双击检测
             var isDoubleClick = false;
             if (!doubleClickChecking)
+            {
                 doubleClickClock.Restart();
+                doubleClickChecking = true;
+            }
             else
-                isDoubleClick = doubleClickClock.ElapsedTime.AsMilliseconds() < Win32.GetDoubleClickTime();
-            doubleClickChecking = !doubleClickChecking;
+            { 
+                isDoubleClick = doubleClickClock.ElapsedTime.AsMilliseconds() <= Win32.GetDoubleClickTime();
+                if (isDoubleClick)
+                { 
+                    doubleClickChecking = false; 
+                }
+                else
+                {
+                    doubleClickClock.Restart();
+                    doubleClickChecking = true;
+                }
+            }
 
             // 事件处理
             switch (e.Button)
             {
                 case SFML.Window.Mouse.Button.Left:
                     break;
-                // 右键按下时显示边框
                 // 右键双击时显示/隐藏缩放框
                 case SFML.Window.Mouse.Button.Right:
-                    var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
-                    if (isDoubleClick) style ^= Win32.WS_SIZEBOX;
-                    Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style | Win32.WS_BORDER);
-                    Win32.SetWindowPos(window.SystemHandle, IntPtr.Zero, 0, 0, 0, 0, Win32.SWP_REFRESHLONG);
+                    if (isDoubleClick)
+                    {
+                        var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
+                        Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style ^ Win32.WS_SIZEBOX);
+                        Win32.SetWindowPos(window.SystemHandle, IntPtr.Zero, 0, 0, 0, 0, Win32.SWP_REFRESHLONG);
+                    }
                     break;
                 default:
                     break;
@@ -347,7 +361,17 @@ namespace SpineWindow
 
             // 判断是否处于拖动状态
             if (!isDragging && (Math.Abs(delta.X) > 4 || Math.Abs(delta.Y) > 4))
-                isDragging = true; 
+            { 
+                isDragging = true;
+
+                // 右键拖动时显示边框
+                if (SFML.Window.Mouse.IsButtonPressed(SFML.Window.Mouse.Button.Right))
+                {
+                    var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
+                    Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style | Win32.WS_BORDER);
+                    Win32.SetWindowPos(window.SystemHandle, IntPtr.Zero, 0, 0, 0, 0, Win32.SWP_REFRESHLONG);
+                }
+            }
 
             // 如果左键被按下则拖动窗口
             // 否则右键被按下则拖动内部精灵
