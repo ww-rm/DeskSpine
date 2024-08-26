@@ -18,14 +18,17 @@ namespace SpineWindow
         public SpineWindow(string skelPath, string? atlasPath = null, string? resFolder = null)
         {
             spine = Spine.Spine.New(SpineVersion, skelPath, atlasPath);
+            ResFolder = resFolder ??= Path.GetDirectoryName(spine.SkelPath);
+            Trigger_SpineLoaded();
+
             Debug.WriteLine($"AtlasPath: {spine.AtlasPath}");
             foreach (var a in spine.AnimationNames) Debug.Write($"{a}; ");
             Debug.WriteLine("");
-            resFolder ??= Path.ChangeExtension(spine.SkelPath, null);
-            ResFolder = resFolder;
+
             windowCreatedEvent.Reset();
             windowLoopTask = Task.Run(() => SpineWindowTask(this), cancelTokenSrc.Token);
             windowCreatedEvent.WaitOne();
+
         }
 
         ~SpineWindow()
@@ -55,7 +58,7 @@ namespace SpineWindow
             {
                 mutex.ReleaseMutex();
             }
-            SpineLoaded();
+            Trigger_SpineLoaded();
         }
 
         protected Mutex mutex = new();
@@ -310,46 +313,20 @@ namespace SpineWindow
             windowPressedPosition = new(e.X, e.Y);
             spinePressedPosition = new(spine.X, spine.Y);
 
-            // 双击检测
-            var isDoubleClick = false;
-            if (!doubleClickChecking)
-            {
-                doubleClickClock.Restart();
-                doubleClickChecking = true;
-            }
-            else
-            { 
-                isDoubleClick = doubleClickClock.ElapsedTime.AsMilliseconds() <= Win32.GetDoubleClickTime();
-                if (isDoubleClick)
-                { 
-                    doubleClickChecking = false; 
-                }
-                else
-                {
-                    doubleClickClock.Restart();
-                    doubleClickChecking = true;
-                }
-            }
+            // 检查双击超时
+            if (doubleClickChecking && doubleClickClock.ElapsedTime.AsMilliseconds() > Win32.GetDoubleClickTime())
+                doubleClickChecking = false;
 
             // 事件处理
             switch (e.Button)
             {
                 case SFML.Window.Mouse.Button.Left:
                     break;
-                // 右键双击时显示/隐藏缩放框
                 case SFML.Window.Mouse.Button.Right:
-                    if (isDoubleClick)
-                    {
-                        var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
-                        Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style ^ Win32.WS_SIZEBOX);
-                        Win32.SetWindowPos(window.SystemHandle, IntPtr.Zero, 0, 0, 0, 0, Win32.SWP_REFRESHLONG);
-                    }
                     break;
                 default:
                     break;
             }
-
-            if (isDoubleClick) MouseButtonDoubleClick(e);
         }
 
         private void MouseMoved(SFML.Window.MouseMoveEventArgs e)
@@ -359,37 +336,47 @@ namespace SpineWindow
             if (windowPressedPosition is not null)
                 delta = (SFML.System.Vector2i)(new SFML.System.Vector2i(e.X, e.Y) - windowPressedPosition);
 
-            // 判断是否处于拖动状态
-            if (!isDragging && (Math.Abs(delta.X) > 4 || Math.Abs(delta.Y) > 4))
+            // 获取按键状态
+            var leftDown = SFML.Window.Mouse.IsButtonPressed(SFML.Window.Mouse.Button.Left);
+            var rightDown = SFML.Window.Mouse.IsButtonPressed(SFML.Window.Mouse.Button.Right);
+
+            // 判断是否开始拖动
+            // 任意一个键是按下的且移动距离大于阈值
+            if (!isDragging && (leftDown || rightDown) && (Math.Abs(delta.X) > 4 || Math.Abs(delta.Y) > 4))
             { 
                 isDragging = true;
+                doubleClickChecking = false;
+                Trigger_MouseDragBegin(e);
+            }
 
-                // 右键拖动时显示边框
-                if (SFML.Window.Mouse.IsButtonPressed(SFML.Window.Mouse.Button.Right))
+            if (isDragging)
+            {
+                // 拖动时右键处于按下则显示边框
+                var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
+                if (rightDown && (style & Win32.WS_BORDER) == 0)
                 {
-                    var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
                     Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style | Win32.WS_BORDER);
                     Win32.SetWindowPos(window.SystemHandle, IntPtr.Zero, 0, 0, 0, 0, Win32.SWP_REFRESHLONG);
                 }
-            }
+                else if (!rightDown && (style & Win32.WS_BORDER) != 0)
+                {
+                    Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style & ~Win32.WS_BORDER);
+                    Win32.SetWindowPos(window.SystemHandle, IntPtr.Zero, 0, 0, 0, 0, Win32.SWP_REFRESHLONG);
+                }
 
-            // 如果左键被按下则拖动窗口
-            // 否则右键被按下则拖动内部精灵
-            if (isDragging)
-            {
-                if (SFML.Window.Mouse.IsButtonPressed(SFML.Window.Mouse.Button.Left))
+                // 如果左键被按下则拖动窗口
+                // 否则右键被按下则拖动内部精灵
+                if (leftDown)
                 {
                     window.Position = window.Position + delta;
                 }
-                else if (SFML.Window.Mouse.IsButtonPressed(SFML.Window.Mouse.Button.Right) && spinePressedPosition is not null)
+                else if (rightDown && spinePressedPosition is not null)
                 {
                     spine.X = ((SFML.System.Vector2f)spinePressedPosition).X + delta.X;
                     spine.Y = ((SFML.System.Vector2f)spinePressedPosition).Y - delta.Y;
                 }
+
             }
-
-
-            if (isDragging) MouseDragging(e);
         }
 
         private void MouseButtonReleased(SFML.Window.MouseButtonEventArgs e)
@@ -398,37 +385,91 @@ namespace SpineWindow
             windowPressedPosition = null;
             spinePressedPosition = null;
 
-            // 事件处理
-            switch (e.Button)
+            if (isDragging)
             {
-                case SFML.Window.Mouse.Button.Left:
-                    break;
-                // 右键释放隐藏边框显示
-                case SFML.Window.Mouse.Button.Right:
-                    var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
+                // 拖动过程任意一个键释放都结束拖动
+                var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
+                if ((style & Win32.WS_BORDER) != 0)
+                {
                     Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style & ~Win32.WS_BORDER);
                     Win32.SetWindowPos(window.SystemHandle, 0, 0, 0, 0, 0, Win32.SWP_REFRESHLONG);
-                    break;
-                default:
-                    break;
+                }
+
+                isDragging = false;
+                Trigger_MouseDragEnd(e);
             }
+            else
+            {
+                // 双击检测
+                var isDoubleClick = false;
+                if (!doubleClickChecking)
+                {
+                    doubleClickClock.Restart();
+                    doubleClickChecking = true;
+                }
+                else
+                {
+                    isDoubleClick = doubleClickClock.ElapsedTime.AsMilliseconds() <= Win32.GetDoubleClickTime();
+                    if (isDoubleClick)
+                        doubleClickChecking = false;
+                    else
+                        doubleClickClock.Restart();
+                }
 
-            if (!isDragging) MouseButtonClick(e);
+                // 点击事件处理
+                // 双击和单击只触发一个
+                if (isDoubleClick)
+                {
+                    // 双击事件处理
+                    switch (e.Button)
+                    {
+                        case SFML.Window.Mouse.Button.Left:
+                            break;
+                        case SFML.Window.Mouse.Button.Right:
+                            // 右键双击时显示/隐藏缩放框
+                            var style = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_STYLE);
+                            Win32.SetWindowLong(window.SystemHandle, Win32.GWL_STYLE, style ^ Win32.WS_SIZEBOX);
+                            Win32.SetWindowPos(window.SystemHandle, IntPtr.Zero, 0, 0, 0, 0, Win32.SWP_REFRESHLONG);
+                            break;
+                        default:
+                            break;
+                    }
 
-            // 清除拖动状态
-            isDragging = false;
+                    Trigger_MouseButtonDoubleClick(e);
+                }
+                else
+                {
+                    // 单击事件处理
+                    switch (e.Button)
+                    {
+                        case SFML.Window.Mouse.Button.Left:
+                            break;
+                        case SFML.Window.Mouse.Button.Right:
+                            break;
+                        default:
+                            break;
+                    }
+
+                    Trigger_MouseButtonClick(e);
+                }
+            }
         }
 
         private void MouseWheelScrolled(SFML.Window.MouseWheelScrollEventArgs e)
         {
-            MouseWheelScroll(e);
+            Trigger_MouseWheelScroll(e);
         }
 
-        protected virtual void SpineLoaded() { }
-        protected virtual void MouseButtonClick(SFML.Window.MouseButtonEventArgs e) { }
-        protected virtual void MouseButtonDoubleClick(SFML.Window.MouseButtonEventArgs e) { }
-        protected virtual void MouseDragging(SFML.Window.MouseMoveEventArgs e) { }
-        protected virtual void MouseWheelScroll(SFML.Window.MouseWheelScrollEventArgs e) { }
+        protected virtual void Trigger_SpineLoaded() { }
+        protected virtual void Trigger_MouseButtonClick(SFML.Window.MouseButtonEventArgs e) { }
+        protected virtual void Trigger_MouseButtonDoubleClick(SFML.Window.MouseButtonEventArgs e) { }
+        protected virtual void Trigger_MouseDragBegin(SFML.Window.MouseMoveEventArgs e) { }
+        protected virtual void Trigger_MouseDragEnd(SFML.Window.MouseButtonEventArgs e) { }
+        protected virtual void Trigger_MouseWheelScroll(SFML.Window.MouseWheelScrollEventArgs e) { }
+        protected virtual void Trigger_WorkBegin() { }
+        protected virtual void Trigger_WorkEnd() { }
+        protected virtual void Trigger_SleepBegin() {  }
+        protected virtual void Trigger_SleepEnd() { }
 
         private static void Resized(SpineWindow self, SFML.Window.SizeEventArgs e) { self.Resized(e); }
         private static void MouseButtonPressed(SpineWindow self, SFML.Window.MouseButtonEventArgs e) { self.MouseButtonPressed(e); }
