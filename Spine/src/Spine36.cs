@@ -138,19 +138,13 @@ namespace Spine
         public override string CurrentAnimation
         {
             get => animationState.GetCurrent(0)?.Animation.Name ?? DefaultAnimationName;
-            set
-            {
-                if (!AnimationNames.Contains(value))
-                    value = DefaultAnimationName;
-                animationState.SetAnimation(0, value, true);
-            }
+            set { if (AnimationNames.Contains(value)) animationState.SetAnimation(0, value, true); }
         }
 
         public override void AddAnimation(string name)
         {
-            if (!AnimationNames.Contains(name))
-                name = DefaultAnimationName;
-            animationState.AddAnimation(0, name, true, 0);
+            if (AnimationNames.Contains(name))
+                animationState.AddAnimation(0, name, true, 0);
         }
 
         public override void Update(float delta)
