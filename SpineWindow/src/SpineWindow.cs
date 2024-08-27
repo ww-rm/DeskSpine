@@ -1,5 +1,7 @@
 ﻿using System.Buffers.Binary;
+using System.Collections;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace SpineWindow
@@ -11,54 +13,253 @@ namespace SpineWindow
         Gray = 2
     }
 
-    public abstract class SpineWindow
+    public abstract class SpineWindow: IDisposable
     {
-        public string ResFolder { get; private set; }
-
-        public SpineWindow(string skelPath, string? atlasPath = null, string? resFolder = null)
+        public SpineWindow()
         {
-            spine = Spine.Spine.New(SpineVersion, skelPath, atlasPath);
-            ResFolder = resFolder ??= Path.GetDirectoryName(spine.SkelPath);
-            Trigger_SpineLoaded();
-
-            Debug.WriteLine($"AtlasPath: {spine.AtlasPath}");
-            foreach (var a in spine.AnimationNames) Debug.Write($"{a}; ");
-            Debug.WriteLine("");
-
             windowCreatedEvent.Reset();
             windowLoopTask = Task.Run(() => SpineWindowTask(this), cancelTokenSrc.Token);
             windowCreatedEvent.WaitOne();
+        }
 
+        public void Dispose()
+        {
+            if (window is not null)
+            {
+                cancelTokenSrc.Cancel();
+                windowLoopTask.Wait();
+                window = null;
+                windowLoopTask = null;
+            }
         }
 
         ~SpineWindow()
         {
-            cancelTokenSrc.Cancel();
-            windowLoopTask.Wait();
+            if (window is not null)
+                Dispose();
         }
 
-        public abstract string SpineVersion { get; }
-        public abstract bool FaceToRight { get; set; }
-        protected Spine.Spine spine;
+        protected Spine.Spine? spine;
+        protected Spine.Spine? spineEx1;
+        protected Spine.Spine? spineEx2;
 
-        public void LoadSpine(string skelPath, string? atlasPath = null)
-        {
-            mutex.WaitOne();
-            try
+        public string? ResFolder 
+        { 
+            get
             {
-                spine = Spine.Spine.New(SpineVersion, skelPath, atlasPath);
-                Debug.WriteLine($"AtlasPath: {spine.AtlasPath}");
-                foreach (var a in spine.AnimationNames) Debug.Write($"{a}; ");
-                Debug.WriteLine("");
-                clearColor = GetProperBackgroudColor(spine.PngPath, backgroudColor);
-                var crKey = BinaryPrimitives.ReverseEndianness(clearColor.ToInteger());
-                Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, 255, Win32.LWA_COLORKEY);
+                string? v = null;
+                mutex.WaitOne();
+                if (spine is not null) v = Path.GetDirectoryName(Path.GetFullPath(spine.SkelPath));
+                else if (spineEx1 is not null) v = Path.GetDirectoryName(Path.GetFullPath(spineEx1.SkelPath));
+                else if (spineEx2 is not null) v = Path.GetDirectoryName(Path.GetFullPath(spineEx2.SkelPath));
+                mutex.ReleaseMutex();
+                return v;
             }
-            finally
+        }
+
+        public abstract bool FaceToRight { get; set; }
+
+        public float SpineScale
+        {
+            get 
             {
+                var v = 1f;
+                mutex.WaitOne();
+                if (spine is not null) v = spine.Scale;
+                else if (spineEx1 is not null) v = spineEx1.Scale;
+                else if (spineEx2 is not null) v = spineEx2.Scale;
+                mutex.ReleaseMutex(); 
+                return v; 
+            }
+            set
+            {
+                mutex.WaitOne();
+                if (spine is not null) { spine.Scale = value; }
+                if (spineEx1 is not null) { spineEx1.Scale = value; }
+                if (spineEx2 is not null) { spineEx2.Scale = value; }
                 mutex.ReleaseMutex();
             }
+        }
+
+        public SFML.System.Vector2f SpinePosition
+        {
+            get
+            {
+                var v = new SFML.System.Vector2f(0, 0);
+                mutex.WaitOne();
+                if (spine is not null) v = new SFML.System.Vector2f(spine.X, spine.Y);
+                else if (spineEx1 is not null) v = new SFML.System.Vector2f(spineEx1.X, spineEx1.Y);
+                else if (spineEx2 is not null) v = new SFML.System.Vector2f(spineEx2.X, spineEx2.Y);
+                mutex.ReleaseMutex();
+                return v;
+            }
+            set
+            {
+                mutex.WaitOne();
+                if (spine is not null) { spine.X = value.X; spine.Y = value.Y; }
+                if (spineEx1 is not null) { spineEx1.X = value.X; spineEx1.Y = value.Y; }
+                if (spineEx2 is not null) { spineEx2.X = value.X; spineEx2.Y = value.Y; }
+                mutex.ReleaseMutex();
+            }
+        }
+
+        public void LoadSpine(string version, string skelPath, string? atlasPath = null)
+        {
+            Debug.WriteLine($"Loading spine({version}) from {skelPath}, {atlasPath}");
+            Spine.Spine spineNew;
+            try { spineNew = Spine.Spine.New(version, skelPath, atlasPath); }
+            catch { throw; }
+
+            mutex.WaitOne();
+            spine = spineNew; // 调用方负责恢复新 spine 对象的属性
+            mutex.ReleaseMutex();
+            UpdateProperBackgroudColor();
             Trigger_SpineLoaded();
+            Debug.Write("spine animiation: ");
+            foreach (var a in spine.AnimationNames) Debug.Write($"{a}; ");
+        }
+
+        public void LoadSpineEx1(string version, string skelPath, string? atlasPath = null)
+        {
+            Debug.WriteLine($"Loading spineEx1({version}) from {skelPath}, {atlasPath}");
+            Spine.Spine spineNew;
+            try { spineNew = Spine.Spine.New(version, skelPath, atlasPath); }
+            catch { throw; }
+
+            mutex.WaitOne();
+            spineEx1 = spineNew; // 调用方负责恢复新 spine 对象的属性
+            mutex.ReleaseMutex();
+            UpdateProperBackgroudColor();
+            Trigger_SpineEx1Loaded();
+            Debug.Write("spineEx1 animations: ");
+            foreach (var a in spineEx1.AnimationNames) Debug.Write($"{a}; ");
+        }
+
+        public void LoadSpineEx2(string version, string skelPath, string? atlasPath = null)
+        {
+            Debug.WriteLine($"Loading spineEx2({version}) from {skelPath}, {atlasPath}");
+            Spine.Spine spineNew;
+            try { spineNew = Spine.Spine.New(version, skelPath, atlasPath); }
+            catch { throw; }
+
+            mutex.WaitOne();
+            spineEx2 = spineNew; // 调用方负责恢复新 spine 对象的属性
+            mutex.ReleaseMutex();
+            UpdateProperBackgroudColor();
+            Trigger_SpineEx2Loaded();
+            Debug.Write("spineEx2 animations: ");
+            foreach (var a in spineEx2.AnimationNames) Debug.Write($"{a}; ");
+        }
+
+        private void UpdateProperBackgroudColor()
+        {
+            var colors = new Dictionary<uint, uint>();
+            mutex.WaitOne();
+            string? p1 = spine?.PngPath;
+            string? p2 = spineEx1?.PngPath;
+            string? p3 = spineEx2?.PngPath;
+            mutex.ReleaseMutex();
+
+            if (p1 is not null)
+            {
+                var png = new SFML.Graphics.Image(p1);
+                for (uint i = 0; i < png.Size.X; i++)
+                {
+                    for (uint j = 0; j < png.Size.Y; j++)
+                    {
+                        var c = png.GetPixel(i, j);
+                        if (c.A <= 0) continue;
+                        c.A = 0;
+                        var k = c.ToInteger();
+                        if (colors.ContainsKey(k)) colors[k] += 1;
+                        else colors[k] = 1;
+                    }
+                }
+            }
+            if (p2 is not null)
+            {
+                var png = new SFML.Graphics.Image(p2);
+                for (uint i = 0; i < png.Size.X; i++)
+                {
+                    for (uint j = 0; j < png.Size.Y; j++)
+                    {
+                        var c = png.GetPixel(i, j);
+                        if (c.A <= 0) continue;
+                        c.A = 0;
+                        var k = c.ToInteger();
+                        if (colors.ContainsKey(k)) colors[k] += 1;
+                        else colors[k] = 1;
+                    }
+                }
+            }
+            if (p3 is not null)
+            {
+                var png = new SFML.Graphics.Image(p3);
+                for (uint i = 0; i < png.Size.X; i++)
+                {
+                    for (uint j = 0; j < png.Size.Y; j++)
+                    {
+                        var c = png.GetPixel(i, j);
+                        if (c.A <= 0) continue;
+                        c.A = 0;
+                        var k = c.ToInteger();
+                        if (colors.ContainsKey(k)) colors[k] += 1;
+                        else colors[k] = 1;
+                    }
+                }
+            }
+
+            if (colors.Count <= 0)
+                return;
+
+            var rnd = new Random();
+            var bestColor = SFML.Graphics.Color.Transparent;
+            uint bestColorSameCount = uint.MaxValue;
+            var tmpColor = SFML.Graphics.Color.Transparent;
+            for (int i = 0; i < 10; i++)
+            {
+                // BUG: SetLayeredWindowAttributes 的 R 和 B 分量必须相等才能让背景部分的透明和穿透同时生效
+                switch (backgroudColor)
+                {
+                    case BackgroudColor.Black:
+                        tmpColor.R = tmpColor.B = (byte)rnd.Next(0, 20);
+                        tmpColor.G = (byte)rnd.Next(0, 20);
+                        break;
+                    case BackgroudColor.White:
+                        tmpColor.R = tmpColor.B = (byte)rnd.Next(235, 255);
+                        tmpColor.G = (byte)rnd.Next(235, 255);
+                        break;
+                    case BackgroudColor.Gray:
+                        tmpColor.R = tmpColor.B = (byte)rnd.Next(118, 138);
+                        tmpColor.G = (byte)rnd.Next(118, 138);
+                        break;
+                }
+
+                var k = tmpColor.ToInteger();
+                uint count = 0;
+                if (colors.TryGetValue(k, out count))
+                {
+                    if (count < bestColorSameCount)
+                    {
+                        bestColor = tmpColor;
+                        bestColorSameCount = count;
+                    }
+                }
+                else
+                {
+                    bestColor = tmpColor;
+                    bestColorSameCount = 0;
+                    break;
+                }
+            }
+
+            Debug.WriteLine($"Background Color: {bestColor}, Count: {bestColorSameCount}");
+
+            mutex.WaitOne();
+            clearColor = bestColor;
+            mutex.ReleaseMutex();
+            var crKey = BinaryPrimitives.ReverseEndianness(bestColor.ToInteger());
+            Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, 255, Win32.LWA_COLORKEY);
         }
 
         protected Mutex mutex = new();
@@ -66,8 +267,8 @@ namespace SpineWindow
         private ManualResetEvent windowCreatedEvent = new(false);
         private SFML.System.Clock clock = new();
         private SFML.Graphics.Color clearColor = new(128, 128, 128);
-        protected SFML.Graphics.RenderWindow window;
-        private Task windowLoopTask;
+        protected SFML.Graphics.RenderWindow? window;
+        private Task? windowLoopTask;
 
         private BackgroudColor backgroudColor = BackgroudColor.Gray;
         private bool visible = false;
@@ -79,50 +280,6 @@ namespace SpineWindow
         private bool doubleClickChecking = false;
         private bool isDragging = false;
 
-        private static SFML.Graphics.Color GetProperBackgroudColor(string pngPath, BackgroudColor backgroudColor)
-        {
-            var png = new SFML.Graphics.Image(pngPath);
-            var colors = new HashSet<uint>();
-            for (uint i = 0; i < png.Size.X; i++)
-            {
-                for (uint j = 0; j < png.Size.Y; j++)
-                {
-                    var c = png.GetPixel(i, j);
-                    if (c.A <= 0)
-                        continue;
-                    colors.Add(c.ToInteger());
-                }
-            }
-
-            var rnd = new Random();
-            var bgColor = SFML.Graphics.Color.Black;
-            for (int i = 0; i < 10; i++)
-            {
-                // BUG: SetLayeredWindowAttributes 的 R 和 B 分量必须相等才能让背景部分的透明和穿透同时生效
-                bgColor = SFML.Graphics.Color.Black;
-                switch (backgroudColor)
-                {
-                    case BackgroudColor.Black:
-                        bgColor.R = bgColor.B = (byte)rnd.Next(0, 20);
-                        bgColor.G = (byte)rnd.Next(0, 20);
-                        break;
-                    case BackgroudColor.White:
-                        bgColor.R = bgColor.B = (byte)rnd.Next(235, 255);
-                        bgColor.G = (byte)rnd.Next(235, 255);
-                        break;
-                    case BackgroudColor.Gray:
-                        bgColor.R = bgColor.B = (byte)rnd.Next(118, 138);
-                        bgColor.G = (byte)rnd.Next(118, 138);
-                        break;
-                }
-                if (!colors.Contains(bgColor.ToInteger()))
-                    break;
-            }
-
-            Debug.WriteLine($"bgColor: {bgColor}");
-            return bgColor;
-        }
-
         private static void SpineWindowTask(SpineWindow self)
         {
             self.CreateWindow();
@@ -132,13 +289,7 @@ namespace SpineWindow
         public BackgroudColor BackgroudColor 
         {
             get => backgroudColor;
-            set
-            {
-                backgroudColor = value;
-                clearColor = GetProperBackgroudColor(spine.PngPath, value);
-                var crKey = BinaryPrimitives.ReverseEndianness(clearColor.ToInteger());
-                Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, 255, Win32.LWA_COLORKEY);
-            }
+            set { backgroudColor = value; UpdateProperBackgroudColor(); }
         }
 
         public byte Opacity
@@ -149,15 +300,9 @@ namespace SpineWindow
                 byte bAlpha = 0;
                 uint dwFlags = 0;
                 Win32.GetLayeredWindowAttributes(window.SystemHandle, ref crKey, ref bAlpha, ref dwFlags);
-                if ((dwFlags & Win32.LWA_ALPHA) != 0)
-                    return bAlpha;
-                else
-                    return 255;
+                return ((dwFlags & Win32.LWA_ALPHA) != 0) ? bAlpha : (byte)255;
             }
-            set
-            {
-                Win32.SetLayeredWindowAttributes(window.SystemHandle, 0, value, Win32.LWA_ALPHA);
-            }
+            set => Win32.SetLayeredWindowAttributes(window.SystemHandle, 0, value, Win32.LWA_ALPHA);
         }
 
         public bool MouseClickThrough
@@ -192,18 +337,10 @@ namespace SpineWindow
             set { maxFps = value; window.SetFramerateLimit(value); }
         }
 
-        public float Scale
-        {
-            get { mutex.WaitOne(); var v = spine.Scale; mutex.ReleaseMutex(); return v; }
-            set { mutex.WaitOne(); spine.Scale = value; mutex.ReleaseMutex(); }
-        }
-
         public void Reset()
         {
-            mutex.WaitOne();
-            spine.X = spine.Y = 0;
-            spine.Scale = 1;
-            mutex.ReleaseMutex();
+            SpinePosition = new SFML.System.Vector2f(0, 0);
+            SpineScale = 1f;
             window.Position = new(0, 0);
             window.Size = new(1000, 1000);
             FixView();
@@ -211,64 +348,54 @@ namespace SpineWindow
 
         private void CreateWindow()
         {
+            // 创建窗口
             mutex.WaitOne();
-            try
-            {
-                // 创建窗口
-                window = new(new(1000, 1000), "spine", SFML.Window.Styles.None);
+            window = new(new(1000, 1000), "spine", SFML.Window.Styles.None);
+            mutex.ReleaseMutex();
 
-                // 设置窗口特殊属性
-                var hWnd = window.SystemHandle;
-                var style = Win32.GetWindowLong(hWnd, Win32.GWL_STYLE);
-                Win32.SetWindowLong(hWnd, Win32.GWL_STYLE, style | Win32.WS_POPUP);
-                var exStyle = Win32.GetWindowLong(hWnd, Win32.GWL_EXSTYLE);
-                Win32.SetWindowLong(hWnd, Win32.GWL_EXSTYLE, exStyle | Win32.WS_EX_LAYERED | Win32.WS_EX_TOOLWINDOW | Win32.WS_EX_TOPMOST);
-                clearColor = GetProperBackgroudColor(spine.PngPath, backgroudColor);
-                var crKey = BinaryPrimitives.ReverseEndianness(clearColor.ToInteger());
-                Win32.SetLayeredWindowAttributes(hWnd, crKey, 255, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
-                Win32.SetWindowPos(hWnd, Win32.HWND_TOPMOST, 0, 0, 0, 0, Win32.SWP_NOMOVE | Win32.SWP_NOSIZE);
+            // 设置窗口特殊属性
+            var hWnd = window.SystemHandle;
+            var style = Win32.GetWindowLong(hWnd, Win32.GWL_STYLE);
+            Win32.SetWindowLong(hWnd, Win32.GWL_STYLE, style | Win32.WS_POPUP);
+            var exStyle = Win32.GetWindowLong(hWnd, Win32.GWL_EXSTYLE);
+            Win32.SetWindowLong(hWnd, Win32.GWL_EXSTYLE, exStyle | Win32.WS_EX_LAYERED | Win32.WS_EX_TOOLWINDOW | Win32.WS_EX_TOPMOST);
+            var crKey = BinaryPrimitives.ReverseEndianness(clearColor.ToInteger());
+            Win32.SetLayeredWindowAttributes(hWnd, crKey, 255, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
+            Win32.SetWindowPos(hWnd, Win32.HWND_TOPMOST, 0, 0, 0, 0, Win32.SWP_NOMOVE | Win32.SWP_NOSIZE);
 
-                // 设置窗口属性
-                window.SetVisible(visible);
-                window.SetFramerateLimit(maxFps);
-                FixView();
+            // 设置窗口属性
+            window.SetVisible(visible);
+            window.SetFramerateLimit(maxFps);
+            FixView();
 
-                // 注册窗口事件
-                RegisterEvents();
-            }
-            finally
-            {
-                windowCreatedEvent.Set();
-                mutex.ReleaseMutex();
-            }
+            // 注册窗口事件
+            RegisterEvents();
+            windowCreatedEvent.Set();
         }
 
         private void WindowLoop()
         {
             while (true)
             {
-                mutex.WaitOne();
-                try
+                if (cancelTokenSrc.Token.IsCancellationRequested)
                 {
-                    if (cancelTokenSrc.Token.IsCancellationRequested)
-                    {
-                        window.Close();
-                        window = null;
-                        cancelTokenSrc.Token.ThrowIfCancellationRequested();
-                    }
-
-                    window.DispatchEvents();
-                    Update();
-                    if (visible)
-                    {
-                        window.Clear(clearColor);
-                        Render();
-                        window.Display();
-                    }
+                    window.Close();
+                    window = null;
+                    cancelTokenSrc.Token.ThrowIfCancellationRequested();
                 }
-                finally
+
+                window.DispatchEvents();
+                Update();
+
+                mutex.WaitOne();
+                var v = visible;
+                var c = clearColor;
+                mutex.ReleaseMutex();
+                if (v)
                 {
-                    mutex.ReleaseMutex();
+                    window.Clear(c);
+                    Render();
+                    window.Display();
                 }
             }
         }
@@ -277,12 +404,20 @@ namespace SpineWindow
         {
             var delta = clock.ElapsedTime.AsSeconds();
             clock.Restart();
-            spine.Update(delta);
+            mutex.WaitOne();
+            spine?.Update(delta);
+            spineEx1?.Update(delta);
+            spineEx2?.Update(delta);
+            mutex.ReleaseMutex();
         }
 
         private void Render()
         {
-            window.Draw(spine);
+            mutex.WaitOne();
+            if (spineEx2 is not null) window.Draw(spineEx2);
+            if (spineEx1 is not null) window.Draw(spineEx1);
+            if (spine is not null) window.Draw(spine);
+            mutex.ReleaseMutex();
         }
 
         private void FixView()
@@ -461,6 +596,8 @@ namespace SpineWindow
         }
 
         protected virtual void Trigger_SpineLoaded() { }
+        protected virtual void Trigger_SpineEx1Loaded() { }
+        protected virtual void Trigger_SpineEx2Loaded() { }
         protected virtual void Trigger_MouseButtonClick(SFML.Window.MouseButtonEventArgs e) { }
         protected virtual void Trigger_MouseButtonDoubleClick(SFML.Window.MouseButtonEventArgs e) { }
         protected virtual void Trigger_MouseDragBegin(SFML.Window.MouseMoveEventArgs e) { }
