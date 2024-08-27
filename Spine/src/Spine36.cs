@@ -64,7 +64,7 @@ namespace Spine
             {
                 throw new ArgumentException($"Unknown skeleton file format {SkelPath}");
             }
-            animationStateData = new AnimationStateData(skeletonData);
+            animationStateData = new AnimationStateData(skeletonData) { DefaultMix = 0.15f };
             skeleton = new Skeleton(skeletonData);
             animationState = new AnimationState(animationStateData);
 
