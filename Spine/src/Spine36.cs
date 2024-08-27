@@ -69,7 +69,7 @@ namespace Spine
             animationState = new AnimationState(animationStateData);
 
             foreach (var anime in skeletonData.Animations)
-                AnimationNames.Add(anime.Name);
+                animationNames.Add(anime.Name);
             CurrentAnimation = DefaultAnimationName;
         }
 
@@ -138,12 +138,12 @@ namespace Spine
         public override string CurrentAnimation
         {
             get => animationState.GetCurrent(0)?.Animation.Name ?? DefaultAnimationName;
-            set { if (AnimationNames.Contains(value)) animationState.SetAnimation(0, value, true); }
+            set { if (animationNames.Contains(value)) animationState.SetAnimation(0, value, true); }
         }
 
         public override void AddAnimation(string name)
         {
-            if (AnimationNames.Contains(name))
+            if (animationNames.Contains(name))
                 animationState.AddAnimation(0, name, true, 0);
         }
 

@@ -66,6 +66,18 @@ namespace Spine
         public static readonly float ScaleMax = 5f;
 
         /// <summary>
+        /// 获取支持的版本字符串
+        /// </summary>
+        /// <returns>例如 3.6.x, 最后一位一定是 x</returns>
+        public static string[] GetSupportedVersions()
+        {
+            return [
+                "3.6.x",
+                "3.8.x"
+            ];
+        }
+
+        /// <summary>
         /// 创建特定版本的 Spine
         /// </summary>
         /// <param name="version">版本号, 例如 3.6.53</param>
@@ -139,12 +151,13 @@ namespace Spine
         /// <summary>
         /// 包含的所有动画名称
         /// </summary>
-        public List<string> AnimationNames = [];
+        public string[] AnimationNames { get => animationNames.ToArray(); }
+        protected List<string> animationNames = [];
 
         /// <summary>
         /// 默认动画名称
         /// </summary>
-        public string DefaultAnimationName { get => AnimationNames.First(); }
+        public string DefaultAnimationName { get => animationNames.First(); }
 
         /// <summary>
         /// 当前动画名称
