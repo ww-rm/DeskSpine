@@ -13,13 +13,13 @@ namespace DeskSpine
         private void RegisterEvents()
         {
             this.FormClosing += ConfigForm_FormClosing;
-            this.exitCommand.Click += ExitCommand_Click;
+            this.commandExit.Click += CommandExit_Click;
 
             this.notifyIcon.MouseClick += NotifyIcon_MouseClick;
             this.notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
         }
 
-        private void ExitCommand_Click(object? sender, EventArgs e)
+        private void CommandExit_Click(object? sender, EventArgs e)
         {
             Application.Exit();
         }
@@ -37,14 +37,16 @@ namespace DeskSpine
         {
             if (e.Button == MouseButtons.Left)
             {
-                this.Show();
-                this.Activate();
+
+                //Program.azurLaneSD.Reset();
+                Program.spineWindow.LoadSpine("3.6", @"D:\ACGN\AzurLane_Export\spines\aierbin\aierbin.skel");
             }
         }
 
         private void NotifyIcon_DoubleClick(object? sender, EventArgs e)
         {
-            Program.azurLaneSD.LoadSpine(@"D:\ACGN\AzurLane_Export\spines\aierbin\aierbin.skel");
+            this.Show();
+            this.Activate();
         }
     }
 

@@ -32,7 +32,14 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigForm));
             notifyIcon = new NotifyIcon(components);
             contextMenuStrip = new ContextMenuStrip(components);
-            exitCommand = new ToolStripMenuItem();
+            commandShowSpine = new ToolStripMenuItem();
+            commandMousePass = new ToolStripMenuItem();
+            commandResetSpine = new ToolStripMenuItem();
+            toolStripSeparator1 = new ToolStripSeparator();
+            commandConfig = new ToolStripMenuItem();
+            commandAbout = new ToolStripMenuItem();
+            commandExit = new ToolStripMenuItem();
+            系统设置 = new GroupBox();
             contextMenuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -46,21 +53,67 @@
             // contextMenuStrip
             // 
             contextMenuStrip.ImageScalingSize = new Size(24, 24);
-            contextMenuStrip.Items.AddRange(new ToolStripItem[] { exitCommand });
+            contextMenuStrip.Items.AddRange(new ToolStripItem[] { commandShowSpine, commandMousePass, commandResetSpine, toolStripSeparator1, commandConfig, commandAbout, commandExit });
             contextMenuStrip.Name = "contextMenuStrip";
-            contextMenuStrip.Size = new Size(117, 34);
+            contextMenuStrip.Size = new Size(153, 190);
             // 
-            // exitCommand
+            // commandShowSpine
             // 
-            exitCommand.Name = "exitCommand";
-            exitCommand.Size = new Size(116, 30);
-            exitCommand.Text = "退出";
+            commandShowSpine.Name = "commandShowSpine";
+            commandShowSpine.Size = new Size(152, 30);
+            commandShowSpine.Text = "显示精灵";
+            // 
+            // commandMousePass
+            // 
+            commandMousePass.Name = "commandMousePass";
+            commandMousePass.Size = new Size(152, 30);
+            commandMousePass.Text = "鼠标穿透";
+            // 
+            // commandResetSpine
+            // 
+            commandResetSpine.Name = "commandResetSpine";
+            commandResetSpine.Size = new Size(152, 30);
+            commandResetSpine.Text = "精灵复位";
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(149, 6);
+            // 
+            // commandConfig
+            // 
+            commandConfig.Name = "commandConfig";
+            commandConfig.Size = new Size(152, 30);
+            commandConfig.Text = "设置";
+            // 
+            // commandAbout
+            // 
+            commandAbout.Name = "commandAbout";
+            commandAbout.Size = new Size(152, 30);
+            commandAbout.Text = "关于";
+            // 
+            // commandExit
+            // 
+            commandExit.Name = "commandExit";
+            commandExit.Size = new Size(152, 30);
+            commandExit.Text = "退出";
+            // 
+            // 系统设置
+            // 
+            系统设置.Location = new Point(12, 12);
+            系统设置.Name = "系统设置";
+            系统设置.Size = new Size(300, 306);
+            系统设置.TabIndex = 1;
+            系统设置.TabStop = false;
+            系统设置.Text = "groupBox1";
             // 
             // ConfigForm
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            AutoScroll = true;
+            ClientSize = new Size(824, 641);
+            Controls.Add(系统设置);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "ConfigForm";
             Text = "设置";
@@ -73,6 +126,13 @@
 
         private NotifyIcon notifyIcon;
         private ContextMenuStrip contextMenuStrip;
-        private ToolStripMenuItem exitCommand;
+        private ToolStripMenuItem commandExit;
+        private ToolStripMenuItem commandAbout;
+        private ToolStripMenuItem commandShowSpine;
+        private ToolStripMenuItem commandMousePass;
+        private ToolStripMenuItem commandResetSpine;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripMenuItem commandConfig;
+        private GroupBox 系统设置;
     }
 }

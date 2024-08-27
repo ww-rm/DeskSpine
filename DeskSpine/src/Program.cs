@@ -3,7 +3,7 @@ namespace DeskSpine
     public static class Program
     {
         public static ConfigForm configForm;
-        public static SpineWindow.AzurLaneSD azurLaneSD;
+        public static SpineWindow.SpineWindow spineWindow;
         public static object debugobj;
 
         /// <summary>
@@ -15,10 +15,11 @@ namespace DeskSpine
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Program.configForm = new ConfigForm();
+            configForm = new ConfigForm();
 
-            Program.azurLaneSD = new SpineWindow.AzurLaneSD("D:\\Program Files\\DesktopSprite\\res\\spine\\guanghui_2.skel");
-            Program.azurLaneSD.Visible = true;
+            spineWindow = new SpineWindow.AzurLaneSD();
+            spineWindow.LoadSpine("3.6", "D:\\Program Files\\DesktopSprite\\res\\spine\\guanghui_2.skel");
+            spineWindow.Visible = true;
             Application.Run();
         }
     }
