@@ -218,15 +218,15 @@ namespace SpineWindow
                 window = new(new(1000, 1000), "spine", SFML.Window.Styles.None);
 
                 // 设置窗口特殊属性
-                    var hWnd = window.SystemHandle;
-                    var style = Win32.GetWindowLong(hWnd, Win32.GWL_STYLE);
-                    Win32.SetWindowLong(hWnd, Win32.GWL_STYLE, style | Win32.WS_POPUP);
-                    var exStyle = Win32.GetWindowLong(hWnd, Win32.GWL_EXSTYLE);
+                var hWnd = window.SystemHandle;
+                var style = Win32.GetWindowLong(hWnd, Win32.GWL_STYLE);
+                Win32.SetWindowLong(hWnd, Win32.GWL_STYLE, style | Win32.WS_POPUP);
+                var exStyle = Win32.GetWindowLong(hWnd, Win32.GWL_EXSTYLE);
                 Win32.SetWindowLong(hWnd, Win32.GWL_EXSTYLE, exStyle | Win32.WS_EX_LAYERED | Win32.WS_EX_TOOLWINDOW | Win32.WS_EX_TOPMOST);
-                    clearColor = GetProperBackgroudColor(spine.PngPath, backgroudColor);
-                    var crKey = BinaryPrimitives.ReverseEndianness(clearColor.ToInteger());
-                    Win32.SetLayeredWindowAttributes(hWnd, crKey, 255, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
-                    Win32.SetWindowPos(hWnd, Win32.HWND_TOPMOST, 0, 0, 0, 0, Win32.SWP_NOMOVE | Win32.SWP_NOSIZE);
+                clearColor = GetProperBackgroudColor(spine.PngPath, backgroudColor);
+                var crKey = BinaryPrimitives.ReverseEndianness(clearColor.ToInteger());
+                Win32.SetLayeredWindowAttributes(hWnd, crKey, 255, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
+                Win32.SetWindowPos(hWnd, Win32.HWND_TOPMOST, 0, 0, 0, 0, Win32.SWP_NOMOVE | Win32.SWP_NOSIZE);
 
                 // 设置窗口属性
                 window.SetVisible(visible);
