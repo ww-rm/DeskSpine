@@ -189,7 +189,7 @@ namespace Spine
         /// <summary>
         /// 是否使用预乘Alpha
         /// </summary>
-        public bool UsePremultipliedAlpha { get; set; } = true;
+        public bool UsePremultipliedAlpha { get; set; }
 
 
         /// <summary>
