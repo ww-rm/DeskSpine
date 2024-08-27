@@ -16,6 +16,11 @@ namespace Spine
             public void Load(AtlasPage page, string path)
             {
                 var texture = new SFML.Graphics.Texture(path);
+                if (page.magFilter == TextureFilter.Linear)
+                    texture.Smooth = true;
+                if (page.uWrap == TextureWrap.Repeat && page.vWrap == TextureWrap.Repeat)
+                    texture.Repeated = true;
+                
                 page.rendererObject = texture;
                 page.width = (int)texture.Size.X;
                 page.height = (int)texture.Size.Y;
