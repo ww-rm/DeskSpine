@@ -1,4 +1,4 @@
-﻿using SFML.Window;
+using SFML.Window;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -29,155 +29,180 @@ namespace SpineWindow
         private string animation_Sleep = "";
 
         private State state = State.Idle;
-        private State dragBeforeState = State.Idle;
+        private State previousState = State.Idle;
 
-        public override bool FaceToRight 
+        protected override void Trigger_SpineLoaded(uint index)
         {
-            get { mutex.WaitOne(); var v = !spine.FlipX; mutex.ReleaseMutex(); return v; } 
-            set { mutex.WaitOne(); spine.FlipX = !value; mutex.ReleaseMutex(); }
-        }
+            base.Trigger_SpineLoaded(index);
 
-        protected override void Trigger_SpineLoaded()
-        {
-            base.Trigger_SpineLoaded();
-            mutex.WaitOne();
-            var animationNames = spine.AnimationNames;
-            var defaultName = spine.DefaultAnimationName;
-            mutex.ReleaseMutex();
-
-            animation_Idle = animationNames.Contains("normal") ? "normal" : defaultName;
-            animation_Dragging = animationNames.Contains("tuozhuai") ? "tuozhuai" : (animationNames.Contains("tuozhuai2") ? "tuozhuai2" : "");
-            animation_MouseLeftClick = animationNames.Contains("touch") ? "touch" : "";
-            animation_MouseLeftDoubleClick = animationNames.Contains("motou") ? "motou" : "";
-            //animation_MouseRightClick = spine.AnimationNames.Contains("normal") ? null : null;
-            //animation_MouseRightDbClick = spine.AnimationNames.Contains("normal") ? null : null;
-            animation_MouseWheelScroll = animationNames.Contains("yun") ? "yun" : "";
-            animation_Working = animationNames.Contains("walk") ? "walk" : "";
-            animation_Sleep = animationNames.Contains("sleep") ? "sleep" : "";
+            if (index != 0)
+                return;
 
             mutex.WaitOne();
-            spine.CurrentAnimation = animation_Idle;
+            if (spineSlots[0] is not null)
+            {
+                var animationNames = spineSlots[0].AnimationNames;
+                var defaultName = spineSlots[0].DefaultAnimationName;
+
+                animation_Idle = animationNames.Contains("normal") ? "normal" : defaultName;
+                animation_Dragging = animationNames.Contains("tuozhuai") ? "tuozhuai" : (animationNames.Contains("tuozhuai2") ? "tuozhuai2" : "");
+                animation_MouseLeftClick = animationNames.Contains("touch") ? "touch" : "";
+                animation_MouseLeftDoubleClick = animationNames.Contains("motou") ? "motou" : "";
+                //animation_MouseRightClick = spine.AnimationNames.Contains("normal") ? null : null;
+                //animation_MouseRightDbClick = spine.AnimationNames.Contains("normal") ? null : null;
+                animation_MouseWheelScroll = animationNames.Contains("yun") ? "yun" : "";
+                animation_Working = animationNames.Contains("walk") ? "walk" : "";
+                animation_Sleep = animationNames.Contains("sleep") ? "sleep" : "";
+
+                spineSlots[0].CurrentAnimation = animation_Idle;
+                state = State.Idle;
+            }
             mutex.ReleaseMutex();
-            state = State.Idle;
+
         }
 
         protected override void Trigger_MouseButtonClick(MouseButtonEventArgs e)
         {
             base.Trigger_MouseButtonClick(e);
-            switch (e.Button)
-            {
-                case Mouse.Button.Left:
-                    if (!string.IsNullOrEmpty(animation_MouseLeftClick))
-                    {
-                        mutex.WaitOne();
-                        spine.CurrentAnimation = animation_MouseLeftClick;
-                        spine.AddAnimation(animation_Idle);
-                        mutex.ReleaseMutex();
-                    }
-                    break;
-                case Mouse.Button.Right:
-                    if (!string.IsNullOrEmpty(animation_MouseRightClick))
-                    {
-                        mutex.WaitOne();
-                        spine.CurrentAnimation = animation_MouseRightClick;
-                        spine.AddAnimation(animation_Idle);
-                        mutex.ReleaseMutex();
-                    }
-                    break;
-            }
 
-            state = state switch
+            mutex.WaitOne();
+            if (spineSlots[0] is not null)
             {
-                State.Idle => State.Idle,
-                State.Dragging => State.Dragging,
-                State.Working => State.Working,
-                State.Sleeping => State.Idle,
-                _ => state,
-            };
+                string nextAnimation = state switch
+                {
+                    State.Idle => animation_Idle,
+                    State.Dragging => animation_Dragging,
+                    State.Working => animation_Working,
+                    State.Sleeping => animation_Idle,
+                    _ => spineSlots[0].CurrentAnimation,
+                };
+
+                switch (e.Button)
+                {
+                    case Mouse.Button.Left:
+                        if (!string.IsNullOrEmpty(animation_MouseLeftClick))
+                            spineSlots[0].CurrentAnimation = animation_MouseLeftClick;
+                        break;
+                    case Mouse.Button.Right:
+                        if (!string.IsNullOrEmpty(animation_MouseRightClick))
+                            spineSlots[0].CurrentAnimation = animation_MouseRightClick;
+                        break;
+                }
+
+                spineSlots[0].AddAnimation(nextAnimation);
+                state = state switch
+                {
+                    State.Idle => State.Idle,
+                    State.Dragging => State.Dragging,
+                    State.Working => State.Working,
+                    State.Sleeping => State.Idle,
+                    _ => state,
+                };
+            }
+            mutex.ReleaseMutex();
         }
 
         protected override void Trigger_MouseButtonDoubleClick(MouseButtonEventArgs e)
         {
             base.Trigger_MouseButtonDoubleClick(e);
-            switch (e.Button)
-            {
-                case Mouse.Button.Left:
-                    if (!string.IsNullOrEmpty(animation_MouseLeftDoubleClick))
-                    {
-                        mutex.WaitOne();
-                        spine.CurrentAnimation = animation_MouseLeftDoubleClick;
-                        spine.AddAnimation(animation_Idle);
-                        mutex.ReleaseMutex();
-                    }
-                    break;
-                case Mouse.Button.Right:
-                    if (!string.IsNullOrEmpty(animation_MouseRightDoubleClick))
-                    {
-                        mutex.WaitOne();
-                        spine.CurrentAnimation = animation_MouseRightDoubleClick;
-                        spine.AddAnimation(animation_Idle);
-                        mutex.ReleaseMutex();
-                    }
-                    break;
-            }
 
-            state = state switch
+            mutex.WaitOne();
+            if (spineSlots[0] is not null)
             {
-                State.Idle => State.Idle,
-                State.Dragging => State.Dragging,
-                State.Working => State.Working,
-                State.Sleeping => State.Idle,
-                _ => state,
-            };
+                string nextAnimation = state switch
+                {
+                    State.Idle => animation_Idle,
+                    State.Dragging => animation_Dragging,
+                    State.Working => animation_Working,
+                    State.Sleeping => animation_Idle,
+                    _ => spineSlots[0].CurrentAnimation,
+                };
+
+                switch (e.Button)
+                {
+                    case Mouse.Button.Left:
+                        if (!string.IsNullOrEmpty(animation_MouseLeftDoubleClick))
+                            spineSlots[0].CurrentAnimation = animation_MouseLeftDoubleClick;
+                        break;
+                    case Mouse.Button.Right:
+                        if (!string.IsNullOrEmpty(animation_MouseRightDoubleClick))
+                            spineSlots[0].CurrentAnimation = animation_MouseRightDoubleClick;
+                        break;
+                }
+
+                spineSlots[0].AddAnimation(nextAnimation);
+                state = state switch
+                {
+                    State.Idle => State.Idle,
+                    State.Dragging => State.Dragging,
+                    State.Working => State.Working,
+                    State.Sleeping => State.Idle,
+                    _ => state,
+                };
+            }
+            mutex.ReleaseMutex();
         }
 
         protected override void Trigger_MouseWheelScroll(MouseWheelScrollEventArgs e)
         {
             base.Trigger_MouseWheelScroll(e);
-            if (!string.IsNullOrEmpty(animation_MouseWheelScroll))
-            {
-                mutex.WaitOne();
-                if (spine.CurrentAnimation != animation_MouseWheelScroll)
-                {
-                    spine.CurrentAnimation = animation_MouseWheelScroll;
-                    int count = (int)Math.Abs(e.Delta);
-                    for (int i = 0; i < count; i++)
-                        spine.AddAnimation(animation_MouseWheelScroll);
-                        spine.AddAnimation(animation_Idle);
-                }
-                mutex.ReleaseMutex();
-            }
 
-            state = state switch
+            mutex.WaitOne();
+            if (spineSlots[0] is not null)
             {
-                State.Idle => State.Idle,
-                State.Dragging => State.Dragging,
-                State.Working => State.Working,
-                State.Sleeping => State.Idle,
-                _ => state,
-            };
+                string nextAnimation = state switch
+                {
+                    State.Idle => animation_Idle,
+                    State.Dragging => animation_Dragging,
+                    State.Working => animation_Working,
+                    State.Sleeping => animation_Idle,
+                    _ => spineSlots[0].CurrentAnimation,
+                };
+
+                if (!string.IsNullOrEmpty(animation_MouseWheelScroll))
+                {
+                    if (spineSlots[0].CurrentAnimation != animation_MouseWheelScroll)
+                    {
+                        spineSlots[0].CurrentAnimation = animation_MouseWheelScroll;
+                        for (int i = 0; i < (int)Math.Abs(e.Delta); i++)
+                            spineSlots[0].AddAnimation(animation_MouseWheelScroll);
+                    }
+                }
+
+                spineSlots[0].AddAnimation(nextAnimation);
+                state = state switch
+                {
+                    State.Idle => State.Idle,
+                    State.Dragging => State.Dragging,
+                    State.Working => State.Working,
+                    State.Sleeping => State.Idle,
+                    _ => state,
+                };
+            }
+            mutex.ReleaseMutex();
         }
 
         protected override void Trigger_MouseDragBegin(MouseMoveEventArgs e)
         {
             base.Trigger_MouseDragBegin(e);
 
-            if (!string.IsNullOrEmpty(animation_Dragging))
+            mutex.WaitOne();
+            if (spineSlots[0] is not null)
             {
-                mutex.WaitOne();
-                spine.CurrentAnimation = animation_Dragging;
-                mutex.ReleaseMutex();
-            }
+                if (!string.IsNullOrEmpty(animation_Dragging))
+                    spineSlots[0].CurrentAnimation = animation_Dragging;
 
-            dragBeforeState = state;
-            state = state switch
-            {
-                State.Idle => State.Dragging,
-                State.Dragging => State.Dragging,
-                State.Working => State.Dragging,
-                State.Sleeping => State.Dragging,
-                _ => state,
-            };
+                previousState = state;
+                state = state switch
+                {
+                    State.Idle => State.Dragging,
+                    State.Dragging => State.Dragging,
+                    State.Working => State.Dragging,
+                    State.Sleeping => State.Dragging,
+                    _ => state,
+                };
+            }
+            mutex.ReleaseMutex();
         }
 
         protected override void Trigger_MouseDragEnd(MouseButtonEventArgs e)
@@ -185,24 +210,27 @@ namespace SpineWindow
             base.Trigger_MouseDragEnd(e);
 
             mutex.WaitOne();
-            spine.CurrentAnimation = dragBeforeState switch
+            if (spineSlots[0] is not null)
             {
-                State.Idle => animation_Idle,
-                State.Dragging => animation_Idle,
-                State.Working => animation_Working,
-                State.Sleeping => animation_Idle,
-                _ => animation_Idle,
-            };
-            mutex.ReleaseMutex();
+                spineSlots[0].CurrentAnimation = previousState switch
+                {
+                    State.Idle => animation_Idle,
+                    State.Dragging => animation_Idle,
+                    State.Working => animation_Working,
+                    State.Sleeping => animation_Idle,
+                    _ => animation_Idle,
+                };
 
-            state = dragBeforeState switch
-            {
-                State.Idle => State.Idle,
-                State.Dragging => State.Idle,
-                State.Working => State.Working,
-                State.Sleeping => State.Idle,
-                _ => state,
-            };
+                state = previousState switch
+                {
+                    State.Idle => State.Idle,
+                    State.Dragging => State.Idle,
+                    State.Working => State.Working,
+                    State.Sleeping => State.Idle,
+                    _ => state,
+                };
+            }
+            mutex.ReleaseMutex();
         }
     }
 }
