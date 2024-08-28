@@ -1,4 +1,4 @@
-﻿using System.Buffers.Binary;
+using System.Buffers.Binary;
 using System.Collections;
 using System.Diagnostics;
 using System.Linq;
@@ -39,9 +39,7 @@ namespace SpineWindow
                 Dispose();
         }
 
-        protected Spine.Spine? spine;
-        protected Spine.Spine? spineEx1;
-        protected Spine.Spine? spineEx2;
+        protected Spine.Spine?[] spineSlots = [null, null, null];
 
         public string? ResFolder 
         { 
@@ -49,34 +47,44 @@ namespace SpineWindow
             {
                 string? v = null;
                 mutex.WaitOne();
-                if (spine is not null) v = Path.GetDirectoryName(Path.GetFullPath(spine.SkelPath));
-                else if (spineEx1 is not null) v = Path.GetDirectoryName(Path.GetFullPath(spineEx1.SkelPath));
-                else if (spineEx2 is not null) v = Path.GetDirectoryName(Path.GetFullPath(spineEx2.SkelPath));
+                foreach (var sp in spineSlots) { if (sp is not null) { v = Path.GetDirectoryName(Path.GetFullPath(sp.SkelPath)); break; } }
                 mutex.ReleaseMutex();
                 return v;
             }
         }
 
-        public abstract bool FaceToRight { get; set; }
+        public bool SpineFlip 
+        { 
+            get
+            {
+                var v = false;
+                mutex.WaitOne();
+                foreach (var sp in spineSlots) { if (sp is not null) { v = sp.FlipX; break; } }
+                mutex.ReleaseMutex();
+                return v;
+            }
+            set
+            {
+                mutex.WaitOne();
+                foreach (var sp in spineSlots) { if (sp is not null) { sp.FlipX = value; } }
+                mutex.ReleaseMutex();
+            }
+        }
 
         public float SpineScale
         {
-            get 
+            get
             {
                 var v = 1f;
                 mutex.WaitOne();
-                if (spine is not null) v = spine.Scale;
-                else if (spineEx1 is not null) v = spineEx1.Scale;
-                else if (spineEx2 is not null) v = spineEx2.Scale;
+                foreach (var sp in spineSlots) { if (sp is not null) { v = sp.Scale; break; } }
                 mutex.ReleaseMutex(); 
                 return v; 
             }
             set
             {
                 mutex.WaitOne();
-                if (spine is not null) { spine.Scale = value; }
-                if (spineEx1 is not null) { spineEx1.Scale = value; }
-                if (spineEx2 is not null) { spineEx2.Scale = value; }
+                foreach (var sp in spineSlots) { if (sp is not null) { sp.Scale = value; } }
                 mutex.ReleaseMutex();
             }
         }
@@ -85,116 +93,66 @@ namespace SpineWindow
         {
             get
             {
+                // TODO: 读取注册表
                 var v = new SFML.System.Vector2f(0, 0);
                 mutex.WaitOne();
-                if (spine is not null) v = new SFML.System.Vector2f(spine.X, spine.Y);
-                else if (spineEx1 is not null) v = new SFML.System.Vector2f(spineEx1.X, spineEx1.Y);
-                else if (spineEx2 is not null) v = new SFML.System.Vector2f(spineEx2.X, spineEx2.Y);
+                foreach (var sp in spineSlots) { if (sp is not null) { v = new SFML.System.Vector2f(sp.X, sp.Y); break; } }
                 mutex.ReleaseMutex();
                 return v;
             }
             set
             {
                 mutex.WaitOne();
-                if (spine is not null) { spine.X = value.X; spine.Y = value.Y; }
-                if (spineEx1 is not null) { spineEx1.X = value.X; spineEx1.Y = value.Y; }
-                if (spineEx2 is not null) { spineEx2.X = value.X; spineEx2.Y = value.Y; }
+                foreach (var sp in spineSlots) { if (sp is not null) { sp.X = value.X; sp.Y = value.Y; } }
                 mutex.ReleaseMutex();
+                // TODO: 保存注册表
             }
         }
 
-        public void LoadSpine(string version, string skelPath, string? atlasPath = null)
+        public void LoadSpine(string version, string skelPath, string? atlasPath = null, uint index = 0)
         {
-            Debug.WriteLine($"Loading spine({version}) from {skelPath}, {atlasPath}");
+            if (index >= spineSlots.Length)
+                throw new ArgumentOutOfRangeException($"Max spine slot count: {spineSlots.Length}, got index {index}");
+
+            Debug.WriteLine($"Loading spine[{index}]({version}) from {skelPath}, {atlasPath}");
             Spine.Spine spineNew;
             try { spineNew = Spine.Spine.New(version, skelPath, atlasPath); }
             catch { throw; }
 
+            var originalPosition = SpinePosition;
+            spineNew.X = originalPosition.X;
+            spineNew.Y = originalPosition.Y;
+
             mutex.WaitOne();
-            spine = spineNew; // 调用方负责恢复新 spine 对象的属性
+            spineSlots[index] = spineNew;
             mutex.ReleaseMutex();
+
             UpdateProperBackgroudColor();
-            Trigger_SpineLoaded();
+            Trigger_SpineLoaded(index);
             Debug.Write("spine animiation: ");
-            foreach (var a in spine.AnimationNames) Debug.Write($"{a}; ");
-        }
-
-        public void LoadSpineEx1(string version, string skelPath, string? atlasPath = null)
-        {
-            Debug.WriteLine($"Loading spineEx1({version}) from {skelPath}, {atlasPath}");
-            Spine.Spine spineNew;
-            try { spineNew = Spine.Spine.New(version, skelPath, atlasPath); }
-            catch { throw; }
-
-            mutex.WaitOne();
-            spineEx1 = spineNew; // 调用方负责恢复新 spine 对象的属性
-            mutex.ReleaseMutex();
-            UpdateProperBackgroudColor();
-            Trigger_SpineEx1Loaded();
-            Debug.Write("spineEx1 animations: ");
-            foreach (var a in spineEx1.AnimationNames) Debug.Write($"{a}; ");
-        }
-
-        public void LoadSpineEx2(string version, string skelPath, string? atlasPath = null)
-        {
-            Debug.WriteLine($"Loading spineEx2({version}) from {skelPath}, {atlasPath}");
-            Spine.Spine spineNew;
-            try { spineNew = Spine.Spine.New(version, skelPath, atlasPath); }
-            catch { throw; }
-
-            mutex.WaitOne();
-            spineEx2 = spineNew; // 调用方负责恢复新 spine 对象的属性
-            mutex.ReleaseMutex();
-            UpdateProperBackgroudColor();
-            Trigger_SpineEx2Loaded();
-            Debug.Write("spineEx2 animations: ");
-            foreach (var a in spineEx2.AnimationNames) Debug.Write($"{a}; ");
+            foreach (var a in spineSlots[index].AnimationNames) Debug.Write($"{a}; "); Debug.WriteLine("");
         }
 
         private void UpdateProperBackgroudColor()
         {
+            // TODO: 优化查找时间
             var colors = new Dictionary<uint, uint>();
+            List<string> paths = [];
+
             mutex.WaitOne();
-            string? p1 = spine?.PngPath;
-            string? p2 = spineEx1?.PngPath;
-            string? p3 = spineEx2?.PngPath;
+            foreach (var sp in spineSlots)
+            {
+                if (sp is null) continue;
+                paths.AddRange(sp.PngPaths);
+            }
             mutex.ReleaseMutex();
 
-            if (p1 is not null)
+            if (paths.Count <= 0)
+                return;
+
+            foreach (var p in paths)
             {
-                var png = new SFML.Graphics.Image(p1);
-                for (uint i = 0; i < png.Size.X; i++)
-                {
-                    for (uint j = 0; j < png.Size.Y; j++)
-                    {
-                        var c = png.GetPixel(i, j);
-                        if (c.A <= 0) continue;
-                        c.A = 0;
-                        var k = c.ToInteger();
-                        if (colors.ContainsKey(k)) colors[k] += 1;
-                        else colors[k] = 1;
-                    }
-                }
-            }
-            if (p2 is not null)
-            {
-                var png = new SFML.Graphics.Image(p2);
-                for (uint i = 0; i < png.Size.X; i++)
-                {
-                    for (uint j = 0; j < png.Size.Y; j++)
-                    {
-                        var c = png.GetPixel(i, j);
-                        if (c.A <= 0) continue;
-                        c.A = 0;
-                        var k = c.ToInteger();
-                        if (colors.ContainsKey(k)) colors[k] += 1;
-                        else colors[k] = 1;
-                    }
-                }
-            }
-            if (p3 is not null)
-            {
-                var png = new SFML.Graphics.Image(p3);
+                var png = new SFML.Graphics.Image(p);
                 for (uint i = 0; i < png.Size.X; i++)
                 {
                     for (uint j = 0; j < png.Size.Y; j++)
@@ -321,8 +279,16 @@ namespace SpineWindow
 
         public SFML.System.Vector2i Position 
         { 
+            // TODO: 存储注册表
             get => window.Position; 
             set => window.Position = value; 
+        }
+
+        public SFML.System.Vector2u Size
+        {
+            // TODO: 存储注册表
+            get => window.Size;
+            set => window.Size = value;
         }
 
         public bool Visible
@@ -339,15 +305,17 @@ namespace SpineWindow
 
         public void Reset()
         {
+            // TODO: 重置注册表信息
             SpinePosition = new SFML.System.Vector2f(0, 0);
             SpineScale = 1f;
-            window.Position = new(0, 0);
-            window.Size = new(1000, 1000);
+            Position = new(0, 0);
+            Size = new(1000, 1000);
             FixView();
         }
 
         private void CreateWindow()
         {
+            // TODO: 恢复上一次的大小和位置
             // 创建窗口
             mutex.WaitOne();
             window = new(new(1000, 1000), "spine", SFML.Window.Styles.None);
@@ -405,18 +373,14 @@ namespace SpineWindow
             var delta = clock.ElapsedTime.AsSeconds();
             clock.Restart();
             mutex.WaitOne();
-            spine?.Update(delta);
-            spineEx1?.Update(delta);
-            spineEx2?.Update(delta);
+            foreach (var sp in spineSlots) sp?.Update(delta);
             mutex.ReleaseMutex();
         }
 
         private void Render()
         {
             mutex.WaitOne();
-            if (spineEx2 is not null) window.Draw(spineEx2);
-            if (spineEx1 is not null) window.Draw(spineEx1);
-            if (spine is not null) window.Draw(spine);
+            foreach (var sp in spineSlots) { if (sp is not null) window.Draw(sp); }
             mutex.ReleaseMutex();
         }
 
@@ -439,6 +403,7 @@ namespace SpineWindow
 
         private void Resized(SFML.Window.SizeEventArgs e)
         {
+            // TODO: 存储注册表
             FixView();
         }
 
@@ -446,7 +411,7 @@ namespace SpineWindow
         {
             // 记录点击位置
             windowPressedPosition = new(e.X, e.Y);
-            spinePressedPosition = new(spine.X, spine.Y);
+            spinePressedPosition = SpinePosition;
 
             // 检查双击超时
             if (doubleClickChecking && doubleClickClock.ElapsedTime.AsMilliseconds() > Win32.GetDoubleClickTime())
@@ -503,12 +468,12 @@ namespace SpineWindow
                 // 否则右键被按下则拖动内部精灵
                 if (leftDown)
                 {
-                    window.Position = window.Position + delta;
+                    Position = Position + delta;
                 }
                 else if (rightDown && spinePressedPosition is not null)
                 {
-                    spine.X = ((SFML.System.Vector2f)spinePressedPosition).X + delta.X;
-                    spine.Y = ((SFML.System.Vector2f)spinePressedPosition).Y - delta.Y;
+                    var sDelta = new SFML.System.Vector2f(delta.X, -delta.Y);
+                    SpinePosition = (SFML.System.Vector2f)spinePressedPosition + sDelta;
                 }
 
             }
@@ -595,9 +560,7 @@ namespace SpineWindow
             Trigger_MouseWheelScroll(e);
         }
 
-        protected virtual void Trigger_SpineLoaded() { }
-        protected virtual void Trigger_SpineEx1Loaded() { }
-        protected virtual void Trigger_SpineEx2Loaded() { }
+        protected virtual void Trigger_SpineLoaded(uint index) { }
         protected virtual void Trigger_MouseButtonClick(SFML.Window.MouseButtonEventArgs e) { }
         protected virtual void Trigger_MouseButtonDoubleClick(SFML.Window.MouseButtonEventArgs e) { }
         protected virtual void Trigger_MouseDragBegin(SFML.Window.MouseMoveEventArgs e) { }
