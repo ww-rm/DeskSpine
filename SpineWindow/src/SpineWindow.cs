@@ -380,7 +380,7 @@ namespace SpineWindow
         private void Render()
         {
             mutex.WaitOne();
-            foreach (var sp in spineSlots) { if (sp is not null) window.Draw(sp); }
+            for (int i = spineSlots.Length - 1; i >= 0; i--) { var sp = spineSlots[i];  if (sp is not null) window.Draw(sp); }
             mutex.ReleaseMutex();
         }
 
