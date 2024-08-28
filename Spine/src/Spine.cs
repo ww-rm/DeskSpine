@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Numerics;
 using System.Collections;
+using System.Collections.ObjectModel;
 
 namespace Spine
 {
@@ -108,7 +109,8 @@ namespace Spine
         /// <summary>
         /// png 文件完整路径
         /// </summary>
-        public string PngPath { get; private set; }
+        public ReadOnlyCollection<string> PngPaths { get => pngPaths.AsReadOnly(); }
+        protected List<string> pngPaths = [];
 
         /// <summary>
         /// 构造函数
@@ -120,7 +122,7 @@ namespace Spine
             atlasPath ??= Path.ChangeExtension(skelPath, ".atlas");
             SkelPath = Path.GetFullPath(skelPath);
             AtlasPath = Path.GetFullPath(atlasPath);
-            PngPath = Path.ChangeExtension(AtlasPath, ".png");
+            pngPaths.Add(Path.ChangeExtension(AtlasPath, ".png")); // TODO: 获取每个 page 的路径
         }
 
         /// <summary>
@@ -151,7 +153,7 @@ namespace Spine
         /// <summary>
         /// 包含的所有动画名称
         /// </summary>
-        public string[] AnimationNames { get => animationNames.ToArray(); }
+        public ReadOnlyCollection<string> AnimationNames { get => animationNames.AsReadOnly(); }
         protected List<string> animationNames = [];
 
         /// <summary>
