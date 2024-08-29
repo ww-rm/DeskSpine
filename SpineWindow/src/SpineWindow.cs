@@ -1,3 +1,4 @@
+using Microsoft.Win32;
 using System;
 using System.Buffers.Binary;
 using System.Collections;
@@ -24,6 +25,12 @@ namespace SpineWindow
             windowCreatedEvent.WaitOne();
         }
 
+        ~SpineWindow()
+        {
+            if (window is not null)
+                Dispose();
+        }
+
         public void Dispose()
         {
             if (window is not null)
@@ -33,12 +40,6 @@ namespace SpineWindow
                 window = null;
                 windowLoopTask = null;
             }
-        }
-
-        ~SpineWindow()
-        {
-            if (window is not null)
-                Dispose();
         }
 
         protected Spine.Spine?[] spineSlots;
@@ -91,12 +92,29 @@ namespace SpineWindow
             }
         }
 
+        public bool SpineUsePMA
+        {
+            get
+            {
+                var v = false;
+                mutex.WaitOne();
+                foreach (var sp in spineSlots) { if (sp is not null) { v = sp.UsePremultipliedAlpha; break; } }
+                mutex.ReleaseMutex();
+                return v;
+            }
+            set
+            {
+                mutex.WaitOne();
+                foreach (var sp in spineSlots) { if (sp is not null) { sp.UsePremultipliedAlpha = value; } }
+                mutex.ReleaseMutex();
+            }
+        }
+
         public SFML.System.Vector2f SpinePosition
         {
             get
             {
-                // TODO: 读取注册表
-                var v = new SFML.System.Vector2f(0, 0);
+                var v = SpinePositionReg;
                 mutex.WaitOne();
                 foreach (var sp in spineSlots) { if (sp is not null) { v = new SFML.System.Vector2f(sp.X, sp.Y); break; } }
                 mutex.ReleaseMutex();
@@ -107,7 +125,35 @@ namespace SpineWindow
                 mutex.WaitOne();
                 foreach (var sp in spineSlots) { if (sp is not null) { sp.X = value.X; sp.Y = value.Y; } }
                 mutex.ReleaseMutex();
-                // TODO: 保存注册表
+                SpinePositionReg = value;
+            }
+        }
+
+        public SFML.System.Vector2f SpinePositionReg
+        {
+            get
+            {
+                SFML.System.Vector2f ret = new(0, 0);
+                using (RegistryKey software = Registry.CurrentUser.CreateSubKey("Software"), spkey = software?.CreateSubKey("SpineWindow"))
+                {
+                    if (spkey is not null)
+                    { 
+                        float.TryParse(spkey.GetValue("SpinePositionX", "0").ToString(), out ret.X);
+                        float.TryParse(spkey.GetValue("SpinePositionY", "0").ToString(), out ret.Y);
+                    }
+                }
+                return ret;
+            }
+            set
+            {
+                using (RegistryKey software = Registry.CurrentUser.CreateSubKey("Software"), spkey = software?.CreateSubKey("SpineWindow"))
+                {
+                    if (spkey is not null)
+                    {
+                        spkey.SetValue("SpinePositionX", value.X.ToString());
+                        spkey.SetValue("SpinePositionY", value.Y.ToString());
+                    }
+                }
             }
         }
 
@@ -304,16 +350,70 @@ namespace SpineWindow
 
         public SFML.System.Vector2i Position 
         { 
-            // TODO: 存储注册表
-            get => window.Position; 
-            set => window.Position = value; 
+            get => window.Position;
+            set { window.Position = value; PositionReg = value; }
+        }
+
+        public SFML.System.Vector2i PositionReg
+        {
+            get
+            {
+                SFML.System.Vector2i ret = new(0, 0);
+                using (RegistryKey software = Registry.CurrentUser.CreateSubKey("Software"), spkey = software?.CreateSubKey("SpineWindow"))
+                {
+                    if (spkey is not null)
+                    {
+                        int.TryParse(spkey.GetValue("PositionX", "0").ToString(), out ret.X);
+                        int.TryParse(spkey.GetValue("PositionY", "0").ToString(), out ret.Y);
+                    }
+                }
+                return ret;
+            }
+            set
+            {
+                using (RegistryKey software = Registry.CurrentUser.CreateSubKey("Software"), spkey = software?.CreateSubKey("SpineWindow"))
+                {
+                    if (spkey is not null)
+                    {
+                        spkey.SetValue("PositionX", value.X.ToString());
+                        spkey.SetValue("PositionY", value.Y.ToString());
+                    }
+                }
+            }
         }
 
         public SFML.System.Vector2u Size
         {
-            // TODO: 存储注册表
             get => window.Size;
             set => window.Size = value; // 会触发 Resized 事件
+        }
+
+        public SFML.System.Vector2u SizeReg
+        {
+            get
+            {
+                SFML.System.Vector2u ret = new(0, 0);
+                using (RegistryKey software = Registry.CurrentUser.CreateSubKey("Software"), spkey = software?.CreateSubKey("SpineWindow"))
+                {
+                    if (spkey is not null)
+                    {
+                        uint.TryParse(spkey.GetValue("SizeX", "0").ToString(), out ret.X);
+                        uint.TryParse(spkey.GetValue("SizeY", "0").ToString(), out ret.Y);
+                    }
+                }
+                return ret;
+            }
+            set
+            {
+                using (RegistryKey software = Registry.CurrentUser.CreateSubKey("Software"), spkey = software?.CreateSubKey("SpineWindow"))
+                {
+                    if (spkey is not null)
+                    {
+                        spkey.SetValue("SizeX", value.X.ToString());
+                        spkey.SetValue("SizeY", value.Y.ToString());
+                    }
+                }
+            }
         }
 
         public void ResetPositionAndSize()
@@ -340,11 +440,14 @@ namespace SpineWindow
             // 设置窗口属性
             window.SetVisible(visible);
             window.SetFramerateLimit(maxFps);
+            window.Position = PositionReg;
+            window.Size = SizeReg;
+
+            // 最后调整视窗
             var view = window.GetView();
             view.Center = new(0, 200);
             view.Size = new(window.Size.X, -window.Size.Y); // SFML 窗口 y 轴默认向下
             window.SetView(view);
-            // TODO: 恢复上一次的大小和位置
 
             // 注册窗口事件
             RegisterEvents();
@@ -406,11 +509,11 @@ namespace SpineWindow
 
         private void Resized(SFML.Window.SizeEventArgs e)
         {
-            // TODO: 存储注册表
             // 设置 Size 属性的时候会触发该事件
             var view = window.GetView();
             view.Size = new(window.Size.X, -window.Size.Y);
             window.SetView(view);
+            SizeReg = window.Size;
         }
 
         private void MouseButtonPressed(SFML.Window.MouseButtonEventArgs e)
