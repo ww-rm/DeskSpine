@@ -1,3 +1,4 @@
+using System;
 using System.Buffers.Binary;
 using System.Collections;
 using System.Diagnostics;
@@ -15,8 +16,9 @@ namespace SpineWindow
 
     public abstract class SpineWindow: IDisposable
     {
-        public SpineWindow()
+        public SpineWindow(uint slotCont = 3)
         {
+            spineSlots = new Spine.Spine[slotCont];
             windowCreatedEvent.Reset();
             windowLoopTask = Task.Run(() => SpineWindowTask(this), cancelTokenSrc.Token);
             windowCreatedEvent.WaitOne();
@@ -39,7 +41,7 @@ namespace SpineWindow
                 Dispose();
         }
 
-        protected Spine.Spine?[] spineSlots = [null, null, null];
+        protected Spine.Spine?[] spineSlots;
 
         public string? ResFolder 
         { 
@@ -133,6 +135,17 @@ namespace SpineWindow
             foreach (var a in spineSlots[index].AnimationNames) Debug.Write($"{a}; "); Debug.WriteLine("");
         }
 
+        public void UnloadSpine(uint index)
+        {
+            if (index >= spineSlots.Length)
+                throw new ArgumentOutOfRangeException($"Max spine slot count: {spineSlots.Length}, got index {index}");
+
+            Debug.WriteLine($"Unload spine[{index}]");
+            mutex.WaitOne();
+            spineSlots[index] = null;
+            mutex.ReleaseMutex();
+        }
+
         private void UpdateProperBackgroudColor()
         {
             // TODO: 优化查找时间
@@ -216,7 +229,6 @@ namespace SpineWindow
             mutex.WaitOne();
             clearColor = bestColor;
             mutex.ReleaseMutex();
-            var crKey = BinaryPrimitives.ReverseEndianness(bestColor.ToInteger());
             Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, 255, Win32.LWA_COLORKEY);
         }
 
@@ -225,6 +237,7 @@ namespace SpineWindow
         private ManualResetEvent windowCreatedEvent = new(false);
         private SFML.System.Clock clock = new();
         private SFML.Graphics.Color clearColor = new(128, 128, 128);
+        private uint crKey { get => BinaryPrimitives.ReverseEndianness(clearColor.ToInteger()); }
         protected SFML.Graphics.RenderWindow? window;
         private Task? windowLoopTask;
 
@@ -277,6 +290,18 @@ namespace SpineWindow
             }
         }
 
+        public bool Visible
+        {
+            get { mutex.WaitOne(); var v = visible; mutex.ReleaseMutex(); return v; }
+            set { mutex.WaitOne(); visible = value; mutex.ReleaseMutex(); window.SetVisible(value); if (value) Trigger_Show(); }
+        }
+
+        public uint MaxFps
+        {
+            get => maxFps;
+            set { maxFps = value; window.SetFramerateLimit(value); }
+        }
+
         public SFML.System.Vector2i Position 
         { 
             // TODO: 存储注册表
@@ -288,53 +313,38 @@ namespace SpineWindow
         {
             // TODO: 存储注册表
             get => window.Size;
-            set => window.Size = value;
+            set => window.Size = value; // 会触发 Resized 事件
         }
 
-        public bool Visible
+        public void ResetPositionAndSize()
         {
-            get { mutex.WaitOne(); var v = visible; mutex.ReleaseMutex(); return v; }
-            set { mutex.WaitOne(); visible = value; mutex.ReleaseMutex(); window.SetVisible(value); }
-        }
-
-        public uint MaxFps
-        {
-            get => maxFps;
-            set { maxFps = value; window.SetFramerateLimit(value); }
-        }
-
-        public void Reset()
-        {
-            // TODO: 重置注册表信息
-            SpinePosition = new SFML.System.Vector2f(0, 0);
-            SpineScale = 1f;
+            SpinePosition = new(0, 0);
             Position = new(0, 0);
             Size = new(1000, 1000);
-            FixView();
         }
 
         private void CreateWindow()
         {
-            // TODO: 恢复上一次的大小和位置
             // 创建窗口
-            mutex.WaitOne();
             window = new(new(1000, 1000), "spine", SFML.Window.Styles.None);
-            mutex.ReleaseMutex();
 
             // 设置窗口特殊属性
             var hWnd = window.SystemHandle;
-            var style = Win32.GetWindowLong(hWnd, Win32.GWL_STYLE);
-            Win32.SetWindowLong(hWnd, Win32.GWL_STYLE, style | Win32.WS_POPUP);
-            var exStyle = Win32.GetWindowLong(hWnd, Win32.GWL_EXSTYLE);
-            Win32.SetWindowLong(hWnd, Win32.GWL_EXSTYLE, exStyle | Win32.WS_EX_LAYERED | Win32.WS_EX_TOOLWINDOW | Win32.WS_EX_TOPMOST);
-            var crKey = BinaryPrimitives.ReverseEndianness(clearColor.ToInteger());
+            var style = Win32.GetWindowLong(hWnd, Win32.GWL_STYLE) | Win32.WS_POPUP;
+            var exStyle = Win32.GetWindowLong(hWnd, Win32.GWL_EXSTYLE) | Win32.WS_EX_LAYERED | Win32.WS_EX_TOOLWINDOW | Win32.WS_EX_TOPMOST;
+            Win32.SetWindowLong(hWnd, Win32.GWL_STYLE, style);
+            Win32.SetWindowLong(hWnd, Win32.GWL_EXSTYLE, exStyle);
             Win32.SetLayeredWindowAttributes(hWnd, crKey, 255, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
             Win32.SetWindowPos(hWnd, Win32.HWND_TOPMOST, 0, 0, 0, 0, Win32.SWP_NOMOVE | Win32.SWP_NOSIZE);
 
             // 设置窗口属性
             window.SetVisible(visible);
             window.SetFramerateLimit(maxFps);
-            FixView();
+            var view = window.GetView();
+            view.Center = new(0, 200);
+            view.Size = new(window.Size.X, -window.Size.Y); // SFML 窗口 y 轴默认向下
+            window.SetView(view);
+            // TODO: 恢复上一次的大小和位置
 
             // 注册窗口事件
             RegisterEvents();
@@ -375,6 +385,7 @@ namespace SpineWindow
             mutex.WaitOne();
             foreach (var sp in spineSlots) sp?.Update(delta);
             mutex.ReleaseMutex();
+            Trigger_StateUpdated();
         }
 
         private void Render()
@@ -382,14 +393,6 @@ namespace SpineWindow
             mutex.WaitOne();
             for (int i = spineSlots.Length - 1; i >= 0; i--) { var sp = spineSlots[i];  if (sp is not null) window.Draw(sp); }
             mutex.ReleaseMutex();
-        }
-
-        private void FixView()
-        {
-            var view = window.GetView();
-            view.Center = new(0, 200);
-            view.Size = new(window.Size.X, -window.Size.Y);
-            window.SetView(view);
         }
 
         private void RegisterEvents()
@@ -404,7 +407,10 @@ namespace SpineWindow
         private void Resized(SFML.Window.SizeEventArgs e)
         {
             // TODO: 存储注册表
-            FixView();
+            // 设置 Size 属性的时候会触发该事件
+            var view = window.GetView();
+            view.Size = new(window.Size.X, -window.Size.Y);
+            window.SetView(view);
         }
 
         private void MouseButtonPressed(SFML.Window.MouseButtonEventArgs e)
@@ -561,6 +567,7 @@ namespace SpineWindow
         }
 
         protected virtual void Trigger_SpineLoaded(uint index) { }
+        protected virtual void Trigger_StateUpdated() { }
         protected virtual void Trigger_MouseButtonClick(SFML.Window.MouseButtonEventArgs e) { }
         protected virtual void Trigger_MouseButtonDoubleClick(SFML.Window.MouseButtonEventArgs e) { }
         protected virtual void Trigger_MouseDragBegin(SFML.Window.MouseMoveEventArgs e) { }
@@ -570,6 +577,7 @@ namespace SpineWindow
         protected virtual void Trigger_WorkEnd() { }
         protected virtual void Trigger_SleepBegin() {  }
         protected virtual void Trigger_SleepEnd() { }
+        protected virtual void Trigger_Show() { }
 
         private static void Resized(SpineWindow self, SFML.Window.SizeEventArgs e) { self.Resized(e); }
         private static void MouseButtonPressed(SpineWindow self, SFML.Window.MouseButtonEventArgs e) { self.MouseButtonPressed(e); }
