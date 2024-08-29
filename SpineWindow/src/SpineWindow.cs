@@ -541,9 +541,17 @@ namespace SpineWindow
         private void MouseMoved(SFML.Window.MouseMoveEventArgs e)
         {
             // 计算移动距离
-            var delta = new SFML.System.Vector2i(0, 0);
+            var windowDelta = new SFML.System.Vector2i(0, 0);
+            var worldDelta = new SFML.System.Vector2f(0, 0);
             if (windowPressedPosition is not null)
-                delta = (SFML.System.Vector2i)(new SFML.System.Vector2i(e.X, e.Y) - windowPressedPosition);
+            { 
+                var windowSrc = (SFML.System.Vector2i)windowPressedPosition;
+                var windowDst = new SFML.System.Vector2i(e.X, e.Y);
+                var worldSrc = window.MapPixelToCoords(windowSrc);
+                var worldDst = window.MapPixelToCoords(windowDst);
+                windowDelta = windowDst - windowSrc;
+                worldDelta = worldDst - worldSrc;
+            }
 
             // 获取按键状态
             var leftDown = SFML.Window.Mouse.IsButtonPressed(SFML.Window.Mouse.Button.Left);
@@ -551,7 +559,7 @@ namespace SpineWindow
 
             // 判断是否开始拖动
             // 任意一个键是按下的且移动距离大于阈值
-            if (!isDragging && (leftDown || rightDown) && (Math.Abs(delta.X) > 4 || Math.Abs(delta.Y) > 4))
+            if (!isDragging && (leftDown || rightDown) && (Math.Abs(windowDelta.X) > 4 || Math.Abs(windowDelta.Y) > 4))
             { 
                 isDragging = true;
                 doubleClickChecking = false;
@@ -577,12 +585,11 @@ namespace SpineWindow
                 // 否则右键被按下则拖动内部精灵
                 if (leftDown)
                 {
-                    Position = Position + delta;
+                    Position = Position + windowDelta;
                 }
                 else if (rightDown && spinePressedPosition is not null)
                 {
-                    var sDelta = new SFML.System.Vector2f(delta.X, -delta.Y);
-                    SpinePosition = (SFML.System.Vector2f)spinePressedPosition + sDelta;
+                    SpinePosition = (SFML.System.Vector2f)spinePressedPosition + worldDelta;
                 }
 
             }
