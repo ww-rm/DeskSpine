@@ -159,7 +159,7 @@ namespace Spine
         /// <summary>
         /// 默认动画名称
         /// </summary>
-        public string DefaultAnimationName { get => animationNames.First(); }
+        public string DefaultAnimationName { get => animationNames.Last(); }
 
         /// <summary>
         /// 当前动画名称
