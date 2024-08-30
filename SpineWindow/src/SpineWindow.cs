@@ -17,6 +17,10 @@ namespace SpineWindow
 
     public abstract class SpineWindow: IDisposable
     {
+        /// <summary>
+        /// SpineWindow 基类, 提供 Spine 装载和动画交互
+        /// </summary>
+        /// <param name="slotCont">最大 Spine 装载数量</param>
         public SpineWindow(uint slotCont = 3)
         {
             spineSlots = new Spine.Spine[slotCont];
@@ -42,8 +46,14 @@ namespace SpineWindow
             }
         }
 
+        /// <summary>
+        /// Spine 对象装载数组
+        /// </summary>
         protected Spine.Spine?[] spineSlots;
 
+        /// <summary>
+        /// 资源文件夹, 提供语音等资源的位置
+        /// </summary>
         public string? ResFolder 
         { 
             get
@@ -56,6 +66,9 @@ namespace SpineWindow
             }
         }
 
+        /// <summary>
+        /// 控制 Spine 是否水平翻转
+        /// </summary>
         public bool SpineFlip 
         { 
             get
@@ -74,6 +87,9 @@ namespace SpineWindow
             }
         }
 
+        /// <summary>
+        /// 控制 Spine 缩放比例
+        /// </summary>
         public float SpineScale
         {
             get
@@ -92,6 +108,9 @@ namespace SpineWindow
             }
         }
 
+        /// <summary>
+        /// Spine 是否使用预乘 Alpha
+        /// </summary>
         public bool SpineUsePMA
         {
             get
@@ -110,6 +129,9 @@ namespace SpineWindow
             }
         }
 
+        /// <summary>
+        /// Spine 位置
+        /// </summary>
         public SFML.System.Vector2f SpinePosition
         {
             get
@@ -129,6 +151,9 @@ namespace SpineWindow
             }
         }
 
+        /// <summary>
+        /// Spine 在注册表中存储的位置
+        /// </summary>
         public SFML.System.Vector2f SpinePositionReg
         {
             get
@@ -157,6 +182,14 @@ namespace SpineWindow
             }
         }
 
+        /// <summary>
+        /// 加载 Spine 到指定槽位
+        /// </summary>
+        /// <param name="version">版本字符串, 例如 "3.8.99"</param>
+        /// <param name="skelPath">骨骼文件路径, 可以是 skel 或者 json 后缀</param>
+        /// <param name="atlasPath">纹理文件路径, 后缀为 atlas</param>
+        /// <param name="index">要加载到的槽位</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void LoadSpine(string version, string skelPath, string? atlasPath = null, uint index = 0)
         {
             if (index >= spineSlots.Length)
@@ -181,6 +214,11 @@ namespace SpineWindow
             foreach (var a in spineSlots[index].AnimationNames) Debug.Write($"{a}; "); Debug.WriteLine("");
         }
 
+        /// <summary>
+        /// 卸载执行槽位 Spine
+        /// </summary>
+        /// <param name="index">槽位</param>
+        /// <exception cref="ArgumentOutOfRangeException">指定的 index 超出最大槽位限制</exception>
         public void UnloadSpine(uint index)
         {
             if (index >= spineSlots.Length)
@@ -278,28 +316,96 @@ namespace SpineWindow
             Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, 255, Win32.LWA_COLORKEY);
         }
 
+        /// <summary>
+        /// 互斥锁, 用于同步临界数据
+        /// </summary>
         protected Mutex mutex = new();
+
+        /// <summary>
+        /// 取消令牌, 用于结束窗口线程
+        /// </summary>
         private CancellationTokenSource cancelTokenSrc = new();
+
+        /// <summary>
+        /// 窗口创建事件, 用于同步等待窗口创建完成
+        /// </summary>
         private ManualResetEvent windowCreatedEvent = new(false);
+
+        /// <summary>
+        /// 计时器, 计算每一帧的时间间隔
+        /// </summary>
         private SFML.System.Clock clock = new();
+
+        /// <summary>
+        /// 窗口背景色, 会影响显示半透明边缘颜色效果
+        /// </summary>
         private SFML.Graphics.Color clearColor = new(128, 128, 128);
+
+        /// <summary>
+        /// 用于系统 api 设置透明颜色键
+        /// </summary>
         private uint crKey { get => BinaryPrimitives.ReverseEndianness(clearColor.ToInteger()); }
+
+        /// <summary>
+        /// SFML 窗口对象
+        /// </summary>
         protected SFML.Graphics.RenderWindow? window;
+
+        /// <summary>
+        /// 窗口循环线程
+        /// </summary>
         private Task? windowLoopTask;
 
         private BackgroudColor backgroudColor = BackgroudColor.Gray;
+
+        /// <summary>
+        /// 窗口可见性成员变量
+        /// </summary>
         private bool visible = false;
+
+        /// <summary>
+        /// 窗口最大帧率成员变量
+        /// </summary>
         private uint maxFps = 30;
 
+        /// <summary>
+        /// 记录点击时的窗口点击位置
+        /// </summary>
         private SFML.System.Vector2i? windowPressedPosition = null;
+
+        /// <summary>
+        /// 记录点击时 Spine 的世界位置
+        /// </summary>
         private SFML.System.Vector2f? spinePressedPosition = null;
+
+        /// <summary>
+        /// 双击行为计时器
+        /// </summary>
         private SFML.System.Clock doubleClickClock = new();
+
+        /// <summary>
+        /// 是否处于双击检测中
+        /// </summary>
         private bool doubleClickChecking = false;
+
+        /// <summary>
+        /// 是否处于拖动状态
+        /// </summary>
         private bool isDragging = false;
 
+        /// <summary>
+        /// 休眠判定超时时间
+        /// </summary>
         private const float TimeToSleep = 300f;
+
+        /// <summary>
+        /// 最近一次记录的用户上次输入时间间隔
+        /// </summary>
         private float lastLastInputTime = 1f;
 
+        /// <summary>
+        /// 线程函数
+        /// </summary>
         private static void SpineWindowTask(SpineWindow self)
         {
             self.CreateWindow();
@@ -312,6 +418,9 @@ namespace SpineWindow
             set { backgroudColor = value; UpdateProperBackgroudColor(); }
         }
 
+        /// <summary>
+        /// 窗口整体透明度
+        /// </summary>
         public byte Opacity
         {
             get
@@ -325,6 +434,9 @@ namespace SpineWindow
             set => Win32.SetLayeredWindowAttributes(window.SystemHandle, 0, value, Win32.LWA_ALPHA);
         }
 
+        /// <summary>
+        /// 鼠标穿透
+        /// </summary>
         public bool MouseClickThrough
         {
             get => (Win32.GetWindowLong(window.SystemHandle, Win32.GWL_EXSTYLE) & Win32.WS_EX_TRANSPARENT) != 0;
@@ -339,24 +451,36 @@ namespace SpineWindow
             }
         }
 
+        /// <summary>
+        /// 显示窗口
+        /// </summary>
         public bool Visible
         {
             get { mutex.WaitOne(); var v = visible; mutex.ReleaseMutex(); return v; }
             set { mutex.WaitOne(); visible = value; mutex.ReleaseMutex(); window.SetVisible(value); if (value) Trigger_Show(); }
         }
 
+        /// <summary>
+        /// 最大帧率
+        /// </summary>
         public uint MaxFps
         {
             get => maxFps;
             set { maxFps = value; window.SetFramerateLimit(value); }
         }
 
+        /// <summary>
+        /// 窗口位置
+        /// </summary>
         public SFML.System.Vector2i Position 
         { 
             get => window.Position;
             set { window.Position = value; PositionReg = value; }
         }
 
+        /// <summary>
+        /// 窗口位置在注册表的存储值
+        /// </summary>
         public SFML.System.Vector2i PositionReg
         {
             get
@@ -385,12 +509,18 @@ namespace SpineWindow
             }
         }
 
+        /// <summary>
+        /// 窗口大小
+        /// </summary>
         public SFML.System.Vector2u Size
         {
             get => window.Size;
             set => window.Size = value; // 会触发 Resized 事件
         }
 
+        /// <summary>
+        /// 窗口大小在注册表的存储值
+        /// </summary>
         public SFML.System.Vector2u SizeReg
         {
             get
@@ -419,6 +549,9 @@ namespace SpineWindow
             }
         }
 
+        /// <summary>
+        /// 重置窗口和 Spine 的位置和大小
+        /// </summary>
         public void ResetPositionAndSize()
         {
             SpinePosition = new(0, 0);
@@ -426,6 +559,9 @@ namespace SpineWindow
             Size = new(1000, 1000);
         }
 
+        /// <summary>
+        /// 创建窗口
+        /// </summary>
         private void CreateWindow()
         {
             // 创建窗口
@@ -457,6 +593,9 @@ namespace SpineWindow
             windowCreatedEvent.Set();
         }
 
+        /// <summary>
+        /// 窗口事件循环
+        /// </summary>
         private void WindowLoop()
         {
             while (true)
@@ -481,6 +620,9 @@ namespace SpineWindow
             }
         }
 
+        /// <summary>
+        /// 状态逻辑更新
+        /// </summary>
         private void Update()
         {
             var delta = clock.ElapsedTime.AsSeconds();
@@ -498,6 +640,9 @@ namespace SpineWindow
             lastLastInputTime = lastInputTime;
         }
 
+        /// <summary>
+        /// 画面渲染更新
+        /// </summary>
         private void Render()
         {
             mutex.WaitOne();
@@ -505,6 +650,9 @@ namespace SpineWindow
             mutex.ReleaseMutex();
         }
 
+        /// <summary>
+        /// 注册所有窗口事件
+        /// </summary>
         private void RegisterEvents()
         {
             window.Resized += (object? s, SFML.Window.SizeEventArgs e) => Resized(this, e);
@@ -514,9 +662,11 @@ namespace SpineWindow
             window.MouseWheelScrolled += (object? s, SFML.Window.MouseWheelScrollEventArgs e) => MouseWheelScrolled(this, e);
         }
 
+        /********************************* 封装后的窗口事件 *********************************/
+
         private void Resized(SFML.Window.SizeEventArgs e)
         {
-            // 设置 Size 属性的时候会触发该事件
+            // 设置 Size 属性的时候会触发该事件, 但是要窗口事件循环在运行
             var view = window.GetView();
             view.Size = new(window.Size.X, -window.Size.Y);
             window.SetView(view);
@@ -683,6 +833,8 @@ namespace SpineWindow
             Trigger_MouseWheelScroll(e);
         }
 
+        /********************************* 事件触发器, 子类重写进行逻辑处理 *********************************/
+
         protected virtual void Trigger_SpineLoaded(uint index) { }
         protected virtual void Trigger_StateUpdated() { }
         protected virtual void Trigger_MouseButtonClick(SFML.Window.MouseButtonEventArgs e) { }
@@ -696,6 +848,8 @@ namespace SpineWindow
         protected virtual void Trigger_WakeUp() { }
         protected virtual void Trigger_Show() { }
 
+        /********************************* 静态窗口事件 *********************************/
+
         private static void Resized(SpineWindow self, SFML.Window.SizeEventArgs e) { self.Resized(e); }
         private static void MouseButtonPressed(SpineWindow self, SFML.Window.MouseButtonEventArgs e) { self.MouseButtonPressed(e); }
         private static void MouseMoved(SpineWindow self, SFML.Window.MouseMoveEventArgs e) { self.MouseMoved(e); }
@@ -703,6 +857,9 @@ namespace SpineWindow
         private static void MouseWheelScrolled(SpineWindow self, SFML.Window.MouseWheelScrollEventArgs e) { self.MouseWheelScrolled(e); }
     }
 
+    /// <summary>
+    /// Win32 Sdk 包装类
+    /// </summary>
     internal static class Win32
     {
         public const int GWL_STYLE = -16;
