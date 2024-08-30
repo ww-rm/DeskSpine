@@ -122,7 +122,12 @@ namespace Spine
             atlasPath ??= Path.ChangeExtension(skelPath, ".atlas");
             SkelPath = Path.GetFullPath(skelPath);
             AtlasPath = Path.GetFullPath(atlasPath);
-            pngPaths.Add(Path.ChangeExtension(AtlasPath, ".png")); // TODO: 获取每个 page 的路径
+
+            var regex = new Regex(@".*?\.png");
+            var content = File.ReadAllText(atlasPath);
+            var matches = regex.Matches(content);
+            foreach (Match match in matches)
+                pngPaths.Add(match.Value);
         }
 
         /// <summary>
