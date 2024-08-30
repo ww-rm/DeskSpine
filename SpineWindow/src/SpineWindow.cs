@@ -313,7 +313,7 @@ namespace SpineWindow
             mutex.WaitOne();
             clearColor = bestColor;
             mutex.ReleaseMutex();
-            Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, 255, Win32.LWA_COLORKEY);
+            Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, Opacity, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
         }
 
         /// <summary>
@@ -431,7 +431,7 @@ namespace SpineWindow
                 Win32.GetLayeredWindowAttributes(window.SystemHandle, ref crKey, ref bAlpha, ref dwFlags);
                 return ((dwFlags & Win32.LWA_ALPHA) != 0) ? bAlpha : (byte)255;
             }
-            set => Win32.SetLayeredWindowAttributes(window.SystemHandle, 0, value, Win32.LWA_ALPHA);
+            set => Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, value, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
         }
 
         /// <summary>
