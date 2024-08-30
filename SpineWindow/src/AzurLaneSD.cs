@@ -81,7 +81,7 @@ namespace SpineWindow
                     mutex.WaitOne();
                     if (spineSlots[0] is not null)
                     {
-                        if (spineSlots[0].CurrentAnimation != animation_Stand)
+                        if (spineSlots[0].CurrentAnimation == animation_Idle)
                         { 
                             spineSlots[0].CurrentAnimation = animation_Stand;
                             spineSlots[0].AddAnimation(animation_Idle);
