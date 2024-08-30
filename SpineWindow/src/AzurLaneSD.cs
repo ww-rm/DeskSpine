@@ -18,7 +18,7 @@ namespace SpineWindow
             Sleeping = 3,
         }
 
-        private string animation_Idle;
+        private string animation_Idle = "";
         private string animation_Dragging = "";
         private string animation_MouseLeftClick = "";
         private string animation_MouseLeftDoubleClick = "";
@@ -27,9 +27,15 @@ namespace SpineWindow
         private string animation_MouseWheelScroll = "";
         private string animation_Working = "";
         private string animation_Sleep = "";
+        private string animation_Stand = "";
 
         private State state = State.Idle;
         private State previousState = State.Idle;
+        private Random rnd = new();
+
+        private SFML.System.Clock clockStand = new();
+        private const float meanWaitingTime = 30f;
+        private float nextStandTime = 10f;
 
         protected override void Trigger_SpineLoaded(uint index)
         {
@@ -48,17 +54,42 @@ namespace SpineWindow
                 animation_Dragging = animationNames.Contains("tuozhuai") ? "tuozhuai" : (animationNames.Contains("tuozhuai2") ? "tuozhuai2" : "");
                 animation_MouseLeftClick = animationNames.Contains("touch") ? "touch" : "";
                 animation_MouseLeftDoubleClick = animationNames.Contains("motou") ? "motou" : "";
-                //animation_MouseRightClick = spine.AnimationNames.Contains("normal") ? null : null;
-                //animation_MouseRightDbClick = spine.AnimationNames.Contains("normal") ? null : null;
                 animation_MouseWheelScroll = animationNames.Contains("yun") ? "yun" : "";
                 animation_Working = animationNames.Contains("walk") ? "walk" : "";
                 animation_Sleep = animationNames.Contains("sleep") ? "sleep" : "";
+                animation_Stand = animationNames.Contains("stand") ? "stand" : (animationNames.Contains("stand2") ? "stand2" : "");
 
                 spineSlots[0].CurrentAnimation = animation_Idle;
                 state = State.Idle;
             }
             mutex.ReleaseMutex();
 
+            clockStand.Restart();
+        }
+
+        protected override void Trigger_StateUpdated()
+        {
+            base.Trigger_StateUpdated();
+
+            if (clockStand.ElapsedTime.AsSeconds() >= nextStandTime)
+            {
+                clockStand.Restart();
+                nextStandTime = (float)(-meanWaitingTime * Math.Log(rnd.NextSingle()));
+                Debug.WriteLine($"Next time to stand: {nextStandTime}");
+                if (!string.IsNullOrEmpty(animation_Stand) && state == State.Idle)
+                {
+                    mutex.WaitOne();
+                    if (spineSlots[0] is not null)
+                    {
+                        if (spineSlots[0].CurrentAnimation != animation_Stand)
+                        { 
+                            spineSlots[0].CurrentAnimation = animation_Stand;
+                            spineSlots[0].AddAnimation(animation_Idle);
+                        }
+                    }
+                    mutex.ReleaseMutex();
+                }
+            }
         }
 
         protected override void Trigger_MouseButtonClick(MouseButtonEventArgs e)
@@ -229,6 +260,33 @@ namespace SpineWindow
                     State.Sleeping => State.Idle,
                     _ => state,
                 };
+            }
+            mutex.ReleaseMutex();
+        }
+
+        protected override void Trigger_FallAsleep()
+        {
+            base.Trigger_FallAsleep();
+
+            mutex.WaitOne();
+            if (spineSlots[0] is not null && state == State.Idle)
+            {
+                if (!string.IsNullOrEmpty(animation_Sleep))
+                    spineSlots[0].CurrentAnimation = animation_Sleep;
+                state = State.Sleeping;
+            }
+            mutex.ReleaseMutex();
+        }
+
+        protected override void Trigger_WakeUp()
+        {
+            base.Trigger_WakeUp();
+
+            mutex.WaitOne();
+            if (spineSlots[0] is not null && state == State.Sleeping)
+            {
+                spineSlots[0].CurrentAnimation = animation_Idle;
+                state = State.Idle;
             }
             mutex.ReleaseMutex();
         }
