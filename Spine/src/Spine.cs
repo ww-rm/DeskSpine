@@ -123,11 +123,12 @@ namespace Spine
             SkelPath = Path.GetFullPath(skelPath);
             AtlasPath = Path.GetFullPath(atlasPath);
 
+            var atlasDir = Path.GetDirectoryName(AtlasPath);
             var regex = new Regex(@".*?\.png");
             var content = File.ReadAllText(atlasPath);
             var matches = regex.Matches(content);
             foreach (Match match in matches)
-                pngPaths.Add(match.Value);
+                pngPaths.Add(Path.Combine(atlasDir, match.Value));
         }
 
         /// <summary>
