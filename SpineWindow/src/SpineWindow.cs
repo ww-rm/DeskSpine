@@ -297,6 +297,9 @@ namespace SpineWindow
         private bool doubleClickChecking = false;
         private bool isDragging = false;
 
+        private const float TimeToSleep = 300f;
+        private float lastLastInputTime = 1f;
+
         private static void SpineWindowTask(SpineWindow self)
         {
             self.CreateWindow();
@@ -468,10 +471,7 @@ namespace SpineWindow
                 window.DispatchEvents();
                 Update();
 
-                mutex.WaitOne();
-                var v = visible;
-                var c = clearColor;
-                mutex.ReleaseMutex();
+                mutex.WaitOne(); var v = visible; var c = clearColor; mutex.ReleaseMutex();
                 if (v)
                 {
                     window.Clear(c);
@@ -489,6 +489,13 @@ namespace SpineWindow
             foreach (var sp in spineSlots) sp?.Update(delta);
             mutex.ReleaseMutex();
             Trigger_StateUpdated();
+
+            var lastInputTime = (float)Win32.GetLastInputTime().TotalSeconds;
+            if (lastInputTime >= TimeToSleep && lastLastInputTime < TimeToSleep)
+                Trigger_FallAsleep();
+            else if (lastInputTime < TimeToSleep && lastLastInputTime >= TimeToSleep)
+                Trigger_WakeUp();
+            lastLastInputTime = lastInputTime;
         }
 
         private void Render()
@@ -685,8 +692,8 @@ namespace SpineWindow
         protected virtual void Trigger_MouseWheelScroll(SFML.Window.MouseWheelScrollEventArgs e) { }
         protected virtual void Trigger_WorkBegin() { }
         protected virtual void Trigger_WorkEnd() { }
-        protected virtual void Trigger_SleepBegin() {  }
-        protected virtual void Trigger_SleepEnd() { }
+        protected virtual void Trigger_FallAsleep() {  }
+        protected virtual void Trigger_WakeUp() { }
         protected virtual void Trigger_Show() { }
 
         private static void Resized(SpineWindow self, SFML.Window.SizeEventArgs e) { self.Resized(e); }
@@ -723,6 +730,13 @@ namespace SpineWindow
         public const uint SWP_FRAMECHANGED = 0x0020;
         public const uint SWP_REFRESHLONG = SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED;
 
+        [StructLayout(LayoutKind.Sequential)]
+        private struct LASTINPUTINFO
+        {
+            public uint cbSize;
+            public uint dwTime;
+        }
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
@@ -740,6 +754,24 @@ namespace SpineWindow
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern uint GetDoubleClickTime();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
+
+        public static TimeSpan GetLastInputTime()
+        {
+            LASTINPUTINFO lastInputInfo = new();
+            lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo);
+
+            uint idleTimeMillis = 1000;
+            if (GetLastInputInfo(ref lastInputInfo))
+            {
+                uint tickCount = (uint)Environment.TickCount;
+                uint lastInputTick = lastInputInfo.dwTime;
+                idleTimeMillis = tickCount - lastInputTick;
+            }          
+            return TimeSpan.FromMilliseconds(idleTimeMillis);
+        }
     }
 }
 
