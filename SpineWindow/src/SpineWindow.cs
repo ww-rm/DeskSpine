@@ -52,6 +52,11 @@ namespace SpineWindow
         protected Spine.Spine?[] spineSlots;
 
         /// <summary>
+        /// 窗口可用最大 Spine 装载数
+        /// </summary>
+        public int SlotCount { get => spineSlots.Length; }
+
+        /// <summary>
         /// 资源文件夹, 提供语音等资源的位置
         /// </summary>
         public string? ResFolder 
