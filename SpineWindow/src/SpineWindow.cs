@@ -164,7 +164,7 @@ namespace SpineWindow
             get
             {
                 SFML.System.Vector2f ret = new(0, 0);
-                using (RegistryKey software = Registry.CurrentUser.CreateSubKey("Software"), spkey = software?.CreateSubKey("SpineWindow"))
+                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey(@"Software\SpineWindow"))
                 {
                     if (spkey is not null)
                     { 
@@ -176,7 +176,7 @@ namespace SpineWindow
             }
             set
             {
-                using (RegistryKey software = Registry.CurrentUser.CreateSubKey("Software"), spkey = software?.CreateSubKey("SpineWindow"))
+                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey(@"Software\SpineWindow"))
                 {
                     if (spkey is not null)
                     {
@@ -491,7 +491,7 @@ namespace SpineWindow
             get
             {
                 SFML.System.Vector2i ret = new(0, 0);
-                using (RegistryKey software = Registry.CurrentUser.CreateSubKey("Software"), spkey = software?.CreateSubKey("SpineWindow"))
+                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey(@"Software\SpineWindow"))
                 {
                     if (spkey is not null)
                     {
@@ -503,7 +503,7 @@ namespace SpineWindow
             }
             set
             {
-                using (RegistryKey software = Registry.CurrentUser.CreateSubKey("Software"), spkey = software?.CreateSubKey("SpineWindow"))
+                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey(@"Software\SpineWindow"))
                 {
                     if (spkey is not null)
                     {
@@ -531,7 +531,7 @@ namespace SpineWindow
             get
             {
                 SFML.System.Vector2u ret = new(0, 0);
-                using (RegistryKey software = Registry.CurrentUser.CreateSubKey("Software"), spkey = software?.CreateSubKey("SpineWindow"))
+                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey(@"Software\SpineWindow"))
                 {
                     if (spkey is not null)
                     {
@@ -543,7 +543,7 @@ namespace SpineWindow
             }
             set
             {
-                using (RegistryKey software = Registry.CurrentUser.CreateSubKey("Software"), spkey = software?.CreateSubKey("SpineWindow"))
+                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey(@"Software\SpineWindow"))
                 {
                     if (spkey is not null)
                     {
