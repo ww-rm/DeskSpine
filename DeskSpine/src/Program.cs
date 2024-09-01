@@ -14,7 +14,7 @@ namespace DeskSpine
         {
             get
             {
-                var exePath = Application.ExecutablePath;
+                var exePath = $"\"{Application.ExecutablePath}\"";
                 var ret = false;
                 using (RegistryKey runKey = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run"))
                     ret = runKey.GetValue(ProgramName, "").ToString() == exePath;
