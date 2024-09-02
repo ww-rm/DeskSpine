@@ -7,7 +7,9 @@ namespace SpineWindow
 {
     public class AzurLaneDynamic : SpineWindow
     {
-        protected override void Trigger_SpineLoaded(uint index)
+        public AzurLaneDynamic(uint slotCount) : base(slotCount) { }
+
+        protected override void Trigger_SpineLoaded(int index)
         {
             base.Trigger_SpineLoaded(index);
 

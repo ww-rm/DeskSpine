@@ -37,7 +37,9 @@ namespace SpineWindow
         private const float meanWaitingTime = 30f;
         private float nextStandTime = 10f;
 
-        protected override void Trigger_SpineLoaded(uint index)
+        public AzurLaneSD(uint slotCount) : base(slotCount) { }
+
+        protected override void Trigger_SpineLoaded(int index)
         {
             base.Trigger_SpineLoaded(index);
 
