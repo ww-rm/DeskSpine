@@ -8,6 +8,13 @@ using System.Runtime.InteropServices;
 
 namespace SpineWindow
 {
+    public enum SpineWindowType
+    {
+        AzurLaneSD = 0,
+        AzurLaneDynamic = 1,
+        ArknightsDynamic = 2,
+    }
+
     public enum BackgroudColor
     {
         Black = 0,
@@ -18,12 +25,29 @@ namespace SpineWindow
     public abstract class SpineWindow: IDisposable
     {
         /// <summary>
+        /// 创建指定类型 Spine 窗口
+        /// </summary>
+        /// <param name="type">窗口类型</param>
+        /// <param name="slotCount">可供加载的 Spine 最大数量</param>
+        /// <returns></returns>
+        public static SpineWindow New(SpineWindowType type, uint slotCount = 10)
+        {
+            return type switch
+            {
+                SpineWindowType.AzurLaneSD => new AzurLaneSD(slotCount),
+                SpineWindowType.AzurLaneDynamic => new AzurLaneDynamic(slotCount),
+                SpineWindowType.ArknightsDynamic => new ArknightsDynamic(slotCount),
+                _ => new AzurLaneSD(slotCount),
+            };
+        }
+
+        /// <summary>
         /// SpineWindow 基类, 提供 Spine 装载和动画交互
         /// </summary>
-        /// <param name="slotCont">最大 Spine 装载数量</param>
-        public SpineWindow(uint slotCont = 3)
+        /// <param name="slotCount">最大 Spine 装载数量</param>
+        public SpineWindow(uint slotCount)
         {
-            spineSlots = new Spine.Spine[slotCont];
+            spineSlots = new Spine.Spine[slotCount];
             windowCreatedEvent.Reset();
             windowLoopTask = Task.Run(() => SpineWindowTask(this), cancelTokenSrc.Token);
             windowCreatedEvent.WaitOne();
@@ -195,7 +219,7 @@ namespace SpineWindow
         /// <param name="atlasPath">纹理文件路径, 后缀为 atlas</param>
         /// <param name="index">要加载到的槽位</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void LoadSpine(string version, string skelPath, string? atlasPath = null, uint index = 0)
+        public void LoadSpine(string version, string skelPath, string? atlasPath = null, int index = 0)
         {
             if (index >= spineSlots.Length)
                 throw new ArgumentOutOfRangeException($"Max spine slot count: {spineSlots.Length}, got index {index}");
@@ -423,6 +447,8 @@ namespace SpineWindow
             set { backgroudColor = value; UpdateProperBackgroudColor(); }
         }
 
+        public SFML.Graphics.Color ClearColor { get { mutex.WaitOne(); var c = clearColor; mutex.ReleaseMutex(); return c; } }
+
         /// <summary>
         /// 窗口整体透明度
         /// </summary>
@@ -438,6 +464,10 @@ namespace SpineWindow
             }
             set => Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, value, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
         }
+
+        // TODO
+        public bool WallpaperMode { get; set; }
+
 
         /// <summary>
         /// 鼠标穿透
@@ -580,6 +610,7 @@ namespace SpineWindow
             Win32.SetWindowLong(hWnd, Win32.GWL_EXSTYLE, exStyle);
             Win32.SetLayeredWindowAttributes(hWnd, crKey, 255, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
             Win32.SetWindowPos(hWnd, Win32.HWND_TOPMOST, 0, 0, 0, 0, Win32.SWP_NOMOVE | Win32.SWP_NOSIZE);
+            //Win32.SetParent(hWnd, 0x004A096E);
 
             // 设置窗口属性
             window.SetVisible(visible);
@@ -840,7 +871,7 @@ namespace SpineWindow
 
         /********************************* 事件触发器, 子类重写进行逻辑处理 *********************************/
 
-        protected virtual void Trigger_SpineLoaded(uint index) { }
+        protected virtual void Trigger_SpineLoaded(int index) { }
         protected virtual void Trigger_StateUpdated() { }
         protected virtual void Trigger_MouseButtonClick(SFML.Window.MouseButtonEventArgs e) { }
         protected virtual void Trigger_MouseButtonDoubleClick(SFML.Window.MouseButtonEventArgs e) { }
@@ -913,6 +944,9 @@ namespace SpineWindow
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern uint GetDoubleClickTime();
