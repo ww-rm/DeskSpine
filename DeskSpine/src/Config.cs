@@ -31,6 +31,21 @@ namespace DeskSpine
         public SpineWindow.BackgroudColor BackgroudColor { get; set; } = SpineWindow.BackgroudColor.Gray;
         public SpineWindow.SpineWindowType WindowType { get; set; } = SpineWindow.SpineWindowType.AzurLaneSD;
         public string SpineVersion { get; set; } = "3.8.x";
+
+        [JsonIgnore]
+        public int PositionX { get; set; } = 0;
+        [JsonIgnore]
+        public int PositionY { get; set; } = 0;
+        [JsonIgnore]
+        public uint SizeX { get; set; } = 1000;
+        [JsonIgnore]
+        public uint SizeY { get; set; } = 1000;
+        [JsonIgnore]
+        public float SpinePositionX { get; set; } = 0;
+        [JsonIgnore]
+        public float SpinePositionY { get; set; } = 0;
+        [JsonIgnore]
+        public SFML.Graphics.Color ClearColor { get; set; }
     }
 
     /// <summary>
@@ -55,9 +70,13 @@ namespace DeskSpine
         public string? GetSkelPath(int index)
         {
             if (index > SlotCount) throw new ArgumentOutOfRangeException(nameof(index), $"Index must less than {SlotCount}");
-            var propertyName = $"SkelPath{index}";
-            var propertyInfo = typeof(SpineConfig).GetProperty(propertyName);
-            return propertyInfo?.GetValue(this) as string;
+            return skelPaths[index];
+        }
+
+        public void SetSkelPath(int index, string? value)
+        {
+            if (index > SlotCount) throw new ArgumentOutOfRangeException(nameof(index), $"Index must less than {SlotCount}");
+            skelPaths[index] = value;
         }
     }
 
