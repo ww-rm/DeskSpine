@@ -41,6 +41,9 @@ namespace SpineWindow
             };
         }
 
+        /// <summary>
+        /// 窗口类型
+        /// </summary>
         public SpineWindowType Type 
         { 
             get
