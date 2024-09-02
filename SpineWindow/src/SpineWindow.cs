@@ -41,6 +41,21 @@ namespace SpineWindow
             };
         }
 
+        public SpineWindowType Type 
+        { 
+            get
+            {
+                var t = GetType();
+                if (t == typeof(AzurLaneSD))
+                    return SpineWindowType.AzurLaneSD;
+                if (t == typeof(AzurLaneDynamic))
+                    return SpineWindowType.AzurLaneDynamic;
+                if (t == typeof(ArknightsDynamic))
+                    return SpineWindowType.ArknightsDynamic;
+                throw new InvalidOperationException($"Unknown SpineWindow type {this}");
+            }
+        }
+
         /// <summary>
         /// SpineWindow 基类, 提供 Spine 装载和动画交互
         /// </summary>
@@ -90,6 +105,21 @@ namespace SpineWindow
                 string? v = null;
                 mutex.WaitOne();
                 foreach (var sp in spineSlots) { if (sp is not null) { v = Path.GetDirectoryName(Path.GetFullPath(sp.SkelPath)); break; } }
+                mutex.ReleaseMutex();
+                return v;
+            }
+        }
+
+        /// <summary>
+        /// 获取当前正在运行的 Spine 版本
+        /// </summary>
+        public string SpineVersion
+        {
+            get
+            {
+                var v = "3.8.x";
+                mutex.WaitOne();
+                foreach (var sp in spineSlots) { if (sp is not null) { v = sp.Version; break; } }
                 mutex.ReleaseMutex();
                 return v;
             }
@@ -241,6 +271,17 @@ namespace SpineWindow
             Trigger_SpineLoaded(index);
             Debug.Write("spine animiation: ");
             foreach (var a in spineSlots[index].AnimationNames) Debug.Write($"{a}; "); Debug.WriteLine("");
+        }
+
+        /// <summary>
+        /// 获取指定槽位的 Spine 资源路径
+        /// </summary>
+        /// <param name="index">槽位索引</param>
+        /// <returns>Skel 文件路径, 不存在则返回 null</returns>
+        public string? GetSpineSkelPath(int index)
+        {
+            if (index >= spineSlots.Length) return null;
+            mutex.WaitOne(); var v = spineSlots[index]?.SkelPath; mutex.ReleaseMutex(); return v;
         }
 
         /// <summary>
