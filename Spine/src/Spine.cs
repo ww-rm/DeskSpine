@@ -97,6 +97,22 @@ namespace Spine
         }
 
         /// <summary>
+        /// 获取所属版本
+        /// </summary>
+        public string Version
+        {
+            get
+            {
+                var t = GetType();
+                if (t == typeof(Spine36))
+                    return "3.6.x";
+                if (t == typeof(Spine38))
+                    return "3.8.x";
+                throw new InvalidOperationException($"Unknown Spine version {this}");
+            }
+        }
+
+        /// <summary>
         /// skel 文件完整路径
         /// </summary>
         public string SkelPath { get; private set; }
