@@ -54,6 +54,9 @@
             checkBox_Visible = new CheckBox();
             tabPage_BasicConfig = new TabPage();
             tableLayoutPanel_BasicConfig = new TableLayoutPanel();
+            label46 = new Label();
+            checkBox_SpineUsePMA = new CheckBox();
+            label42 = new Label();
             tableLayoutPanel1 = new TableLayoutPanel();
             trackBar_SpineScale = new TrackBar();
             label_SpineScale = new Label();
@@ -425,6 +428,9 @@
             tableLayoutPanel_BasicConfig.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 19.37984F));
             tableLayoutPanel_BasicConfig.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 29.88803F));
             tableLayoutPanel_BasicConfig.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50.732132F));
+            tableLayoutPanel_BasicConfig.Controls.Add(label46, 2, 10);
+            tableLayoutPanel_BasicConfig.Controls.Add(checkBox_SpineUsePMA, 1, 10);
+            tableLayoutPanel_BasicConfig.Controls.Add(label42, 0, 10);
             tableLayoutPanel_BasicConfig.Controls.Add(tableLayoutPanel1, 1, 6);
             tableLayoutPanel_BasicConfig.Controls.Add(checkBox_SpineFlip, 1, 5);
             tableLayoutPanel_BasicConfig.Controls.Add(label45, 2, 1);
@@ -475,6 +481,41 @@
             tableLayoutPanel_BasicConfig.RowStyles.Add(new RowStyle(SizeType.Percent, 7.69260931F));
             tableLayoutPanel_BasicConfig.Size = new Size(1214, 746);
             tableLayoutPanel_BasicConfig.TabIndex = 1;
+            // 
+            // label46
+            // 
+            label46.Anchor = AnchorStyles.Left;
+            label46.AutoSize = true;
+            label46.Location = new Point(627, 586);
+            label46.Margin = new Padding(30, 0, 3, 0);
+            label46.Name = "label46";
+            label46.Size = new Size(512, 24);
+            label46.TabIndex = 44;
+            label46.Text = "是否使用 PMA 颜色，如遇画面接缝处异常可以尝试调整此参数";
+            // 
+            // checkBox_SpineUsePMA
+            // 
+            checkBox_SpineUsePMA.Anchor = AnchorStyles.Left;
+            checkBox_SpineUsePMA.AutoSize = true;
+            checkBox_SpineUsePMA.Checked = true;
+            checkBox_SpineUsePMA.CheckState = CheckState.Checked;
+            checkBox_SpineUsePMA.Location = new Point(235, 588);
+            checkBox_SpineUsePMA.Margin = new Padding(0);
+            checkBox_SpineUsePMA.Name = "checkBox_SpineUsePMA";
+            checkBox_SpineUsePMA.Size = new Size(22, 21);
+            checkBox_SpineUsePMA.TabIndex = 43;
+            checkBox_SpineUsePMA.UseVisualStyleBackColor = true;
+            // 
+            // label42
+            // 
+            label42.Anchor = AnchorStyles.Left;
+            label42.AutoSize = true;
+            label42.Location = new Point(30, 586);
+            label42.Margin = new Padding(30, 0, 3, 0);
+            label42.Name = "label42";
+            label42.Size = new Size(138, 24);
+            label42.TabIndex = 42;
+            label42.Text = "使用预乘 Alpha";
             // 
             // tableLayoutPanel1
             // 
@@ -1931,5 +1972,8 @@
         private TabPage tabPage_SpineConfig;
         private TableLayoutPanel tableLayoutPanel_SpineConfigParts;
         private TableLayoutPanel tableLayoutPanel_SpineSlot;
+        private Label label46;
+        private CheckBox checkBox_SpineUsePMA;
+        private Label label42;
     }
 }

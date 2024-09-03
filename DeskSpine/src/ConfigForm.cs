@@ -31,6 +31,7 @@ namespace DeskSpine
                 v.BasicConfig.SpineScale = trackBar_SpineScale.Value / 100.0f;
                 v.BasicConfig.Opacity = (byte)trackBar_Opacity.Value;
                 v.BasicConfig.MaxFps = (uint)trackBar_MaxFps.Value;
+                v.BasicConfig.SpineUsePMA = checkBox_SpineUsePMA.Checked;
 
                 // 获取背景颜色
                 v.BasicConfig.BackgroudColor = comboBox_BackgroudColor.SelectedItem switch
@@ -88,6 +89,7 @@ namespace DeskSpine
                 trackBar_SpineScale.Value = (int)(value.BasicConfig.SpineScale * 100);
                 trackBar_Opacity.Value = value.BasicConfig.Opacity;
                 trackBar_MaxFps.Value = (int)value.BasicConfig.MaxFps;
+                checkBox_SpineUsePMA.Checked = value.BasicConfig.SpineUsePMA;
                 comboBox_BackgroudColor.SelectedItem = value.BasicConfig.BackgroudColor switch
                 {
                     SpineWindow.BackgroudColor.Black => "黑色",

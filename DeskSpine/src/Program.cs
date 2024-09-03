@@ -78,8 +78,6 @@ namespace DeskSpine
             WindowSpine = SpineWindow.SpineWindow.New(localConfig.SpineConfig.WindowType, SpineConfig.SlotCount);
             WindowSpine.WallpaperMode = localConfig.BasicConfig.WallpaperMode;
             WindowSpine.MouseClickThrough = localConfig.BasicConfig.MouseClickThrough;
-            WindowSpine.SpineFlip = localConfig.BasicConfig.SpineFlip;
-            WindowSpine.SpineScale = localConfig.BasicConfig.SpineScale;
             WindowSpine.Opacity = localConfig.BasicConfig.Opacity;
             WindowSpine.MaxFps = localConfig.BasicConfig.MaxFps;
             WindowSpine.BackgroudColor = localConfig.BasicConfig.BackgroudColor;
@@ -97,6 +95,11 @@ namespace DeskSpine
                     catch (Exception ex) { MessageBox.Show($"{skelPath} 加载失败\n\n{ex}", ProgramName); }
                 }
             }
+
+            // 加载完资源之后才设置 Spine 相关参数
+            WindowSpine.SpineFlip = localConfig.BasicConfig.SpineFlip;
+            WindowSpine.SpineScale = localConfig.BasicConfig.SpineScale;
+            WindowSpine.SpineUsePMA = localConfig.BasicConfig.SpineUsePMA;
 
             // 设置窗口可见状态
             WindowSpine.Visible = localConfig.SystemConfig.Visible;
@@ -177,13 +180,6 @@ namespace DeskSpine
             if (currentConfig.BasicConfig.SizeX != config.BasicConfig.SizeX ||
                 currentConfig.BasicConfig.SizeY != config.BasicConfig.SizeY)
                 WindowSpine.Size = new(config.BasicConfig.SizeX, config.BasicConfig.SizeY);
-            if (currentConfig.BasicConfig.SpinePositionX != config.BasicConfig.SpinePositionX ||
-                currentConfig.BasicConfig.SpinePositionY != config.BasicConfig.SpinePositionY)
-                WindowSpine.SpinePosition = new(config.BasicConfig.SpinePositionX, config.BasicConfig.SpinePositionY);
-            if (currentConfig.BasicConfig.SpineFlip != config.BasicConfig.SpineFlip)
-                WindowSpine.SpineFlip = config.BasicConfig.SpineFlip;
-            if (currentConfig.BasicConfig.SpineScale != config.BasicConfig.SpineScale)
-                WindowSpine.SpineScale = config.BasicConfig.SpineScale;
             if (currentConfig.BasicConfig.Opacity != config.BasicConfig.Opacity)
                 WindowSpine.Opacity = config.BasicConfig.Opacity;
             if (currentConfig.BasicConfig.MaxFps != config.BasicConfig.MaxFps)
@@ -221,6 +217,12 @@ namespace DeskSpine
                     }
                 }
             }
+
+
+            WindowSpine.SpinePosition = new(config.BasicConfig.SpinePositionX, config.BasicConfig.SpinePositionY);
+            WindowSpine.SpineFlip = config.BasicConfig.SpineFlip;
+            WindowSpine.SpineScale = config.BasicConfig.SpineScale;
+            WindowSpine.SpineUsePMA = config.BasicConfig.SpineUsePMA;
 
             // 保存本地
             LocalConfig = config;

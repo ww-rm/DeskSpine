@@ -29,6 +29,7 @@ namespace DeskSpine
         public byte Opacity { get; set; } = 255;
         public uint MaxFps { get; set; } = 30;
         public SpineWindow.BackgroudColor BackgroudColor { get; set; } = SpineWindow.BackgroudColor.Gray;
+        public bool SpineUsePMA { get; set; } = true;
 
         [JsonIgnore]
         public int PositionX { get; set; } = 0;
