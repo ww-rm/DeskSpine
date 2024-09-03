@@ -29,8 +29,6 @@ namespace DeskSpine
         public byte Opacity { get; set; } = 255;
         public uint MaxFps { get; set; } = 30;
         public SpineWindow.BackgroudColor BackgroudColor { get; set; } = SpineWindow.BackgroudColor.Gray;
-        public SpineWindow.SpineWindowType WindowType { get; set; } = SpineWindow.SpineWindowType.AzurLaneSD;
-        public string SpineVersion { get; set; } = "3.8.x";
 
         [JsonIgnore]
         public int PositionX { get; set; } = 0;
@@ -55,6 +53,9 @@ namespace DeskSpine
     {
         public const int SlotCount = 10;
         private string?[] skelPaths = new string?[SlotCount];
+
+        public string SpineVersion { get; set; } = "3.8.x";
+        public SpineWindow.SpineWindowType WindowType { get; set; } = SpineWindow.SpineWindowType.AzurLaneSD;
 
         public string? SkelPath0 { get => skelPaths[0]; set => skelPaths[0] = value; }
         public string? SkelPath1 { get => skelPaths[1]; set => skelPaths[1] = value; }
