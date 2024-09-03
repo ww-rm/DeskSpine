@@ -55,16 +55,17 @@ namespace DeskSpine
                 };
 
                 // …Ë÷√ Spine ¬∑æ∂
-                v.SpineConfig.SkelPath0 = textBox_SkelPath0.Text;
-                v.SpineConfig.SkelPath1 = textBox_SkelPath1.Text;
-                v.SpineConfig.SkelPath2 = textBox_SkelPath2.Text;
-                v.SpineConfig.SkelPath3 = textBox_SkelPath3.Text;
-                v.SpineConfig.SkelPath4 = textBox_SkelPath4.Text;
-                v.SpineConfig.SkelPath5 = textBox_SkelPath5.Text;
-                v.SpineConfig.SkelPath6 = textBox_SkelPath6.Text;
-                v.SpineConfig.SkelPath7 = textBox_SkelPath7.Text;
-                v.SpineConfig.SkelPath8 = textBox_SkelPath8.Text;
-                v.SpineConfig.SkelPath9 = textBox_SkelPath9.Text;
+                v.SpineConfig.SkelPath0 = string.IsNullOrEmpty(textBox_SkelPath0.Text) ? null : textBox_SkelPath0.Text;
+                v.SpineConfig.SkelPath1 = string.IsNullOrEmpty(textBox_SkelPath1.Text) ? null : textBox_SkelPath1.Text;
+                v.SpineConfig.SkelPath2 = string.IsNullOrEmpty(textBox_SkelPath2.Text) ? null : textBox_SkelPath2.Text;
+                v.SpineConfig.SkelPath3 = string.IsNullOrEmpty(textBox_SkelPath3.Text) ? null : textBox_SkelPath3.Text;
+                v.SpineConfig.SkelPath4 = string.IsNullOrEmpty(textBox_SkelPath4.Text) ? null : textBox_SkelPath4.Text;
+                v.SpineConfig.SkelPath5 = string.IsNullOrEmpty(textBox_SkelPath5.Text) ? null : textBox_SkelPath5.Text;
+                v.SpineConfig.SkelPath6 = string.IsNullOrEmpty(textBox_SkelPath6.Text) ? null : textBox_SkelPath6.Text;
+                v.SpineConfig.SkelPath7 = string.IsNullOrEmpty(textBox_SkelPath7.Text) ? null : textBox_SkelPath7.Text;
+                v.SpineConfig.SkelPath8 = string.IsNullOrEmpty(textBox_SkelPath8.Text) ? null : textBox_SkelPath8.Text;
+                v.SpineConfig.SkelPath9 = string.IsNullOrEmpty(textBox_SkelPath9.Text) ? null : textBox_SkelPath9.Text;
+
                 return v;
             }
 
