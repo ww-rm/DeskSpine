@@ -1,5 +1,4 @@
 using Microsoft.Win32;
-using SpineWindow;
 
 namespace DeskSpine
 {
@@ -112,38 +111,47 @@ namespace DeskSpine
         /// 根据程序实时运行状态获取配置
         /// </summary>
         /// <returns></returns>
-        public static Config GetCurrentConfig()
+        public static Config CurrentConfig
         {
-            var config = new Config();
-            config.SystemConfig.AutuRun = AutoRun;
-            config.SystemConfig.Visible = spineWindow.Visible;
-            config.BasicConfig.WallpaperMode = spineWindow.WallpaperMode;
-            config.BasicConfig.MouseClickThrough = spineWindow.MouseClickThrough;
-            config.BasicConfig.SpineScale = spineWindow.SpineScale;
-            config.BasicConfig.SpineFlip = spineWindow.SpineFlip;
-            config.BasicConfig.Opacity = spineWindow.Opacity;
-            config.BasicConfig.MaxFps = spineWindow.MaxFps;
-            config.BasicConfig.BackgroudColor = spineWindow.BackgroudColor;
-            config.BasicConfig.WindowType = spineWindow.Type;
-            config.BasicConfig.SpineVersion = spineWindow.SpineVersion;
-            for (int i = 0; i < spineWindow.SlotCount; i++)
+            get
             {
-                config.SpineConfig.SetSkelPath(i, spineWindow.GetSpineSkelPath(i));
+                var config = new Config();
+                config.SystemConfig.AutuRun = AutoRun;
+                config.SystemConfig.Visible = spineWindow.Visible;
+                config.BasicConfig.WallpaperMode = spineWindow.WallpaperMode;
+                config.BasicConfig.MouseClickThrough = spineWindow.MouseClickThrough;
+                config.BasicConfig.SpineScale = spineWindow.SpineScale;
+                config.BasicConfig.SpineFlip = spineWindow.SpineFlip;
+                config.BasicConfig.Opacity = spineWindow.Opacity;
+                config.BasicConfig.MaxFps = spineWindow.MaxFps;
+                config.BasicConfig.BackgroudColor = spineWindow.BackgroudColor;
+                config.BasicConfig.WindowType = spineWindow.Type;
+                config.BasicConfig.SpineVersion = spineWindow.SpineVersion;
+                for (int i = 0; i < spineWindow.SlotCount; i++)
+                {
+                    config.SpineConfig.SetSkelPath(i, spineWindow.GetSpineSkelPath(i));
+                }
+
+                // 一些临时量
+                var position = spineWindow.Position;
+                config.BasicConfig.PositionX = position.X;
+                config.BasicConfig.PositionY = position.Y;
+                var size = spineWindow.Size;
+                config.BasicConfig.SizeX = size.X;
+                config.BasicConfig.SizeY = size.Y;
+                var spPosition = spineWindow.Position;
+                config.BasicConfig.SpinePositionX = spPosition.X;
+                config.BasicConfig.SpinePositionY = spPosition.Y;
+                config.BasicConfig.ClearColor = spineWindow.ClearColor;
+
+                return config;
             }
+        }
 
-            // 一些临时量
-            var position = spineWindow.Position;
-            config.BasicConfig.PositionX = position.X;
-            config.BasicConfig.PositionY = position.Y;
-            var size = spineWindow.Size;
-            config.BasicConfig.SizeX = size.X;
-            config.BasicConfig.SizeY = size.Y;
-            var spPosition = spineWindow.Position;
-            config.BasicConfig.SpinePositionX = spPosition.X;
-            config.BasicConfig.SpinePositionY = spPosition.Y;
-            config.BasicConfig.ClearColor = spineWindow.ClearColor;
-
-            return config;
+        public static Config LocalConfig
+        {
+            get { var v = new Config(); v.Load(ProgramConfigPath); return v; }
+            set => value.Save(ProgramConfigPath);
         }
     }
 }

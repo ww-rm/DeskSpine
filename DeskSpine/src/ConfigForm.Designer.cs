@@ -43,7 +43,6 @@
             button_Apply = new Button();
             button_OpenDataFolder = new Button();
             tableLayoutPanel_Window = new TableLayoutPanel();
-            tableLayoutPanel_Buttons = new TableLayoutPanel();
             tabControl_Config = new TabControl();
             tabPage_SystemConfig = new TabPage();
             tableLayoutPanel_SystemConfig = new TableLayoutPanel();
@@ -106,6 +105,7 @@
             trackBar_MaxFps = new TrackBar();
             label15 = new Label();
             tabPage_SpineConfig = new TabPage();
+            tableLayoutPanel_SpineConfigParts = new TableLayoutPanel();
             tableLayoutPanel_SpineSlot = new TableLayoutPanel();
             button_ClearSkel9 = new Button();
             button_SelectSkel9 = new Button();
@@ -147,18 +147,17 @@
             textBox_SkelPath0 = new TextBox();
             label28 = new Label();
             button_SelectSkel0 = new Button();
-            openFileDialog_SelectSkel = new OpenFileDialog();
-            tableLayoutPanel_SpineConfigParts = new TableLayoutPanel();
             tableLayoutPanel_SpineConfig = new TableLayoutPanel();
-            label39 = new Label();
-            comboBox_SpineVersion = new ComboBox();
-            label40 = new Label();
-            label26 = new Label();
-            comboBox_WindowType = new ComboBox();
             label27 = new Label();
+            comboBox_WindowType = new ComboBox();
+            label26 = new Label();
+            label40 = new Label();
+            comboBox_SpineVersion = new ComboBox();
+            label39 = new Label();
+            tableLayoutPanel_Buttons = new TableLayoutPanel();
+            openFileDialog_SelectSkel = new OpenFileDialog();
             contextMenuStrip.SuspendLayout();
             tableLayoutPanel_Window.SuspendLayout();
-            tableLayoutPanel_Buttons.SuspendLayout();
             tabControl_Config.SuspendLayout();
             tabPage_SystemConfig.SuspendLayout();
             tableLayoutPanel_SystemConfig.SuspendLayout();
@@ -181,9 +180,10 @@
             tableLayoutPanel11.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar_MaxFps).BeginInit();
             tabPage_SpineConfig.SuspendLayout();
-            tableLayoutPanel_SpineSlot.SuspendLayout();
             tableLayoutPanel_SpineConfigParts.SuspendLayout();
+            tableLayoutPanel_SpineSlot.SuspendLayout();
             tableLayoutPanel_SpineConfig.SuspendLayout();
+            tableLayoutPanel_Buttons.SuspendLayout();
             SuspendLayout();
             // 
             // notifyIcon
@@ -230,6 +230,7 @@
             commandConfig.Name = "commandConfig";
             commandConfig.Size = new Size(152, 30);
             commandConfig.Text = "设置";
+            commandConfig.Click += commandConfig_Click;
             // 
             // commandAbout
             // 
@@ -292,28 +293,6 @@
             tableLayoutPanel_Window.RowStyles.Add(new RowStyle(SizeType.Percent, 6.14224148F));
             tableLayoutPanel_Window.Size = new Size(1222, 931);
             tableLayoutPanel_Window.TabIndex = 7;
-            // 
-            // tableLayoutPanel_Buttons
-            // 
-            tableLayoutPanel_Buttons.AutoSize = true;
-            tableLayoutPanel_Buttons.ColumnCount = 6;
-            tableLayoutPanel_Buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
-            tableLayoutPanel_Buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
-            tableLayoutPanel_Buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
-            tableLayoutPanel_Buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
-            tableLayoutPanel_Buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
-            tableLayoutPanel_Buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
-            tableLayoutPanel_Buttons.Controls.Add(button_OpenDataFolder, 0, 0);
-            tableLayoutPanel_Buttons.Controls.Add(button_Ok, 4, 0);
-            tableLayoutPanel_Buttons.Controls.Add(button_Apply, 5, 0);
-            tableLayoutPanel_Buttons.Dock = DockStyle.Fill;
-            tableLayoutPanel_Buttons.Location = new Point(0, 873);
-            tableLayoutPanel_Buttons.Margin = new Padding(0);
-            tableLayoutPanel_Buttons.Name = "tableLayoutPanel_Buttons";
-            tableLayoutPanel_Buttons.RowCount = 1;
-            tableLayoutPanel_Buttons.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel_Buttons.Size = new Size(1222, 58);
-            tableLayoutPanel_Buttons.TabIndex = 0;
             // 
             // tabControl_Config
             // 
@@ -728,9 +707,9 @@
             label19.Location = new Point(627, 529);
             label19.Margin = new Padding(30, 0, 3, 0);
             label19.Name = "label19";
-            label19.Size = new Size(262, 24);
+            label19.Size = new Size(329, 24);
             label19.TabIndex = 18;
-            label19.Text = "窗口背景颜色，影响精灵的边缘";
+            label19.Text = "窗口背景颜色，影响精灵的边缘，RGBA";
             // 
             // label18
             // 
@@ -772,6 +751,7 @@
             numericUpDown_SizeY.Name = "numericUpDown_SizeY";
             numericUpDown_SizeY.Size = new Size(122, 30);
             numericUpDown_SizeY.TabIndex = 6;
+            numericUpDown_SizeY.Value = new decimal(new int[] { 1000, 0, 0, 0 });
             // 
             // label12
             // 
@@ -804,6 +784,7 @@
             numericUpDown_SizeX.Name = "numericUpDown_SizeX";
             numericUpDown_SizeX.Size = new Size(121, 30);
             numericUpDown_SizeX.TabIndex = 4;
+            numericUpDown_SizeX.Value = new decimal(new int[] { 1000, 0, 0, 0 });
             // 
             // label5
             // 
@@ -1110,70 +1091,85 @@
             tabPage_SpineConfig.TabIndex = 2;
             tabPage_SpineConfig.Text = "Spine 设置";
             // 
+            // tableLayoutPanel_SpineConfigParts
+            // 
+            tableLayoutPanel_SpineConfigParts.ColumnCount = 1;
+            tableLayoutPanel_SpineConfigParts.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel_SpineConfigParts.Controls.Add(tableLayoutPanel_SpineSlot, 0, 1);
+            tableLayoutPanel_SpineConfigParts.Controls.Add(tableLayoutPanel_SpineConfig, 0, 0);
+            tableLayoutPanel_SpineConfigParts.Dock = DockStyle.Top;
+            tableLayoutPanel_SpineConfigParts.Location = new Point(0, 0);
+            tableLayoutPanel_SpineConfigParts.Name = "tableLayoutPanel_SpineConfigParts";
+            tableLayoutPanel_SpineConfigParts.RowCount = 2;
+            tableLayoutPanel_SpineConfigParts.RowStyles.Add(new RowStyle(SizeType.Percent, 21.3114758F));
+            tableLayoutPanel_SpineConfigParts.RowStyles.Add(new RowStyle(SizeType.Percent, 78.68852F));
+            tableLayoutPanel_SpineConfigParts.Size = new Size(1214, 793);
+            tableLayoutPanel_SpineConfigParts.TabIndex = 1;
+            // 
             // tableLayoutPanel_SpineSlot
             // 
-            this.tableLayoutPanel_SpineSlot.ColumnCount = 4;
-            this.tableLayoutPanel_SpineSlot.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 9.50764F));
-            this.tableLayoutPanel_SpineSlot.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 79.11715F));
-            this.tableLayoutPanel_SpineSlot.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 4.07470274F));
-            this.tableLayoutPanel_SpineSlot.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 7.21561956F));
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel9, 3, 9);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel9, 2, 9);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath9, 1, 9);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(label37, 0, 9);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel8, 3, 8);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel8, 2, 8);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath8, 1, 8);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(label36, 0, 8);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel7, 3, 7);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel7, 2, 7);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath7, 1, 7);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(label35, 0, 7);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel6, 3, 6);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel6, 2, 6);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath6, 1, 6);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(label34, 0, 6);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel5, 3, 5);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel5, 2, 5);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath5, 1, 5);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(label33, 0, 5);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel4, 3, 4);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel4, 2, 4);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath4, 1, 4);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(label32, 0, 4);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel3, 3, 3);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel3, 2, 3);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath3, 1, 3);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(label31, 0, 3);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel2, 3, 2);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel2, 2, 2);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath2, 1, 2);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(label30, 0, 2);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel1, 3, 1);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel1, 2, 1);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath1, 1, 1);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(label29, 0, 1);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel0, 3, 0);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath0, 1, 0);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(label28, 0, 0);
-            this.tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel0, 2, 0);
-            this.tableLayoutPanel_SpineSlot.Dock = DockStyle.Fill;
-            this.tableLayoutPanel_SpineSlot.Location = new Point(0, 169);
-            this.tableLayoutPanel_SpineSlot.Margin = new Padding(0);
-            this.tableLayoutPanel_SpineSlot.Name = "tableLayoutPanel_SpineSlot";
-            this.tableLayoutPanel_SpineSlot.RowCount = 10;
-            this.tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            this.tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            this.tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            this.tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            this.tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            this.tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            this.tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            this.tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            this.tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            this.tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            this.tableLayoutPanel_SpineSlot.Size = new Size(1214, 624);
-            this.tableLayoutPanel_SpineSlot.TabIndex = 0;
+            tableLayoutPanel_SpineSlot.ColumnCount = 4;
+            tableLayoutPanel_SpineSlot.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 9.50764F));
+            tableLayoutPanel_SpineSlot.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 79.11715F));
+            tableLayoutPanel_SpineSlot.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 4.07470274F));
+            tableLayoutPanel_SpineSlot.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 7.21561956F));
+            tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel9, 3, 9);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel9, 2, 9);
+            tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath9, 1, 9);
+            tableLayoutPanel_SpineSlot.Controls.Add(label37, 0, 9);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel8, 3, 8);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel8, 2, 8);
+            tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath8, 1, 8);
+            tableLayoutPanel_SpineSlot.Controls.Add(label36, 0, 8);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel7, 3, 7);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel7, 2, 7);
+            tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath7, 1, 7);
+            tableLayoutPanel_SpineSlot.Controls.Add(label35, 0, 7);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel6, 3, 6);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel6, 2, 6);
+            tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath6, 1, 6);
+            tableLayoutPanel_SpineSlot.Controls.Add(label34, 0, 6);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel5, 3, 5);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel5, 2, 5);
+            tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath5, 1, 5);
+            tableLayoutPanel_SpineSlot.Controls.Add(label33, 0, 5);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel4, 3, 4);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel4, 2, 4);
+            tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath4, 1, 4);
+            tableLayoutPanel_SpineSlot.Controls.Add(label32, 0, 4);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel3, 3, 3);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel3, 2, 3);
+            tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath3, 1, 3);
+            tableLayoutPanel_SpineSlot.Controls.Add(label31, 0, 3);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel2, 3, 2);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel2, 2, 2);
+            tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath2, 1, 2);
+            tableLayoutPanel_SpineSlot.Controls.Add(label30, 0, 2);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel1, 3, 1);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel1, 2, 1);
+            tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath1, 1, 1);
+            tableLayoutPanel_SpineSlot.Controls.Add(label29, 0, 1);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_ClearSkel0, 3, 0);
+            tableLayoutPanel_SpineSlot.Controls.Add(textBox_SkelPath0, 1, 0);
+            tableLayoutPanel_SpineSlot.Controls.Add(label28, 0, 0);
+            tableLayoutPanel_SpineSlot.Controls.Add(button_SelectSkel0, 2, 0);
+            tableLayoutPanel_SpineSlot.Dock = DockStyle.Fill;
+            tableLayoutPanel_SpineSlot.Location = new Point(0, 169);
+            tableLayoutPanel_SpineSlot.Margin = new Padding(0);
+            tableLayoutPanel_SpineSlot.Name = "tableLayoutPanel_SpineSlot";
+            tableLayoutPanel_SpineSlot.RowCount = 10;
+            tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel_SpineSlot.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel_SpineSlot.Size = new Size(1214, 624);
+            tableLayoutPanel_SpineSlot.TabIndex = 0;
             // 
             // button_ClearSkel9
             // 
@@ -1186,6 +1182,7 @@
             button_ClearSkel9.TabIndex = 67;
             button_ClearSkel9.Text = "清除";
             button_ClearSkel9.UseVisualStyleBackColor = true;
+            button_ClearSkel9.Click += button_ClearSkel9_Click;
             // 
             // button_SelectSkel9
             // 
@@ -1198,6 +1195,7 @@
             button_SelectSkel9.TabIndex = 66;
             button_SelectSkel9.Text = "...";
             button_SelectSkel9.UseVisualStyleBackColor = true;
+            button_SelectSkel9.Click += button_SelectSkel9_Click;
             // 
             // textBox_SkelPath9
             // 
@@ -1229,6 +1227,7 @@
             button_ClearSkel8.TabIndex = 63;
             button_ClearSkel8.Text = "清除";
             button_ClearSkel8.UseVisualStyleBackColor = true;
+            button_ClearSkel8.Click += button_ClearSkel8_Click;
             // 
             // button_SelectSkel8
             // 
@@ -1241,6 +1240,7 @@
             button_SelectSkel8.TabIndex = 62;
             button_SelectSkel8.Text = "...";
             button_SelectSkel8.UseVisualStyleBackColor = true;
+            button_SelectSkel8.Click += button_SelectSkel8_Click;
             // 
             // textBox_SkelPath8
             // 
@@ -1272,6 +1272,7 @@
             button_ClearSkel7.TabIndex = 59;
             button_ClearSkel7.Text = "清除";
             button_ClearSkel7.UseVisualStyleBackColor = true;
+            button_ClearSkel7.Click += button_ClearSkel7_Click;
             // 
             // button_SelectSkel7
             // 
@@ -1284,6 +1285,7 @@
             button_SelectSkel7.TabIndex = 58;
             button_SelectSkel7.Text = "...";
             button_SelectSkel7.UseVisualStyleBackColor = true;
+            button_SelectSkel7.Click += button_SelectSkel7_Click;
             // 
             // textBox_SkelPath7
             // 
@@ -1315,6 +1317,7 @@
             button_ClearSkel6.TabIndex = 55;
             button_ClearSkel6.Text = "清除";
             button_ClearSkel6.UseVisualStyleBackColor = true;
+            button_ClearSkel6.Click += button_ClearSkel6_Click;
             // 
             // button_SelectSkel6
             // 
@@ -1327,6 +1330,7 @@
             button_SelectSkel6.TabIndex = 54;
             button_SelectSkel6.Text = "...";
             button_SelectSkel6.UseVisualStyleBackColor = true;
+            button_SelectSkel6.Click += button_SelectSkel6_Click;
             // 
             // textBox_SkelPath6
             // 
@@ -1358,6 +1362,7 @@
             button_ClearSkel5.TabIndex = 51;
             button_ClearSkel5.Text = "清除";
             button_ClearSkel5.UseVisualStyleBackColor = true;
+            button_ClearSkel5.Click += button_ClearSkel5_Click;
             // 
             // button_SelectSkel5
             // 
@@ -1370,6 +1375,7 @@
             button_SelectSkel5.TabIndex = 50;
             button_SelectSkel5.Text = "...";
             button_SelectSkel5.UseVisualStyleBackColor = true;
+            button_SelectSkel5.Click += button_SelectSkel5_Click;
             // 
             // textBox_SkelPath5
             // 
@@ -1401,6 +1407,7 @@
             button_ClearSkel4.TabIndex = 47;
             button_ClearSkel4.Text = "清除";
             button_ClearSkel4.UseVisualStyleBackColor = true;
+            button_ClearSkel4.Click += button_ClearSkel4_Click;
             // 
             // button_SelectSkel4
             // 
@@ -1413,6 +1420,7 @@
             button_SelectSkel4.TabIndex = 46;
             button_SelectSkel4.Text = "...";
             button_SelectSkel4.UseVisualStyleBackColor = true;
+            button_SelectSkel4.Click += button_SelectSkel4_Click;
             // 
             // textBox_SkelPath4
             // 
@@ -1444,6 +1452,7 @@
             button_ClearSkel3.TabIndex = 43;
             button_ClearSkel3.Text = "清除";
             button_ClearSkel3.UseVisualStyleBackColor = true;
+            button_ClearSkel3.Click += button_ClearSkel3_Click;
             // 
             // button_SelectSkel3
             // 
@@ -1456,6 +1465,7 @@
             button_SelectSkel3.TabIndex = 42;
             button_SelectSkel3.Text = "...";
             button_SelectSkel3.UseVisualStyleBackColor = true;
+            button_SelectSkel3.Click += button_SelectSkel3_Click;
             // 
             // textBox_SkelPath3
             // 
@@ -1487,6 +1497,7 @@
             button_ClearSkel2.TabIndex = 39;
             button_ClearSkel2.Text = "清除";
             button_ClearSkel2.UseVisualStyleBackColor = true;
+            button_ClearSkel2.Click += button_ClearSkel2_Click;
             // 
             // button_SelectSkel2
             // 
@@ -1499,6 +1510,7 @@
             button_SelectSkel2.TabIndex = 38;
             button_SelectSkel2.Text = "...";
             button_SelectSkel2.UseVisualStyleBackColor = true;
+            button_SelectSkel2.Click += button_SelectSkel2_Click;
             // 
             // textBox_SkelPath2
             // 
@@ -1530,6 +1542,7 @@
             button_ClearSkel1.TabIndex = 35;
             button_ClearSkel1.Text = "清除";
             button_ClearSkel1.UseVisualStyleBackColor = true;
+            button_ClearSkel1.Click += button_ClearSkel1_Click;
             // 
             // button_SelectSkel1
             // 
@@ -1542,6 +1555,7 @@
             button_SelectSkel1.TabIndex = 34;
             button_SelectSkel1.Text = "...";
             button_SelectSkel1.UseVisualStyleBackColor = true;
+            button_SelectSkel1.Click += button_SelectSkel1_Click;
             // 
             // textBox_SkelPath1
             // 
@@ -1573,6 +1587,7 @@
             button_ClearSkel0.TabIndex = 31;
             button_ClearSkel0.Text = "清除";
             button_ClearSkel0.UseVisualStyleBackColor = true;
+            button_ClearSkel0.Click += button_ClearSkel0_Click;
             // 
             // textBox_SkelPath0
             // 
@@ -1604,28 +1619,7 @@
             button_SelectSkel0.TabIndex = 30;
             button_SelectSkel0.Text = "...";
             button_SelectSkel0.UseVisualStyleBackColor = true;
-            // 
-            // openFileDialog_SelectSkel
-            // 
-            openFileDialog_SelectSkel.AddExtension = false;
-            openFileDialog_SelectSkel.AddToRecent = false;
-            openFileDialog_SelectSkel.Filter = "Skel 文件 (*.skel; *.json)|*.skel;*.json";
-            openFileDialog_SelectSkel.RestoreDirectory = true;
-            // 
-            // tableLayoutPanel_SpineConfigParts
-            // 
-            tableLayoutPanel_SpineConfigParts.ColumnCount = 1;
-            tableLayoutPanel_SpineConfigParts.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel_SpineConfigParts.Controls.Add(this.tableLayoutPanel_SpineSlot, 0, 1);
-            tableLayoutPanel_SpineConfigParts.Controls.Add(tableLayoutPanel_SpineConfig, 0, 0);
-            tableLayoutPanel_SpineConfigParts.Dock = DockStyle.Top;
-            tableLayoutPanel_SpineConfigParts.Location = new Point(0, 0);
-            tableLayoutPanel_SpineConfigParts.Name = "tableLayoutPanel_SpineConfigParts";
-            tableLayoutPanel_SpineConfigParts.RowCount = 2;
-            tableLayoutPanel_SpineConfigParts.RowStyles.Add(new RowStyle(SizeType.Percent, 21.3114758F));
-            tableLayoutPanel_SpineConfigParts.RowStyles.Add(new RowStyle(SizeType.Percent, 78.68852F));
-            tableLayoutPanel_SpineConfigParts.Size = new Size(1214, 793);
-            tableLayoutPanel_SpineConfigParts.TabIndex = 1;
+            button_SelectSkel0.Click += button_SelectSkel0_Click;
             // 
             // tableLayoutPanel_SpineConfig
             // 
@@ -1650,50 +1644,16 @@
             tableLayoutPanel_SpineConfig.Size = new Size(1214, 169);
             tableLayoutPanel_SpineConfig.TabIndex = 1;
             // 
-            // label39
+            // label27
             // 
-            label39.Anchor = AnchorStyles.Left;
-            label39.AutoSize = true;
-            label39.Location = new Point(30, 16);
-            label39.Margin = new Padding(30, 0, 3, 0);
-            label39.Name = "label39";
-            label39.Size = new Size(99, 24);
-            label39.TabIndex = 32;
-            label39.Text = "Spine 版本";
-            // 
-            // comboBox_SpineVersion
-            // 
-            comboBox_SpineVersion.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            comboBox_SpineVersion.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBox_SpineVersion.FormattingEnabled = true;
-            comboBox_SpineVersion.Items.AddRange(new object[] { "3.8.x", "3.6.x" });
-            comboBox_SpineVersion.Location = new Point(233, 12);
-            comboBox_SpineVersion.Margin = new Padding(0);
-            comboBox_SpineVersion.Name = "comboBox_SpineVersion";
-            comboBox_SpineVersion.Size = new Size(456, 32);
-            comboBox_SpineVersion.TabIndex = 33;
-            // 
-            // label40
-            // 
-            label40.Anchor = AnchorStyles.Left;
-            label40.AutoSize = true;
-            label40.Location = new Point(719, 16);
-            label40.Margin = new Padding(30, 0, 3, 0);
-            label40.Name = "label40";
-            label40.Size = new Size(266, 24);
-            label40.TabIndex = 34;
-            label40.Text = "选择要使用的 Spine 运行时版本";
-            // 
-            // label26
-            // 
-            label26.Anchor = AnchorStyles.Left;
-            label26.AutoSize = true;
-            label26.Location = new Point(30, 72);
-            label26.Margin = new Padding(30, 0, 3, 0);
-            label26.Name = "label26";
-            label26.Size = new Size(82, 24);
-            label26.TabIndex = 35;
-            label26.Text = "交互方案";
+            label27.Anchor = AnchorStyles.Left;
+            label27.AutoSize = true;
+            label27.Location = new Point(719, 72);
+            label27.Margin = new Padding(30, 0, 3, 0);
+            label27.Name = "label27";
+            label27.Size = new Size(460, 24);
+            label27.TabIndex = 37;
+            label27.Text = "精灵交互逻辑，影响键鼠交互以及下方对资源的使用方式";
             // 
             // comboBox_WindowType
             // 
@@ -1707,16 +1667,79 @@
             comboBox_WindowType.Size = new Size(456, 32);
             comboBox_WindowType.TabIndex = 36;
             // 
-            // label27
+            // label26
             // 
-            label27.Anchor = AnchorStyles.Left;
-            label27.AutoSize = true;
-            label27.Location = new Point(719, 72);
-            label27.Margin = new Padding(30, 0, 3, 0);
-            label27.Name = "label27";
-            label27.Size = new Size(460, 24);
-            label27.TabIndex = 37;
-            label27.Text = "精灵交互逻辑，影响键鼠交互以及下方对资源的使用方式";
+            label26.Anchor = AnchorStyles.Left;
+            label26.AutoSize = true;
+            label26.Location = new Point(30, 72);
+            label26.Margin = new Padding(30, 0, 3, 0);
+            label26.Name = "label26";
+            label26.Size = new Size(82, 24);
+            label26.TabIndex = 35;
+            label26.Text = "交互方案";
+            // 
+            // label40
+            // 
+            label40.Anchor = AnchorStyles.Left;
+            label40.AutoSize = true;
+            label40.Location = new Point(719, 16);
+            label40.Margin = new Padding(30, 0, 3, 0);
+            label40.Name = "label40";
+            label40.Size = new Size(266, 24);
+            label40.TabIndex = 34;
+            label40.Text = "选择要使用的 Spine 运行时版本";
+            // 
+            // comboBox_SpineVersion
+            // 
+            comboBox_SpineVersion.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            comboBox_SpineVersion.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox_SpineVersion.FormattingEnabled = true;
+            comboBox_SpineVersion.Items.AddRange(new object[] { "3.8.x", "3.6.x" });
+            comboBox_SpineVersion.Location = new Point(233, 12);
+            comboBox_SpineVersion.Margin = new Padding(0);
+            comboBox_SpineVersion.Name = "comboBox_SpineVersion";
+            comboBox_SpineVersion.Size = new Size(456, 32);
+            comboBox_SpineVersion.TabIndex = 33;
+            // 
+            // label39
+            // 
+            label39.Anchor = AnchorStyles.Left;
+            label39.AutoSize = true;
+            label39.Location = new Point(30, 16);
+            label39.Margin = new Padding(30, 0, 3, 0);
+            label39.Name = "label39";
+            label39.Size = new Size(99, 24);
+            label39.TabIndex = 32;
+            label39.Text = "Spine 版本";
+            // 
+            // tableLayoutPanel_Buttons
+            // 
+            tableLayoutPanel_Buttons.AutoSize = true;
+            tableLayoutPanel_Buttons.ColumnCount = 6;
+            tableLayoutPanel_Buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
+            tableLayoutPanel_Buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
+            tableLayoutPanel_Buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
+            tableLayoutPanel_Buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
+            tableLayoutPanel_Buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
+            tableLayoutPanel_Buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
+            tableLayoutPanel_Buttons.Controls.Add(button_OpenDataFolder, 0, 0);
+            tableLayoutPanel_Buttons.Controls.Add(button_Ok, 4, 0);
+            tableLayoutPanel_Buttons.Controls.Add(button_Apply, 5, 0);
+            tableLayoutPanel_Buttons.Dock = DockStyle.Fill;
+            tableLayoutPanel_Buttons.Location = new Point(0, 873);
+            tableLayoutPanel_Buttons.Margin = new Padding(0);
+            tableLayoutPanel_Buttons.Name = "tableLayoutPanel_Buttons";
+            tableLayoutPanel_Buttons.RowCount = 1;
+            tableLayoutPanel_Buttons.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel_Buttons.Size = new Size(1222, 58);
+            tableLayoutPanel_Buttons.TabIndex = 0;
+            // 
+            // openFileDialog_SelectSkel
+            // 
+            openFileDialog_SelectSkel.AddExtension = false;
+            openFileDialog_SelectSkel.AddToRecent = false;
+            openFileDialog_SelectSkel.Filter = "Skel 文件 (*.skel; *.json)|*.skel;*.json";
+            openFileDialog_SelectSkel.RestoreDirectory = true;
             // 
             // ConfigForm
             // 
@@ -1730,11 +1753,10 @@
             Text = "设置";
             FormClosing += ConfigForm_FormClosing;
             Load += ConfigForm_Load;
-            Shown += ConfigForm_Shown;
+            VisibleChanged += ConfigForm_VisibleChanged;
             contextMenuStrip.ResumeLayout(false);
             tableLayoutPanel_Window.ResumeLayout(false);
             tableLayoutPanel_Window.PerformLayout();
-            tableLayoutPanel_Buttons.ResumeLayout(false);
             tabControl_Config.ResumeLayout(false);
             tabPage_SystemConfig.ResumeLayout(false);
             tableLayoutPanel_SystemConfig.ResumeLayout(false);
@@ -1766,11 +1788,12 @@
             tableLayoutPanel11.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar_MaxFps).EndInit();
             tabPage_SpineConfig.ResumeLayout(false);
+            tableLayoutPanel_SpineConfigParts.ResumeLayout(false);
             tableLayoutPanel_SpineSlot.ResumeLayout(false);
             tableLayoutPanel_SpineSlot.PerformLayout();
-            tableLayoutPanel_SpineConfigParts.ResumeLayout(false);
             tableLayoutPanel_SpineConfig.ResumeLayout(false);
             tableLayoutPanel_SpineConfig.PerformLayout();
+            tableLayoutPanel_Buttons.ResumeLayout(false);
             ResumeLayout(false);
         }
 
