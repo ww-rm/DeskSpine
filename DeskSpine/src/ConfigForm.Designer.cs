@@ -159,6 +159,7 @@
             label39 = new Label();
             tableLayoutPanel_Buttons = new TableLayoutPanel();
             openFileDialog_SelectSkel = new OpenFileDialog();
+            commandSetFullScreen = new ToolStripMenuItem();
             contextMenuStrip.SuspendLayout();
             tableLayoutPanel_Window.SuspendLayout();
             tabControl_Config.SuspendLayout();
@@ -201,55 +202,55 @@
             // contextMenuStrip
             // 
             contextMenuStrip.ImageScalingSize = new Size(24, 24);
-            contextMenuStrip.Items.AddRange(new ToolStripItem[] { commandShowSpine, commandMouseClickThrough, commandResetSpine, toolStripSeparator1, commandConfig, commandAbout, commandExit });
+            contextMenuStrip.Items.AddRange(new ToolStripItem[] { commandShowSpine, commandMouseClickThrough, commandSetFullScreen, commandResetSpine, toolStripSeparator1, commandConfig, commandAbout, commandExit });
             contextMenuStrip.Name = "contextMenuStrip";
-            contextMenuStrip.Size = new Size(153, 190);
+            contextMenuStrip.Size = new Size(241, 253);
             contextMenuStrip.Opening += contextMenuStrip_Opening;
             // 
             // commandShowSpine
             // 
             commandShowSpine.Name = "commandShowSpine";
-            commandShowSpine.Size = new Size(152, 30);
+            commandShowSpine.Size = new Size(240, 30);
             commandShowSpine.Text = "显示精灵";
             commandShowSpine.Click += commandShowSpine_Click;
             // 
-            // commandMousePass
+            // commandMouseClickThrough
             // 
-            commandMouseClickThrough.Name = "commandMousePass";
-            commandMouseClickThrough.Size = new Size(152, 30);
+            commandMouseClickThrough.Name = "commandMouseClickThrough";
+            commandMouseClickThrough.Size = new Size(240, 30);
             commandMouseClickThrough.Text = "鼠标穿透";
             commandMouseClickThrough.Click += commandMouseClickThrough_Click;
             // 
             // commandResetSpine
             // 
             commandResetSpine.Name = "commandResetSpine";
-            commandResetSpine.Size = new Size(152, 30);
+            commandResetSpine.Size = new Size(240, 30);
             commandResetSpine.Text = "窗口复位";
             commandResetSpine.Click += commandResetSpine_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(149, 6);
+            toolStripSeparator1.Size = new Size(237, 6);
             // 
             // commandConfig
             // 
             commandConfig.Name = "commandConfig";
-            commandConfig.Size = new Size(152, 30);
+            commandConfig.Size = new Size(240, 30);
             commandConfig.Text = "设置";
             commandConfig.Click += commandConfig_Click;
             // 
             // commandAbout
             // 
             commandAbout.Name = "commandAbout";
-            commandAbout.Size = new Size(152, 30);
+            commandAbout.Size = new Size(240, 30);
             commandAbout.Text = "关于";
             commandAbout.Click += commandAbout_Click;
             // 
             // commandExit
             // 
             commandExit.Name = "commandExit";
-            commandExit.Size = new Size(152, 30);
+            commandExit.Size = new Size(240, 30);
             commandExit.Text = "退出";
             commandExit.Click += CommandExit_Click;
             // 
@@ -1791,6 +1792,13 @@
             openFileDialog_SelectSkel.Filter = "Skel 文件 (*.skel; *.json)|*.skel;*.json";
             openFileDialog_SelectSkel.RestoreDirectory = true;
             // 
+            // commandSetFullScreen
+            // 
+            commandSetFullScreen.Name = "commandSetFullScreen";
+            commandSetFullScreen.Size = new Size(240, 30);
+            commandSetFullScreen.Text = "一键全屏";
+            commandSetFullScreen.Click += commandSetFullScreen_Click;
+            // 
             // ConfigForm
             // 
             AcceptButton = button_Ok;
@@ -1979,5 +1987,6 @@
         private Label label46;
         private CheckBox checkBox_SpineUsePMA;
         private Label label42;
+        private ToolStripMenuItem commandSetFullScreen;
     }
 }

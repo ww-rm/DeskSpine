@@ -1,3 +1,4 @@
+using SpineWindow;
 using System.Diagnostics;
 
 namespace DeskSpine
@@ -292,9 +293,7 @@ namespace DeskSpine
             if (e.Button == MouseButtons.Left)
             {
 
-                //var a = new Config();
-                //a.Load("a.json");
-                //a.Save("b.json");
+                //Win32.SetParent(Program.WindowSpine.window.SystemHandle, 0x3b0880);
             }
         }
 
@@ -340,6 +339,19 @@ namespace DeskSpine
                 Program.WindowSpine.MouseClickThrough = true;
                 currentConfig.BasicConfig.MouseClickThrough = true;
             }
+            Program.LocalConfig = currentConfig;
+        }
+
+        private void commandSetFullScreen_Click(object sender, EventArgs e)
+        {
+            var screenSize = Screen.FromHandle(Program.WindowSpine.Handle).Bounds.Size;
+            var currentConfig = Program.CurrentConfig;
+            Program.WindowSpine.Position = new(0, 0);
+            Program.WindowSpine.Size = new((uint)screenSize.Width, (uint)screenSize.Height);
+            currentConfig.BasicConfig.PositionX = 0;
+            currentConfig.BasicConfig.PositionY = 0;
+            currentConfig.BasicConfig.SizeX = (uint)screenSize.Width;
+            currentConfig.BasicConfig.SizeY = (uint)screenSize.Height;
             Program.LocalConfig = currentConfig;
         }
 
