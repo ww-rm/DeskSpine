@@ -292,7 +292,7 @@ namespace SpineWindow
         /// </summary>
         /// <param name="index">槽位</param>
         /// <exception cref="ArgumentOutOfRangeException">指定的 index 超出最大槽位限制</exception>
-        public void UnloadSpine(uint index)
+        public void UnloadSpine(int index)
         {
             if (index >= spineSlots.Length)
                 throw new ArgumentOutOfRangeException($"Max spine slot count: {spineSlots.Length}, got index {index}");
@@ -684,7 +684,7 @@ namespace SpineWindow
                 {
                     window.Close();
                     window = null;
-                    cancelTokenSrc.Token.ThrowIfCancellationRequested();
+                    break;
                 }
 
                 window.DispatchEvents();
