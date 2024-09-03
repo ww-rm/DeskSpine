@@ -218,10 +218,11 @@ namespace DeskSpine
                 }
             }
 
-
+            // scale 的设置有代价, 并且会重置动画, 所以有改动时再设置
+            if (Math.Abs(currentConfig.BasicConfig.SpineScale - config.BasicConfig.SpineScale) > 1e-3)
+                WindowSpine.SpineScale = config.BasicConfig.SpineScale;
             WindowSpine.SpinePosition = new(config.BasicConfig.SpinePositionX, config.BasicConfig.SpinePositionY);
             WindowSpine.SpineFlip = config.BasicConfig.SpineFlip;
-            WindowSpine.SpineScale = config.BasicConfig.SpineScale;
             WindowSpine.SpineUsePMA = config.BasicConfig.SpineUsePMA;
 
             // 保存本地
