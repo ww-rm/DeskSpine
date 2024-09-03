@@ -557,12 +557,20 @@ namespace SpineWindow
                     if (workerW == IntPtr.Zero)
                         return;
                     Win32.SetParent(hWnd, workerW);
-                    Size = new(window.Size.X + 1, window.Size.Y + 1);
+
+                    // 触发一次内部窗口大小修改逻辑
+                    var s = window.Size;
+                    window.Size = new(s.X + 1, s.Y + 1);
+                    window.Size = s;
                 }
                 else
                 {
                     Win32.SetParent(hWnd, IntPtr.Zero);
-                    Size = new(window.Size.X - 1, window.Size.Y - 1);
+
+                    // 触发一次内部窗口大小修改逻辑
+                    var s = window.Size;
+                    window.Size = new(s.X + 1, s.Y + 1);
+                    window.Size = s;
                 }
             }
         }
@@ -1079,6 +1087,9 @@ namespace SpineWindow
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
+
+        [DllImport("user32.dll")]
+        public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
 
         public static TimeSpan GetLastInputTime()
         {
