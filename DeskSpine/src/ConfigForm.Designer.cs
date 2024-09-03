@@ -1117,7 +1117,7 @@
             trackBar_MaxFps.TickFrequency = 16;
             trackBar_MaxFps.TickStyle = TickStyle.Both;
             trackBar_MaxFps.Value = 30;
-            trackBar_MaxFps.Scroll += trackBar_MaxFps_ValueChanged;
+            trackBar_MaxFps.ValueChanged += trackBar_MaxFps_ValueChanged;
             // 
             // label15
             // 
