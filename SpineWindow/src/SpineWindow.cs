@@ -1088,9 +1088,6 @@ namespace SpineWindow
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
 
-        [DllImport("user32.dll")]
-        public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
-
         public static TimeSpan GetLastInputTime()
         {
             LASTINPUTINFO lastInputInfo = new();
