@@ -1756,6 +1756,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "ConfigForm";
             Text = "设置";
+            TopMost = true;
             FormClosing += ConfigForm_FormClosing;
             Load += ConfigForm_Load;
             VisibleChanged += ConfigForm_VisibleChanged;
