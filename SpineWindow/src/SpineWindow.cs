@@ -66,6 +66,7 @@ namespace SpineWindow
         public SpineWindow(uint slotCount)
         {
             spineSlots = new Spine.Spine[slotCount];
+            colorTables = new Dictionary<uint, uint>[slotCount];
             windowCreatedEvent.Reset();
             windowLoopTask = Task.Run(() => SpineWindowTask(this), cancelTokenSrc.Token);
             windowCreatedEvent.WaitOne();
@@ -97,6 +98,8 @@ namespace SpineWindow
         /// 窗口可用最大 Spine 装载数
         /// </summary>
         public int SlotCount { get => spineSlots.Length; }
+
+        private Dictionary<uint, uint>[] colorTables;
 
         /// <summary>
         /// 资源文件夹, 提供语音等资源的位置
@@ -270,7 +273,7 @@ namespace SpineWindow
             spineSlots[index] = spineNew;
             mutex.ReleaseMutex();
 
-            UpdateProperBackgroudColor();
+            UpdateProperBackgroudColor(index);
             Trigger_SpineLoaded(index);
             Debug.Write("spine animiation: ");
             foreach (var a in spineSlots[index].AnimationNames) Debug.Write($"{a}; "); Debug.WriteLine("");
@@ -305,16 +308,20 @@ namespace SpineWindow
 
         private void UpdateProperBackgroudColor()
         {
+            for (int i = 0; i < SlotCount; i++)
+                UpdateProperBackgroudColor(i);
+        }
+
+        private void UpdateProperBackgroudColor(int index)
+        {
             // TODO: 优化查找时间
             var colors = new Dictionary<uint, uint>();
             List<string> paths = [];
 
             mutex.WaitOne();
-            foreach (var sp in spineSlots)
-            {
-                if (sp is null) continue;
+            var sp = spineSlots[index];
+            if (sp is not null)
                 paths.AddRange(sp.PngPaths);
-            }
             mutex.ReleaseMutex();
 
             if (paths.Count <= 0)
@@ -336,6 +343,8 @@ namespace SpineWindow
                     }
                 }
             }
+
+            colorTables[index] = colors;
 
             if (colors.Count <= 0)
                 return;
@@ -365,13 +374,16 @@ namespace SpineWindow
 
                 var k = tmpColor.ToInteger();
                 uint count = 0;
-                if (colors.TryGetValue(k, out count))
+                uint tmp = 0;
+                foreach (var table in colorTables)
                 {
-                    if (count < bestColorSameCount)
-                    {
-                        bestColor = tmpColor;
-                        bestColorSameCount = count;
-                    }
+                    if (table is not null && table.TryGetValue(k, out tmp))
+                        count += tmp;
+                }
+                if (count < bestColorSameCount)
+                {
+                    bestColor = tmpColor;
+                    bestColorSameCount = count;
                 }
                 else
                 {
@@ -485,12 +497,18 @@ namespace SpineWindow
             self.WindowLoop();
         }
 
+        /// <summary>
+        /// 要使用的背景颜色
+        /// </summary>
         public BackgroudColor BackgroudColor 
         {
             get => backgroudColor;
             set { backgroudColor = value; UpdateProperBackgroudColor(); }
         }
 
+        /// <summary>
+        /// 具体的背景颜色
+        /// </summary>
         public SFML.Graphics.Color ClearColor { get { mutex.WaitOne(); var c = clearColor; mutex.ReleaseMutex(); return c; } }
 
         /// <summary>
@@ -509,8 +527,11 @@ namespace SpineWindow
             set => Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, value, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
         }
 
-        // TODO
-        public bool WallpaperMode { get; set; }
+        public bool WallpaperMode 
+        { 
+            get; 
+            set; 
+        }
 
 
         /// <summary>
