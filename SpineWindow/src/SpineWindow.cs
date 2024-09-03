@@ -498,6 +498,11 @@ namespace SpineWindow
         }
 
         /// <summary>
+        /// 窗口句柄
+        /// </summary>
+        public IntPtr Handle { get => window.SystemHandle; }
+
+        /// <summary>
         /// 要使用的背景颜色
         /// </summary>
         public BackgroudColor BackgroudColor 
@@ -527,10 +532,39 @@ namespace SpineWindow
             set => Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, value, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
         }
 
+        /// <summary>
+        /// 壁纸模式, 嵌入桌面
+        /// </summary>
         public bool WallpaperMode 
         { 
-            get; 
-            set; 
+            get
+            {
+                // WS_POPUP 要用 GetAncestor 获取父窗口
+                var workerW = Win32.GetWorkerW();
+                return workerW != IntPtr.Zero && Win32.GetAncestor(window.SystemHandle, Win32.GA_PARENT) == workerW;
+            }
+            set
+            {
+                var hWnd = window.SystemHandle;
+                var progman = Win32.FindWindow("Progman", null);
+                if (progman == IntPtr.Zero)
+                    return;
+                if (value)
+                {
+                    // 确保 WorkerW 被创建
+                    Win32.SendMessageTimeout(progman, Win32.WM_SPAWN_WORKER, IntPtr.Zero, IntPtr.Zero, Win32.SMTO_NORMAL, 1000, out _);
+                    var workerW = Win32.GetWorkerW();
+                    if (workerW == IntPtr.Zero)
+                        return;
+                    Win32.SetParent(hWnd, workerW);
+                    Size = new(window.Size.X + 1, window.Size.Y + 1);
+                }
+                else
+                {
+                    Win32.SetParent(hWnd, IntPtr.Zero);
+                    Size = new(window.Size.X - 1, window.Size.Y - 1);
+                }
+            }
         }
 
 
@@ -675,7 +709,6 @@ namespace SpineWindow
             Win32.SetWindowLong(hWnd, Win32.GWL_EXSTYLE, exStyle);
             Win32.SetLayeredWindowAttributes(hWnd, crKey, 255, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
             Win32.SetWindowPos(hWnd, Win32.HWND_TOPMOST, 0, 0, 0, 0, Win32.SWP_NOMOVE | Win32.SWP_NOSIZE);
-            //Win32.SetParent(hWnd, 0x004A096E);
 
             // 设置窗口属性
             window.SetVisible(visible);
@@ -767,7 +800,7 @@ namespace SpineWindow
 
         private void Resized(SFML.Window.SizeEventArgs e)
         {
-            // 设置 Size 属性的时候会触发该事件, 但是要窗口事件循环在运行
+            // 设置 Size 属性的时候会触发该事件
             var view = window.GetView();
             view.Size = new(window.Size.X, -window.Size.Y);
             window.SetView(view);
@@ -988,6 +1021,16 @@ namespace SpineWindow
         public const uint SWP_FRAMECHANGED = 0x0020;
         public const uint SWP_REFRESHLONG = SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED;
 
+        public const int WM_SPAWN_WORKER = 0x052C; // 一个未公开的神秘消息
+
+        public const uint SMTO_NORMAL = 0x0000;
+        public const uint SMTO_BLOCK = 0x0001;
+        public const uint SMTO_ABORTIFHUNG = 0x0002;
+        public const uint SMTO_NOTIMEOUTIFNOTHUNG = 0x0008;
+
+        public const uint GA_PARENT = 1;
+        public const uint GW_OWNER = 4;
+
         [StructLayout(LayoutKind.Sequential)]
         private struct LASTINPUTINFO
         {
@@ -1011,13 +1054,31 @@ namespace SpineWindow
         public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
-
-        [DllImport("user32.dll", SetLastError = true)]
         public static extern uint GetDoubleClickTime();
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam, uint fuFlags, uint uTimeout, out IntPtr lpdwResult);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr GetParent(IntPtr hWnd);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr GetAncestor(IntPtr hWnd, uint gaFlags);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
 
         public static TimeSpan GetLastInputTime()
         {
@@ -1032,6 +1093,21 @@ namespace SpineWindow
                 idleTimeMillis = tickCount - lastInputTick;
             }          
             return TimeSpan.FromMilliseconds(idleTimeMillis);
+        }
+
+        public static IntPtr GetWorkerW()
+        {
+            var progman = FindWindow("Progman", null);
+            if (progman == IntPtr.Zero)
+                return IntPtr.Zero;
+            IntPtr hWnd = IntPtr.Zero;
+            do
+            {
+                hWnd = FindWindowEx(IntPtr.Zero, hWnd, "WorkerW", null);
+                if (hWnd != IntPtr.Zero && GetWindow(hWnd, GW_OWNER) == progman)
+                    break;
+            } while (hWnd != IntPtr.Zero);
+            return hWnd;
         }
     }
 }
