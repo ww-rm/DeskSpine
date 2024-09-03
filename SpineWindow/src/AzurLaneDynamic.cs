@@ -1,4 +1,6 @@
+using SFML.Window;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +17,14 @@ namespace SpineWindow
 
             mutex.WaitOne();
             foreach (var sp in spineSlots) { if (sp is not null) sp.CurrentAnimation = "normal"; }
+            mutex.ReleaseMutex();
+        }
+
+        protected override void Trigger_MouseButtonClick(MouseButtonEventArgs e)
+        {
+            base.Trigger_MouseButtonClick(e);
+            mutex.WaitOne();
+            foreach (var sp in spineSlots) { if (sp is not null) sp.CurrentAnimation = "click"; }
             mutex.ReleaseMutex();
         }
     }
