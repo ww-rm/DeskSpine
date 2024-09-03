@@ -344,12 +344,14 @@ namespace DeskSpine
 
         private void commandSetFullScreen_Click(object sender, EventArgs e)
         {
-            var screenSize = Screen.FromHandle(Program.WindowSpine.Handle).Bounds.Size;
+            var screenBounds = Screen.FromHandle(Program.WindowSpine.Handle).Bounds;
+            var screenPosition = screenBounds.Location;
+            var screenSize = screenBounds.Size;
             var currentConfig = Program.CurrentConfig;
-            Program.WindowSpine.Position = new(0, 0);
+            Program.WindowSpine.Position = new(screenPosition.X, screenPosition.Y);
             Program.WindowSpine.Size = new((uint)screenSize.Width, (uint)screenSize.Height);
-            currentConfig.BasicConfig.PositionX = 0;
-            currentConfig.BasicConfig.PositionY = 0;
+            currentConfig.BasicConfig.PositionX = screenPosition.X;
+            currentConfig.BasicConfig.PositionY = screenPosition.Y;
             currentConfig.BasicConfig.SizeX = (uint)screenSize.Width;
             currentConfig.BasicConfig.SizeY = (uint)screenSize.Height;
             Program.LocalConfig = currentConfig;
