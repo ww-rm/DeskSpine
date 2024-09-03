@@ -1,4 +1,5 @@
 using Microsoft.Win32;
+using SpineWindow;
 
 namespace DeskSpine
 {
@@ -10,8 +11,8 @@ namespace DeskSpine
         public static string ProgramDataDirectory { get; } = Path.Combine(LocalAppdataDirectory, ProgramName);
         public static string ProgramConfigPath { get; } = Path.Combine(ProgramDataDirectory, "config.json");
 
-        private static ConfigForm configForm;
-        private static SpineWindow.SpineWindow spineWindow;
+        public static ConfigForm ConfigForm { get; private set; }
+        public static SpineWindow.SpineWindow WindowSpine { get; private set; }
 
         private static Mutex programMutex;
 
@@ -43,13 +44,13 @@ namespace DeskSpine
         {
             programMutex = new Mutex(true, ProgramName, out bool createNew);
 
-            #if !DEBUG
+#if !DEBUG
             if (!createNew)
             {
                 MessageBox.Show("程序已在运行, 请勿重复启动", ProgramName);
                 return;
             }
-            #endif
+#endif
 
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
@@ -58,7 +59,7 @@ namespace DeskSpine
             if (!Directory.Exists(ProgramDataDirectory))
                 Directory.CreateDirectory(ProgramDataDirectory);
             InitFromLocalConfig();
-            configForm = new ConfigForm();
+            ConfigForm = new ConfigForm();
             Application.Run();
         }
 
@@ -74,37 +75,31 @@ namespace DeskSpine
             AutoRun = localConfig.SystemConfig.AutuRun;
 
             // 基础配置
-            spineWindow = SpineWindow.SpineWindow.New(localConfig.BasicConfig.WindowType, SpineConfig.SlotCount);
-            spineWindow.WallpaperMode = localConfig.BasicConfig.WallpaperMode;
-            spineWindow.MouseClickThrough = localConfig.BasicConfig.MouseClickThrough;
-            spineWindow.SpineFlip = localConfig.BasicConfig.SpineFlip;
-            spineWindow.SpineScale = localConfig.BasicConfig.SpineScale;
-            spineWindow.Opacity = localConfig.BasicConfig.Opacity;
-            spineWindow.MaxFps = localConfig.BasicConfig.MaxFps;
-            spineWindow.BackgroudColor = localConfig.BasicConfig.BackgroudColor;
+            WindowSpine = SpineWindow.SpineWindow.New(localConfig.SpineConfig.WindowType, SpineConfig.SlotCount);
+            WindowSpine.WallpaperMode = localConfig.BasicConfig.WallpaperMode;
+            WindowSpine.MouseClickThrough = localConfig.BasicConfig.MouseClickThrough;
+            WindowSpine.SpineFlip = localConfig.BasicConfig.SpineFlip;
+            WindowSpine.SpineScale = localConfig.BasicConfig.SpineScale;
+            WindowSpine.Opacity = localConfig.BasicConfig.Opacity;
+            WindowSpine.MaxFps = localConfig.BasicConfig.MaxFps;
+            WindowSpine.BackgroudColor = localConfig.BasicConfig.BackgroudColor;
 
             // 不需要管位置和大小信息, 会通过注册表加载
 
             // 加载 Spine 资源
-            var spVersion = localConfig.BasicConfig.SpineVersion;
-            for (int i = 0; i < spineWindow.SlotCount; i++)
+            var spVersion = localConfig.SpineConfig.SpineVersion;
+            for (int i = 0; i < WindowSpine.SlotCount; i++)
             {
                 var skelPath = localConfig.SpineConfig.GetSkelPath(i);
-                if (skelPath is not null)
+                if (!string.IsNullOrEmpty(skelPath))
                 {
-                    try
-                    { 
-                        spineWindow.LoadSpine(spVersion, skelPath, index: i); 
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"{skelPath} 加载失败\n\n{ex}", ProgramName);
-                    }
+                    try { WindowSpine.LoadSpine(spVersion, skelPath, index: i); }
+                    catch (Exception ex) { MessageBox.Show($"{skelPath} 加载失败\n\n{ex}", ProgramName); }
                 }
             }
 
             // 设置窗口可见状态
-            spineWindow.Visible = localConfig.SystemConfig.Visible;
+            WindowSpine.Visible = localConfig.SystemConfig.Visible;
         }
 
         /// <summary>
@@ -117,32 +112,32 @@ namespace DeskSpine
             {
                 var config = new Config();
                 config.SystemConfig.AutuRun = AutoRun;
-                config.SystemConfig.Visible = spineWindow.Visible;
-                config.BasicConfig.WallpaperMode = spineWindow.WallpaperMode;
-                config.BasicConfig.MouseClickThrough = spineWindow.MouseClickThrough;
-                config.BasicConfig.SpineScale = spineWindow.SpineScale;
-                config.BasicConfig.SpineFlip = spineWindow.SpineFlip;
-                config.BasicConfig.Opacity = spineWindow.Opacity;
-                config.BasicConfig.MaxFps = spineWindow.MaxFps;
-                config.BasicConfig.BackgroudColor = spineWindow.BackgroudColor;
-                config.BasicConfig.WindowType = spineWindow.Type;
-                config.BasicConfig.SpineVersion = spineWindow.SpineVersion;
-                for (int i = 0; i < spineWindow.SlotCount; i++)
+                config.SystemConfig.Visible = WindowSpine.Visible;
+                config.BasicConfig.WallpaperMode = WindowSpine.WallpaperMode;
+                config.BasicConfig.MouseClickThrough = WindowSpine.MouseClickThrough;
+                config.BasicConfig.SpineScale = WindowSpine.SpineScale;
+                config.BasicConfig.SpineFlip = WindowSpine.SpineFlip;
+                config.BasicConfig.Opacity = WindowSpine.Opacity;
+                config.BasicConfig.MaxFps = WindowSpine.MaxFps;
+                config.BasicConfig.BackgroudColor = WindowSpine.BackgroudColor;
+                config.SpineConfig.WindowType = WindowSpine.Type;
+                config.SpineConfig.SpineVersion = WindowSpine.SpineVersion;
+                for (int i = 0; i < WindowSpine.SlotCount; i++)
                 {
-                    config.SpineConfig.SetSkelPath(i, spineWindow.GetSpineSkelPath(i));
+                    config.SpineConfig.SetSkelPath(i, WindowSpine.GetSpineSkelPath(i));
                 }
 
                 // 一些临时量
-                var position = spineWindow.Position;
+                var position = WindowSpine.Position;
                 config.BasicConfig.PositionX = position.X;
                 config.BasicConfig.PositionY = position.Y;
-                var size = spineWindow.Size;
+                var size = WindowSpine.Size;
                 config.BasicConfig.SizeX = size.X;
                 config.BasicConfig.SizeY = size.Y;
-                var spPosition = spineWindow.Position;
+                var spPosition = WindowSpine.SpinePosition;
                 config.BasicConfig.SpinePositionX = spPosition.X;
                 config.BasicConfig.SpinePositionY = spPosition.Y;
-                config.BasicConfig.ClearColor = spineWindow.ClearColor;
+                config.BasicConfig.ClearColor = WindowSpine.ClearColor;
 
                 return config;
             }
@@ -152,6 +147,83 @@ namespace DeskSpine
         {
             get { var v = new Config(); v.Load(ProgramConfigPath); return v; }
             set => value.Save(ProgramConfigPath);
+        }
+
+        public static void ApplyConfig(Config config)
+        {
+            // 优先检测是否需要更换窗口类型, 重新创建窗口实例之后
+            if (CurrentConfig.SpineConfig.WindowType != config.SpineConfig.WindowType)
+            {
+                WindowSpine.Dispose();
+                WindowSpine = SpineWindow.SpineWindow.New(config.SpineConfig.WindowType, SpineConfig.SlotCount);
+            }
+
+            var currentConfig = CurrentConfig;
+
+            // 系统设置
+            if (currentConfig.SystemConfig.AutuRun != config.SystemConfig.AutuRun)
+                AutoRun = config.SystemConfig.AutuRun;
+            if (currentConfig.SystemConfig.Visible != config.SystemConfig.Visible)
+                WindowSpine.Visible = config.SystemConfig.Visible;
+
+            // 基础设置
+            if (currentConfig.BasicConfig.WallpaperMode != config.BasicConfig.WallpaperMode)
+                WindowSpine.WallpaperMode = config.BasicConfig.WallpaperMode;
+            if (currentConfig.BasicConfig.MouseClickThrough != config.BasicConfig.MouseClickThrough)
+                WindowSpine.MouseClickThrough = config.BasicConfig.MouseClickThrough;
+            if (currentConfig.BasicConfig.PositionX != config.BasicConfig.PositionX ||
+                currentConfig.BasicConfig.PositionY != config.BasicConfig.PositionY)
+                WindowSpine.Position = new(config.BasicConfig.PositionX, config.BasicConfig.PositionY);
+            if (currentConfig.BasicConfig.SizeX != config.BasicConfig.SizeX ||
+                currentConfig.BasicConfig.SizeY != config.BasicConfig.SizeY)
+                WindowSpine.Size = new(config.BasicConfig.SizeX, config.BasicConfig.SizeY);
+            if (currentConfig.BasicConfig.SpinePositionX != config.BasicConfig.SpinePositionX ||
+                currentConfig.BasicConfig.SpinePositionY != config.BasicConfig.SpinePositionY)
+                WindowSpine.SpinePosition = new(config.BasicConfig.SpinePositionX, config.BasicConfig.SpinePositionY);
+            if (currentConfig.BasicConfig.SpineFlip != config.BasicConfig.SpineFlip)
+                WindowSpine.SpineFlip = config.BasicConfig.SpineFlip;
+            if (currentConfig.BasicConfig.SpineScale != config.BasicConfig.SpineScale)
+                WindowSpine.SpineScale = config.BasicConfig.SpineScale;
+            if (currentConfig.BasicConfig.Opacity != config.BasicConfig.Opacity)
+                WindowSpine.Opacity = config.BasicConfig.Opacity;
+            if (currentConfig.BasicConfig.MaxFps != config.BasicConfig.MaxFps)
+                WindowSpine.MaxFps = config.BasicConfig.MaxFps;
+            if (currentConfig.BasicConfig.BackgroudColor != config.BasicConfig.BackgroudColor)
+                WindowSpine.BackgroudColor = config.BasicConfig.BackgroudColor;
+
+            // Spine 设置
+            if (currentConfig.SpineConfig.SpineVersion != config.SpineConfig.SpineVersion)
+            {
+                for (int i = 0; i < WindowSpine.SlotCount; i++)
+                {
+                    WindowSpine.UnloadSpine(i);
+                    var skelPath = config.SpineConfig.GetSkelPath(i);
+                    if (!string.IsNullOrEmpty(skelPath))
+                    {
+                        try { WindowSpine.LoadSpine(config.SpineConfig.SpineVersion, skelPath, index: i); }
+                        catch (Exception ex) { MessageBox.Show($"{skelPath} 加载失败\n\n{ex}", ProgramName); }
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < WindowSpine.SlotCount; i++)
+                {
+                    if (currentConfig.SpineConfig.GetSkelPath(i) != config.SpineConfig.GetSkelPath(i))
+                    {
+                        WindowSpine.UnloadSpine(i);
+                        var skelPath = config.SpineConfig.GetSkelPath(i);
+                        if (!string.IsNullOrEmpty(skelPath))
+                        {
+                            try { WindowSpine.LoadSpine(config.SpineConfig.SpineVersion, skelPath, index: i); }
+                            catch (Exception ex) { MessageBox.Show($"{skelPath} 加载失败\n\n{ex}", ProgramName); }
+                        }
+                    }
+                }
+            }
+
+            // 保存本地
+            LocalConfig = config;
         }
     }
 }
