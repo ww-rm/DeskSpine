@@ -219,6 +219,7 @@
             commandResetSpine.Name = "commandResetSpine";
             commandResetSpine.Size = new Size(152, 30);
             commandResetSpine.Text = "窗口复位";
+            commandResetSpine.Click += commandResetSpine_Click;
             // 
             // toolStripSeparator1
             // 
@@ -653,6 +654,7 @@
             numericUpDown_SpinePositionY.Location = new Point(230, 13);
             numericUpDown_SpinePositionY.Margin = new Padding(10, 3, 10, 3);
             numericUpDown_SpinePositionY.Maximum = new decimal(new int[] { 32767, 0, 0, 0 });
+            numericUpDown_SpinePositionY.Minimum = new decimal(new int[] { 32767, 0, 0, int.MinValue });
             numericUpDown_SpinePositionY.Name = "numericUpDown_SpinePositionY";
             numericUpDown_SpinePositionY.Size = new Size(122, 30);
             numericUpDown_SpinePositionY.TabIndex = 6;
@@ -685,6 +687,7 @@
             numericUpDown_SpinePositionX.Location = new Point(50, 13);
             numericUpDown_SpinePositionX.Margin = new Padding(10, 3, 10, 3);
             numericUpDown_SpinePositionX.Maximum = new decimal(new int[] { 32767, 0, 0, 0 });
+            numericUpDown_SpinePositionX.Minimum = new decimal(new int[] { 32767, 0, 0, int.MinValue });
             numericUpDown_SpinePositionX.Name = "numericUpDown_SpinePositionX";
             numericUpDown_SpinePositionX.Size = new Size(121, 30);
             numericUpDown_SpinePositionX.TabIndex = 4;
@@ -878,6 +881,7 @@
             numericUpDown_PositionY.Location = new Point(230, 13);
             numericUpDown_PositionY.Margin = new Padding(10, 3, 10, 3);
             numericUpDown_PositionY.Maximum = new decimal(new int[] { 32767, 0, 0, 0 });
+            numericUpDown_PositionY.Minimum = new decimal(new int[] { 32767, 0, 0, int.MinValue });
             numericUpDown_PositionY.Name = "numericUpDown_PositionY";
             numericUpDown_PositionY.Size = new Size(122, 30);
             numericUpDown_PositionY.TabIndex = 6;
@@ -910,6 +914,7 @@
             numericUpDown_PositionX.Location = new Point(50, 13);
             numericUpDown_PositionX.Margin = new Padding(10, 3, 10, 3);
             numericUpDown_PositionX.Maximum = new decimal(new int[] { 32767, 0, 0, 0 });
+            numericUpDown_PositionX.Minimum = new decimal(new int[] { 32767, 0, 0, int.MinValue });
             numericUpDown_PositionX.Name = "numericUpDown_PositionX";
             numericUpDown_PositionX.Size = new Size(121, 30);
             numericUpDown_PositionX.TabIndex = 4;
