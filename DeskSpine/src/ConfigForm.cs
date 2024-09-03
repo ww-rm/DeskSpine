@@ -304,6 +304,45 @@ namespace DeskSpine
 
         }
 
+        private void contextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var currentConfig = Program.CurrentConfig;
+            commandShowSpine.Checked = currentConfig.SystemConfig.Visible;
+            commandMouseClickThrough.Checked = currentConfig.BasicConfig.MouseClickThrough;
+        }
+
+        private void commandShowSpine_Click(object sender, EventArgs e)
+        {
+            var currentConfig = Program.CurrentConfig;
+            if (commandShowSpine.Checked)
+            {
+                Program.WindowSpine.Visible = false;
+                currentConfig.SystemConfig.Visible = false;
+            }
+            else
+            {
+                Program.WindowSpine.Visible = true;
+                currentConfig.SystemConfig.Visible = true;
+            }
+            Program.LocalConfig = currentConfig;
+        }
+
+        private void commandMouseClickThrough_Click(object sender, EventArgs e)
+        {
+            var currentConfig = Program.CurrentConfig;
+            if (commandMouseClickThrough.Checked)
+            {
+                Program.WindowSpine.MouseClickThrough = false;
+                currentConfig.BasicConfig.MouseClickThrough = false;
+            }
+            else
+            {
+                Program.WindowSpine.MouseClickThrough = true;
+                currentConfig.BasicConfig.MouseClickThrough = true;
+            }
+            Program.LocalConfig = currentConfig;
+        }
+
         private void commandResetSpine_Click(object sender, EventArgs e)
         {
             Program.WindowSpine.ResetPositionAndSize();
@@ -313,6 +352,11 @@ namespace DeskSpine
         {
             this.Show();
             this.Activate();
+        }
+
+        private void commandAbout_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void CommandExit_Click(object? sender, EventArgs e)

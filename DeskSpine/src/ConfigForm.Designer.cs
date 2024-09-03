@@ -33,7 +33,7 @@
             notifyIcon = new NotifyIcon(components);
             contextMenuStrip = new ContextMenuStrip(components);
             commandShowSpine = new ToolStripMenuItem();
-            commandMousePass = new ToolStripMenuItem();
+            commandMouseClickThrough = new ToolStripMenuItem();
             commandResetSpine = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
             commandConfig = new ToolStripMenuItem();
@@ -201,21 +201,24 @@
             // contextMenuStrip
             // 
             contextMenuStrip.ImageScalingSize = new Size(24, 24);
-            contextMenuStrip.Items.AddRange(new ToolStripItem[] { commandShowSpine, commandMousePass, commandResetSpine, toolStripSeparator1, commandConfig, commandAbout, commandExit });
+            contextMenuStrip.Items.AddRange(new ToolStripItem[] { commandShowSpine, commandMouseClickThrough, commandResetSpine, toolStripSeparator1, commandConfig, commandAbout, commandExit });
             contextMenuStrip.Name = "contextMenuStrip";
             contextMenuStrip.Size = new Size(153, 190);
+            contextMenuStrip.Opening += contextMenuStrip_Opening;
             // 
             // commandShowSpine
             // 
             commandShowSpine.Name = "commandShowSpine";
             commandShowSpine.Size = new Size(152, 30);
             commandShowSpine.Text = "显示精灵";
+            commandShowSpine.Click += commandShowSpine_Click;
             // 
             // commandMousePass
             // 
-            commandMousePass.Name = "commandMousePass";
-            commandMousePass.Size = new Size(152, 30);
-            commandMousePass.Text = "鼠标穿透";
+            commandMouseClickThrough.Name = "commandMousePass";
+            commandMouseClickThrough.Size = new Size(152, 30);
+            commandMouseClickThrough.Text = "鼠标穿透";
+            commandMouseClickThrough.Click += commandMouseClickThrough_Click;
             // 
             // commandResetSpine
             // 
@@ -241,6 +244,7 @@
             commandAbout.Name = "commandAbout";
             commandAbout.Size = new Size(152, 30);
             commandAbout.Text = "关于";
+            commandAbout.Click += commandAbout_Click;
             // 
             // commandExit
             // 
@@ -1851,7 +1855,7 @@
         private ToolStripMenuItem commandExit;
         private ToolStripMenuItem commandAbout;
         private ToolStripMenuItem commandShowSpine;
-        private ToolStripMenuItem commandMousePass;
+        private ToolStripMenuItem commandMouseClickThrough;
         private ToolStripMenuItem commandResetSpine;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripMenuItem commandConfig;
