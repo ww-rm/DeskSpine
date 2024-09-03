@@ -243,12 +243,11 @@ namespace Spine
                 }
                 else if (attachment is ClippingAttachment clippingAttachment)
                 {
-                    clipping.ClipStart(slot, clippingAttachment);
+                    //clipping.ClipStart(slot, clippingAttachment);
                     continue;
                 }
                 else
                 {
-                    Debug.WriteLine($"W: Unsupported attachment type: {attachment.GetType()}");
                     continue;
                 }
 
