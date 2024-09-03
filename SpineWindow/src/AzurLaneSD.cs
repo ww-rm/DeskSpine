@@ -113,12 +113,10 @@ namespace SpineWindow
                 switch (e.Button)
                 {
                     case Mouse.Button.Left:
-                        if (!string.IsNullOrEmpty(animation_MouseLeftClick))
-                            spineSlots[0].CurrentAnimation = animation_MouseLeftClick;
+                        spineSlots[0].CurrentAnimation = animation_MouseLeftClick;
                         break;
                     case Mouse.Button.Right:
-                        if (!string.IsNullOrEmpty(animation_MouseRightClick))
-                            spineSlots[0].CurrentAnimation = animation_MouseRightClick;
+                        spineSlots[0].CurrentAnimation = animation_MouseRightClick;
                         break;
                 }
 
@@ -154,12 +152,10 @@ namespace SpineWindow
                 switch (e.Button)
                 {
                     case Mouse.Button.Left:
-                        if (!string.IsNullOrEmpty(animation_MouseLeftDoubleClick))
-                            spineSlots[0].CurrentAnimation = animation_MouseLeftDoubleClick;
+                        spineSlots[0].CurrentAnimation = animation_MouseLeftDoubleClick;
                         break;
                     case Mouse.Button.Right:
-                        if (!string.IsNullOrEmpty(animation_MouseRightDoubleClick))
-                            spineSlots[0].CurrentAnimation = animation_MouseRightDoubleClick;
+                        spineSlots[0].CurrentAnimation = animation_MouseRightDoubleClick;
                         break;
                 }
 
@@ -222,8 +218,7 @@ namespace SpineWindow
             mutex.WaitOne();
             if (spineSlots[0] is not null)
             {
-                if (!string.IsNullOrEmpty(animation_Dragging))
-                    spineSlots[0].CurrentAnimation = animation_Dragging;
+                spineSlots[0].CurrentAnimation = animation_Dragging;
 
                 previousState = state;
                 state = state switch
@@ -273,8 +268,7 @@ namespace SpineWindow
             mutex.WaitOne();
             if (spineSlots[0] is not null && state == State.Idle)
             {
-                if (!string.IsNullOrEmpty(animation_Sleep))
-                    spineSlots[0].CurrentAnimation = animation_Sleep;
+                spineSlots[0].CurrentAnimation = animation_Sleep;
                 state = State.Sleeping;
             }
             mutex.ReleaseMutex();
