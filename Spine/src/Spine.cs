@@ -112,6 +112,37 @@ namespace Spine
         protected List<string> pngPaths = [];
 
         /// <summary>
+        /// 获取 Spine 对象纹理图集中每种颜色的数目, 不包含透明色, key 是 SFMl.Graphics.Color.ToInteger 整数, 且 A 赋值为 0
+        /// </summary>
+        public Dictionary<uint, uint> ColorTable
+        {
+            get
+            {
+                var colors = new Dictionary<uint, uint>();
+                foreach (var p in PngPaths)
+                {
+                    var png = new SFML.Graphics.Image(p);
+                    for (uint i = 0; i < png.Size.X; i++)
+                    {
+                        for (uint j = 0; j < png.Size.Y; j++)
+                        {
+                            var c = png.GetPixel(i, j);
+                            if (c.A <= 0) continue;
+                            c.A = 0;
+                            var k = c.ToInteger();
+                            if (colors.ContainsKey(k)) 
+                                colors[k] += 1;
+                            else 
+                                colors[k] = 1;
+                        }
+                    }
+                }
+
+                return colors;
+            }
+        }
+
+        /// <summary>
         /// 构造函数
         /// </summary>
         public Spine(string skelPath, string? atlasPath = null)
