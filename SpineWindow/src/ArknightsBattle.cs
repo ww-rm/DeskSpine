@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace SpineWindow
 {
-    public class ArknightsSD
+    public class ArknightsBattle : SpineWindow
     {
+        public ArknightsBattle(uint slotCount) : base(slotCount) { }
     }
 }
