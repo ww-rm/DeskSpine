@@ -36,6 +36,12 @@ namespace SpineWindow
     /// </summary>
     public abstract partial class SpineWindow : IDisposable
     {
+#if DEBUG
+        protected const string ClassName = "SpineWindow_d";
+#else
+        protected const string ClassName = "SpineWindow";
+#endif
+
         /// <summary>
         /// 互斥锁, 用于同步临界数据
         /// </summary>
@@ -240,7 +246,7 @@ namespace SpineWindow
             get
             {
                 SFML.System.Vector2f ret = new(0, 0);
-                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey(@"Software\SpineWindow"))
+                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey($"Software\\{ClassName}"))
                 {
                     if (spkey is not null)
                     {
@@ -252,7 +258,7 @@ namespace SpineWindow
             }
             set
             {
-                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey(@"Software\SpineWindow"))
+                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey($"Software\\{ClassName}"))
                 {
                     if (spkey is not null)
                     {
@@ -491,7 +497,7 @@ namespace SpineWindow
             get
             {
                 SFML.System.Vector2i ret = new(0, 0);
-                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey(@"Software\SpineWindow"))
+                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey($"Software\\{ClassName}"))
                 {
                     if (spkey is not null)
                     {
@@ -503,7 +509,7 @@ namespace SpineWindow
             }
             set
             {
-                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey(@"Software\SpineWindow"))
+                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey($"Software\\{ClassName}"))
                 {
                     if (spkey is not null)
                     {
@@ -531,7 +537,7 @@ namespace SpineWindow
             get
             {
                 SFML.System.Vector2u ret = new(0, 0);
-                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey(@"Software\SpineWindow"))
+                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey($"Software\\{ClassName}"))
                 {
                     if (spkey is not null)
                     {
@@ -543,7 +549,7 @@ namespace SpineWindow
             }
             set
             {
-                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey(@"Software\SpineWindow"))
+                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey($"Software\\{ClassName}"))
                 {
                     if (spkey is not null)
                     {
