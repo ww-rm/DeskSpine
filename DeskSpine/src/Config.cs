@@ -72,13 +72,15 @@ namespace DeskSpine
         public string? GetSkelPath(int index)
         {
             if (index > SlotCount) throw new ArgumentOutOfRangeException(nameof(index), $"Index must less than {SlotCount}");
+            if (string.IsNullOrEmpty(skelPaths[index]))
+                return null;
             return skelPaths[index];
         }
 
         public void SetSkelPath(int index, string? value)
         {
             if (index > SlotCount) throw new ArgumentOutOfRangeException(nameof(index), $"Index must less than {SlotCount}");
-            skelPaths[index] = value;
+            skelPaths[index] = string.IsNullOrEmpty(value) ? null : value;
         }
     }
 
