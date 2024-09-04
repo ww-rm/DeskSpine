@@ -57,6 +57,11 @@ namespace Spine
     public abstract class Spine: SFML.Graphics.Drawable
     {
         /// <summary>
+        /// 动画过渡间隔
+        /// </summary>
+        protected static readonly float AnimationMix = 0.15f;
+
+        /// <summary>
         /// 缩放最小值
         /// </summary>
         public static readonly float ScaleMin = 0.1f;
