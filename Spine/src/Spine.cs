@@ -57,11 +57,6 @@ namespace Spine
     public abstract class Spine: SFML.Graphics.Drawable
     {
         /// <summary>
-        /// 动画过渡间隔
-        /// </summary>
-        protected static readonly float AnimationMix = 0.15f;
-
-        /// <summary>
         /// 缩放最小值
         /// </summary>
         public static readonly float ScaleMin = 0.1f;
@@ -72,32 +67,17 @@ namespace Spine
         public static readonly float ScaleMax = 5f;
 
         /// <summary>
-        /// 获取支持的版本字符串
+        /// 动画过渡间隔
         /// </summary>
-        /// <returns>例如 3.6.x, 最后一位一定是 x</returns>
-        public static string[] GetSupportedVersions()
-        {
-            return [
-                "3.6.x",
-                "3.8.x"
-            ];
-        }
+        protected static readonly float AnimationMix = 0.15f;
 
         /// <summary>
         /// 创建特定版本的 Spine
         /// </summary>
-        /// <param name="version">版本号, 例如 3.6.53</param>
-        /// <param name="skelPath">skel 文件路径</param>
-        /// <param name="atlasPath">atlas 文件路径</param>
-        /// <returns>Spine 对象</returns>
-        /// <exception cref="NotImplementedException">未支持的版本</exception>
         public static Spine New(string version, string skelPath, string? atlasPath = null) 
         {
-            if (version.StartsWith("3.6"))
-                return new Spine36(skelPath, atlasPath);
-            else if (version.StartsWith("3.8"))
-                return new Spine38(skelPath, atlasPath);
-
+            if (version.StartsWith("3.6")) return new Spine36(skelPath, atlasPath);
+            if (version.StartsWith("3.8")) return new Spine38(skelPath, atlasPath);
             throw new NotImplementedException($"Not implemented version: {version}");
         }
 
@@ -109,10 +89,8 @@ namespace Spine
             get
             {
                 var t = GetType();
-                if (t == typeof(Spine36))
-                    return "3.6.x";
-                if (t == typeof(Spine38))
-                    return "3.8.x";
+                if (t == typeof(Spine36)) return "3.6.x";
+                if (t == typeof(Spine38)) return "3.8.x";
                 throw new InvalidOperationException($"Unknown Spine version {this}");
             }
         }
@@ -136,8 +114,6 @@ namespace Spine
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="skelPath">skel 文件路径</param>
-        /// <param name="atlasPath">atlas 文件路径></param>
         public Spine(string skelPath, string? atlasPath = null)
         {
             atlasPath ??= Path.ChangeExtension(skelPath, ".atlas");
@@ -178,6 +154,11 @@ namespace Spine
         public abstract bool FlipY { get; set; }
 
         /// <summary>
+        /// 是否使用预乘Alpha
+        /// </summary>
+        public bool UsePremultipliedAlpha { get; set; }
+
+        /// <summary>
         /// 包含的所有动画名称
         /// </summary>
         public ReadOnlyCollection<string> AnimationNames { get => animationNames.AsReadOnly(); }
@@ -214,12 +195,6 @@ namespace Spine
         /// 顶点缓冲区
         /// </summary>
         protected SFML.Graphics.VertexArray vertexArray = new(SFML.Graphics.PrimitiveType.Triangles);
-
-        /// <summary>
-        /// 是否使用预乘Alpha
-        /// </summary>
-        public bool UsePremultipliedAlpha { get; set; }
-
 
         /// <summary>
         /// SFML.Graphics.Drawable 接口实现
