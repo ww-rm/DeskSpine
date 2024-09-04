@@ -49,12 +49,18 @@ namespace SpineRuntime38 {
 		/// 2) The next track entry applied after this one does not have a timeline to set this property.<para />
 		/// Result: Mix from the setup pose to the timeline pose.
 		internal const int First = 1;
+		/// 1) A previously applied timeline has set this property.<br>
+		/// 2) The next track entry to be applied does have a timeline to set this property.<br>
+		/// 3) The next track entry after that one does not have a timeline to set this property.<br>
+		/// Result: Mix from the current pose to the timeline pose, but do not mix out. This avoids "dipping" when crossfading
+		/// animations that key the same property. A subsequent timeline will set this property using a mix.
+		internal const int HoldSubsequent = 2;
 		/// 1) This is the first timeline to set this property.<para />
 		/// 2) The next track entry to be applied does have a timeline to set this property.<para />
 		/// 3) The next track entry after that one does not have a timeline to set this property.<para />
 		/// Result: Mix from the setup pose to the timeline pose, but do not mix out. This avoids "dipping" when crossfading animations
 		/// that key the same property. A subsequent timeline will set this property using a mix.
-		internal const int Hold = 2;
+		internal const int HoldFirst = 3;
 		/// 1) This is the first timeline to set this property.<para />
 		/// 2) The next track entry to be applied does have a timeline to set this property.<para />
 		/// 3) The next track entry after that one does have a timeline to set this property.<para />
@@ -63,9 +69,9 @@ namespace SpineRuntime38 {
 		/// 2 track entries in a row have a timeline that sets the same property.<para />
 		/// Eg, A -> B -> C -> D where A, B, and C have a timeline setting same property, but D does not. When A is applied, to avoid
 		/// "dipping" A is not mixed out, however D (the first entry that doesn't set the property) mixing in is used to mix out A
-		/// (which affects B and C). Without using D to mix out, A would be applied fully until mixing completes, then snap into
-		/// place.
-		internal const int HoldMix = 3;
+		/// (which affects B and C). Without using D to mix out, A would be applied fully until mixing completes, then snap to the mixed
+		/// out position.
+		internal const int HoldMix = 4;
 
 		internal const int Setup = 1,  Current = 2;
 
@@ -85,6 +91,25 @@ namespace SpineRuntime38 {
 
 		public delegate void TrackEntryEventDelegate (TrackEntry trackEntry, Event e);
 		public event TrackEntryEventDelegate Event;
+
+		public void AssignEventSubscribersFrom (AnimationState src) {
+			Event = src.Event;
+			Start = src.Start;
+			Interrupt = src.Interrupt;
+			End = src.End;
+			Dispose = src.Dispose;
+			Complete = src.Complete;
+		}
+
+		public void AddEventSubscribersFrom (AnimationState src) {
+			Event += src.Event;
+			Start += src.Start;
+			Interrupt += src.Interrupt;
+			End += src.End;
+			Dispose += src.Dispose;
+			Complete += src.Complete;
+		}
+
 		// end of difference
 		private readonly EventQueue queue; // Initialized by constructor.
 		private readonly HashSet<int> propertyIDs = new HashSet<int>();
@@ -275,6 +300,43 @@ namespace SpineRuntime38 {
 			return applied;
 		}
 
+		/// <summary>Version of <see cref="Apply"/> only applying EventTimelines for lightweight off-screen updates.</summary>
+		// Note: This method is not part of the libgdx reference implementation.
+		public bool ApplyEventTimelinesOnly (Skeleton skeleton) {
+			if (skeleton == null) throw new ArgumentNullException("skeleton", "skeleton cannot be null.");
+
+			var events = this.events;
+			bool applied = false;
+			var tracksItems = tracks.Items;
+			for (int i = 0, n = tracks.Count; i < n; i++) {
+				TrackEntry current = tracksItems[i];
+				if (current == null || current.delay > 0) continue;
+				applied = true;
+
+				// Apply mixing from entries first.
+				if (current.mixingFrom != null)
+					ApplyMixingFromEventTimelinesOnly(current, skeleton);
+
+				// Apply current entry.
+				float animationLast = current.animationLast, animationTime = current.AnimationTime;
+				int timelineCount = current.animation.timelines.Count;
+				var timelines = current.animation.timelines;
+				var timelinesItems = timelines.Items;
+				for (int ii = 0; ii < timelineCount; ii++) {
+					Timeline timeline = timelinesItems[ii];
+					if (timeline is EventTimeline)
+						timeline.Apply(skeleton, animationLast, animationTime, events, 1.0f, MixBlend.Setup, MixDirection.In);
+				}
+				QueueEvents(current, animationTime);
+				events.Clear(false);
+				current.nextAnimationLast = animationTime;
+				current.nextTrackLast = current.trackTime;
+			}
+
+			queue.Drain();
+			return applied;
+		}
+
 		private float ApplyMixingFrom (TrackEntry to, Skeleton skeleton, MixBlend blend) {
 			TrackEntry from = to.mixingFrom;
 			if (from.mixingFrom != null) ApplyMixingFrom(from, skeleton, blend);
@@ -324,7 +386,11 @@ namespace SpineRuntime38 {
 							timelineBlend = MixBlend.Setup;
 							alpha = alphaMix;
 							break;
-						case AnimationState.Hold:
+						case AnimationState.HoldSubsequent:
+							timelineBlend = blend;
+							alpha = alphaHold;
+							break;
+						case AnimationState.HoldFirst:
 							timelineBlend = MixBlend.Setup;
 							alpha = alphaHold;
 							break;
@@ -347,6 +413,43 @@ namespace SpineRuntime38 {
 						timeline.Apply(skeleton, animationLast, animationTime, eventBuffer, alpha, timelineBlend, direction);
 					}
 				}
+			}
+
+			if (to.mixDuration > 0) QueueEvents(from, animationTime);
+			this.events.Clear(false);
+			from.nextAnimationLast = animationTime;
+			from.nextTrackLast = from.trackTime;
+
+			return mix;
+		}
+
+		/// <summary>Version of <see cref="ApplyMixingFrom"/> only applying EventTimelines for lightweight off-screen updates.</summary>
+		// Note: This method is not part of the libgdx reference implementation.
+		private float ApplyMixingFromEventTimelinesOnly (TrackEntry to, Skeleton skeleton) {
+			TrackEntry from = to.mixingFrom;
+			if (from.mixingFrom != null) ApplyMixingFromEventTimelinesOnly(from, skeleton);
+
+			float mix;
+			if (to.mixDuration == 0) { // Single frame mix to undo mixingFrom changes.
+				mix = 1;
+			}
+			else {
+				mix = to.mixTime / to.mixDuration;
+				if (mix > 1) mix = 1;
+			}
+
+			var eventBuffer = mix < from.eventThreshold ? this.events : null;
+			if (eventBuffer == null)
+				return mix;
+
+			float animationLast = from.animationLast, animationTime = from.AnimationTime;
+			var timelines = from.animation.timelines;
+			int timelineCount = timelines.Count;
+			var timelinesItems = timelines.Items;
+			for (int i = 0; i < timelineCount; i++) {
+				var timeline = timelinesItems[i];
+				if (timeline is EventTimeline)
+					timeline.Apply(skeleton, animationLast, animationTime, eventBuffer, 0, MixBlend.Setup, MixDirection.Out);
 			}
 
 			if (to.mixDuration > 0) QueueEvents(from, animationTime);
@@ -795,10 +898,9 @@ namespace SpineRuntime38 {
 			var propertyIDs = this.propertyIDs;
 
 			if (to != null && to.holdPrevious) {
-				for (int i = 0; i < timelinesCount; i++) {
-					propertyIDs.Add(timelines[i].PropertyId);
-					timelineMode[i] = AnimationState.Hold;
-				}
+				for (int i = 0; i < timelinesCount; i++)
+					timelineMode[i] = propertyIDs.Add(timelines[i].PropertyId) ? AnimationState.HoldFirst : AnimationState.HoldSubsequent;
+
 				return;
 			}
 
@@ -821,7 +923,7 @@ namespace SpineRuntime38 {
 						}
 						break;
 					}
-					timelineMode[i] = AnimationState.Hold;
+					timelineMode[i] = AnimationState.HoldFirst;
 				}
 				continue_outer: {}
 			}
