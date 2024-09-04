@@ -541,8 +541,8 @@ namespace SpineWindow
                 {
                     if (spkey is not null)
                     {
-                        uint.TryParse(spkey.GetValue("SizeX", "0").ToString(), out ret.X);
-                        uint.TryParse(spkey.GetValue("SizeY", "0").ToString(), out ret.Y);
+                        uint.TryParse(spkey.GetValue("SizeX", "1000").ToString(), out ret.X);
+                        uint.TryParse(spkey.GetValue("SizeY", "1000").ToString(), out ret.Y);
                     }
                 }
                 return ret;
