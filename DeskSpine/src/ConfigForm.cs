@@ -4,7 +4,7 @@ namespace DeskSpine
 {
     public partial class ConfigForm : Form
     {
-        protected Dictionary<string, SpineWindow.AutoBackgroudColorType> comboBox_AutoBackgroudColor_KV = new()
+        protected static Dictionary<string, SpineWindow.AutoBackgroudColorType> comboBox_AutoBackgroudColor_KV = new()
         {
             { "黑色", SpineWindow.AutoBackgroudColorType.Black },
             { "白色", SpineWindow.AutoBackgroudColorType.White },
@@ -12,13 +12,13 @@ namespace DeskSpine
             { "自定义", SpineWindow.AutoBackgroudColorType.None },
         };
 
-        protected Dictionary<string, string> comboBox_SpineVersion_KV = new()
+        protected static Dictionary<string, string> comboBox_SpineVersion_KV = new()
         {
             { "3.6.x", "3.6.x" },
             { "3.8.x", "3.8.x" },
         };
 
-        protected Dictionary<string, SpineWindow.SpineWindowType> comboBox_WindowType_KV = new()
+        protected static  Dictionary<string, SpineWindow.SpineWindowType> comboBox_WindowType_KV = new()
         {
             { "碧蓝航线_后宅小人", SpineWindow.SpineWindowType.AzurLaneSD },
             { "碧蓝航线_动态立绘", SpineWindow.SpineWindowType.AzurLaneDynamic },
