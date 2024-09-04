@@ -37,7 +37,7 @@ namespace SpineWindow
                 SpineWindowType.AzurLaneSD => new AzurLaneSD(slotCount),
                 SpineWindowType.AzurLaneDynamic => new AzurLaneDynamic(slotCount),
                 SpineWindowType.ArknightsDynamic => new ArknightsDynamic(slotCount),
-                _ => new AzurLaneSD(slotCount),
+                _ => throw new NotImplementedException($"{type}"),
             };
         }
 
