@@ -8,53 +8,68 @@ using System.Runtime.InteropServices;
 
 namespace SpineWindow
 {
+    /// <summary>
+    /// 窗体类型枚举量
+    /// </summary>
     public enum SpineWindowType
     {
-        AzurLaneSD = 0,
-        AzurLaneDynamic = 1,
-        ArknightsDynamic = 2,
+        AzurLaneSD = 0,                 // 碧蓝航线_后宅小人
+        AzurLaneDynamic = 1,            // 碧蓝航线_动态立绘
+        ArknightsDynamic = 2,           // 明日方舟_动态立绘
+        ArknightsBuild = 3,             // 明日方舟_基建小人
+        ArknightsBattle = 4,            // 明日方舟_战斗小人
     }
 
-    public enum BackgroudColor
+    /// <summary>
+    /// 自动背景颜色类型
+    /// </summary>
+    public enum AutoBackgroudColorType
     {
-        Black = 0,
-        White = 1,
-        Gray = 2
+        None = 0,
+        Black = 1,
+        White = 2,
+        Gray = 3,
     }
 
-    public abstract class SpineWindow: IDisposable
+    /// <summary>
+    /// SpineWindow 抽象基类
+    /// </summary>
+    public abstract partial class SpineWindow : IDisposable
     {
+        /// <summary>
+        /// 互斥锁, 用于同步临界数据
+        /// </summary>
+        protected Mutex mutex = new();
+
         /// <summary>
         /// 创建指定类型 Spine 窗口
         /// </summary>
-        /// <param name="type">窗口类型</param>
-        /// <param name="slotCount">可供加载的 Spine 最大数量</param>
-        /// <returns></returns>
-        public static SpineWindow New(SpineWindowType type, uint slotCount = 10)
+        public static SpineWindow New(SpineWindowType type, uint slotCount)
         {
             return type switch
             {
                 SpineWindowType.AzurLaneSD => new AzurLaneSD(slotCount),
                 SpineWindowType.AzurLaneDynamic => new AzurLaneDynamic(slotCount),
                 SpineWindowType.ArknightsDynamic => new ArknightsDynamic(slotCount),
-                _ => throw new NotImplementedException($"{type}"),
+                SpineWindowType.ArknightsBuild => new ArknightsBuild(slotCount),
+                SpineWindowType.ArknightsBattle => new ArknightsBattle(slotCount),
+                _ => throw new NotImplementedException($"Unknown SpineWindow type: {type}"),
             };
         }
 
         /// <summary>
         /// 窗口类型
         /// </summary>
-        public SpineWindowType Type 
-        { 
+        public SpineWindowType Type
+        {
             get
             {
                 var t = GetType();
-                if (t == typeof(AzurLaneSD))
-                    return SpineWindowType.AzurLaneSD;
-                if (t == typeof(AzurLaneDynamic))
-                    return SpineWindowType.AzurLaneDynamic;
-                if (t == typeof(ArknightsDynamic))
-                    return SpineWindowType.ArknightsDynamic;
+                if (t == typeof(AzurLaneSD)) return SpineWindowType.AzurLaneSD;
+                if (t == typeof(AzurLaneDynamic)) return SpineWindowType.AzurLaneDynamic;
+                if (t == typeof(ArknightsDynamic)) return SpineWindowType.ArknightsDynamic;
+                if (t == typeof(ArknightsBuild)) return SpineWindowType.AzurLaneSD;
+                if (t == typeof(ArknightsBattle)) return SpineWindowType.ArknightsBattle;
                 throw new InvalidOperationException($"Unknown SpineWindow type {this}");
             }
         }
@@ -62,7 +77,6 @@ namespace SpineWindow
         /// <summary>
         /// SpineWindow 基类, 提供 Spine 装载和动画交互
         /// </summary>
-        /// <param name="slotCount">最大 Spine 装载数量</param>
         public SpineWindow(uint slotCount)
         {
             spineSlots = new Spine.Spine[slotCount];
@@ -72,12 +86,18 @@ namespace SpineWindow
             windowCreatedEvent.WaitOne();
         }
 
+        /// <summary>
+        /// 析构函数
+        /// </summary>
         ~SpineWindow()
         {
             if (window is not null)
                 Dispose();
         }
 
+        /// <summary>
+        /// Dispose 接口实现, 销毁窗口需要调用以停止窗口线程
+        /// </summary>
         public void Dispose()
         {
             if (window is not null)
@@ -88,24 +108,20 @@ namespace SpineWindow
                 windowLoopTask = null;
             }
         }
+    }
+
+    // Spine 相关功能实现
+    partial class SpineWindow
+    {
+        protected Spine.Spine?[] spineSlots;                    // Spine 对象装载数组
+        public int SlotCount { get => spineSlots.Length; }      // 窗口可用最大 Spine 装载数
+        private Dictionary<uint, uint>?[] colorTables;           // 背景颜色表, 供自动生成背景颜色时使用
 
         /// <summary>
-        /// Spine 对象装载数组
+        /// 资源文件夹, 提供语音等资源的位置, 没有加载任何 Spine 时返回 null
         /// </summary>
-        protected Spine.Spine?[] spineSlots;
-
-        /// <summary>
-        /// 窗口可用最大 Spine 装载数
-        /// </summary>
-        public int SlotCount { get => spineSlots.Length; }
-
-        private Dictionary<uint, uint>[] colorTables;
-
-        /// <summary>
-        /// 资源文件夹, 提供语音等资源的位置
-        /// </summary>
-        public string? ResFolder 
-        { 
+        public string? ResFolder
+        {
             get
             {
                 string? v = null;
@@ -134,8 +150,8 @@ namespace SpineWindow
         /// <summary>
         /// 控制 Spine 是否水平翻转
         /// </summary>
-        public bool SpineFlip 
-        { 
+        public bool SpineFlip
+        {
             get
             {
                 var v = false;
@@ -162,8 +178,8 @@ namespace SpineWindow
                 var v = 1f;
                 mutex.WaitOne();
                 foreach (var sp in spineSlots) { if (sp is not null) { v = sp.Scale; break; } }
-                mutex.ReleaseMutex(); 
-                return v; 
+                mutex.ReleaseMutex();
+                return v;
             }
             set
             {
@@ -227,7 +243,7 @@ namespace SpineWindow
                 using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey(@"Software\SpineWindow"))
                 {
                     if (spkey is not null)
-                    { 
+                    {
                         float.TryParse(spkey.GetValue("SpinePositionX", "0").ToString(), out ret.X);
                         float.TryParse(spkey.GetValue("SpinePositionY", "0").ToString(), out ret.Y);
                     }
@@ -250,11 +266,6 @@ namespace SpineWindow
         /// <summary>
         /// 加载 Spine 到指定槽位
         /// </summary>
-        /// <param name="version">版本字符串, 例如 "3.8.99"</param>
-        /// <param name="skelPath">骨骼文件路径, 可以是 skel 或者 json 后缀</param>
-        /// <param name="atlasPath">纹理文件路径, 后缀为 atlas</param>
-        /// <param name="index">要加载到的槽位</param>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void LoadSpine(string version, string skelPath, string? atlasPath = null, int index = 0)
         {
             if (index >= spineSlots.Length)
@@ -265,36 +276,27 @@ namespace SpineWindow
             try { spineNew = Spine.Spine.New(version, skelPath, atlasPath); }
             catch { throw; }
 
+            // 尝试用已有的 Spine 对象恢复位置
             var originalPosition = SpinePosition;
             spineNew.X = originalPosition.X;
             spineNew.Y = originalPosition.Y;
 
             mutex.WaitOne();
             spineSlots[index] = spineNew;
+            colorTables[index] = null;
             mutex.ReleaseMutex();
 
-            UpdateProperBackgroudColor(index);
+            // 尝试修正自动背景颜色
+            SetProperAutoBackgroudColor();
+
             Trigger_SpineLoaded(index);
             Debug.Write("spine animiation: ");
             foreach (var a in spineSlots[index].AnimationNames) Debug.Write($"{a}; "); Debug.WriteLine("");
         }
 
         /// <summary>
-        /// 获取指定槽位的 Spine 资源路径
+        /// 卸载指定槽位 Spine
         /// </summary>
-        /// <param name="index">槽位索引</param>
-        /// <returns>Skel 文件路径, 不存在则返回 null</returns>
-        public string? GetSpineSkelPath(int index)
-        {
-            if (index >= spineSlots.Length) return null;
-            mutex.WaitOne(); var v = spineSlots[index]?.SkelPath; mutex.ReleaseMutex(); return v;
-        }
-
-        /// <summary>
-        /// 卸载执行槽位 Spine
-        /// </summary>
-        /// <param name="index">槽位</param>
-        /// <exception cref="ArgumentOutOfRangeException">指定的 index 超出最大槽位限制</exception>
         public void UnloadSpine(int index)
         {
             if (index >= spineSlots.Length)
@@ -303,218 +305,98 @@ namespace SpineWindow
             Debug.WriteLine($"Unload spine[{index}]");
             mutex.WaitOne();
             spineSlots[index] = null;
+            colorTables[index] = null;
             mutex.ReleaseMutex();
         }
 
-        private void UpdateProperBackgroudColor()
+        /// <summary>
+        /// 获取指定槽位的 Spine 资源路径
+        /// </summary>
+        public string? GetSpineSkelPath(int index)
         {
-            for (int i = 0; i < SlotCount; i++)
-                UpdateProperBackgroudColor(i);
-        }
-
-        private void UpdateProperBackgroudColor(int index)
-        {
-            // TODO: 优化查找时间
-            var colors = new Dictionary<uint, uint>();
-            List<string> paths = [];
-
+            if (index >= spineSlots.Length)
+                throw new ArgumentOutOfRangeException($"Max spine slot count: {spineSlots.Length}, got index {index}");
             mutex.WaitOne();
-            var sp = spineSlots[index];
-            if (sp is not null)
-                paths.AddRange(sp.PngPaths);
+            var v = spineSlots[index]?.SkelPath;
             mutex.ReleaseMutex();
+            return v;
+        }
+    }
 
-            if (paths.Count <= 0)
-                return;
+    // 窗口相关功能实现
+    partial class SpineWindow
+    {
+        protected SFML.Graphics.RenderWindow? window;                   // SFML 窗口对象
+        public IntPtr Handle { get => window.SystemHandle; }            // 窗口句柄, 假定 window 一定不是 null
+        private Task? windowLoopTask;                                   // 窗口循环线程
+        private CancellationTokenSource cancelTokenSrc = new();         // 取消令牌, 用于结束窗口线程
+        private ManualResetEvent windowCreatedEvent = new(false);       // 窗口创建事件, 用于同步等待窗口创建完成
+        private SFML.System.Clock clock = new();                        // 计时器, 计算每一帧的时间间隔
+        private SFML.System.Vector2i? windowPressedPosition = null;     // 记录点击时的窗口点击位置
+        private SFML.System.Vector2f? spinePressedPosition = null;      // 记录点击时 Spine 的世界位置
+        private SFML.System.Clock doubleClickClock = new();             // 双击行为计时器
+        private bool doubleClickChecking = false;                       // 是否处于双击检测中
+        private bool isDragging = false;                                // 是否处于拖动状态
+        private const float TimeToSleep = 300f;                         // 休眠判定超时时间
+        private float lastLastInputTime = 1f;                           // 最近一次记录的用户上次输入时间间隔
 
-            foreach (var p in paths)
+        /// <summary>
+        /// 要使用的自动背景颜色, null 不进行自动颜色, 可以通过 BackgroundColor 属性进行设置
+        /// </summary>
+        public AutoBackgroudColorType AutoBackgroudColor
+        {
+            get => autoBackgroudColor;
+            set { autoBackgroudColor = value; SetProperAutoBackgroudColor(); }
+        }
+        private AutoBackgroudColorType autoBackgroudColor = AutoBackgroudColorType.Gray;
+
+        /// <summary>
+        /// 窗口背景色, 会影响显示半透明边缘颜色效果, 如果是自动颜色则无法进行设置
+        /// </summary>
+        public SFML.Graphics.Color BackgroudColor
+        {
+            get { mutex.WaitOne(); var v = backgroundColor; mutex.ReleaseMutex(); return v; }
+            set
             {
-                var png = new SFML.Graphics.Image(p);
-                for (uint i = 0; i < png.Size.X; i++)
-                {
-                    for (uint j = 0; j < png.Size.Y; j++)
-                    {
-                        var c = png.GetPixel(i, j);
-                        if (c.A <= 0) continue;
-                        c.A = 0;
-                        var k = c.ToInteger();
-                        if (colors.ContainsKey(k)) colors[k] += 1;
-                        else colors[k] = 1;
-                    }
-                }
-            }
+                // 如果有自动颜色则不接受直接设置颜色
+                if (autoBackgroudColor != AutoBackgroudColorType.None)
+                    return;
 
-            colorTables[index] = colors;
-
-            if (colors.Count <= 0)
-                return;
-
-            var rnd = new Random();
-            var bestColor = SFML.Graphics.Color.Transparent;
-            uint bestColorSameCount = uint.MaxValue;
-            var tmpColor = SFML.Graphics.Color.Transparent;
-            for (int i = 0; i < 10; i++)
-            {
                 // BUG: SetLayeredWindowAttributes 的 R 和 B 分量必须相等才能让背景部分的透明和穿透同时生效
-                switch (backgroudColor)
-                {
-                    case BackgroudColor.Black:
-                        tmpColor.R = tmpColor.B = (byte)rnd.Next(0, 20);
-                        tmpColor.G = (byte)rnd.Next(0, 20);
-                        break;
-                    case BackgroudColor.White:
-                        tmpColor.R = tmpColor.B = (byte)rnd.Next(235, 255);
-                        tmpColor.G = (byte)rnd.Next(235, 255);
-                        break;
-                    case BackgroudColor.Gray:
-                        tmpColor.R = tmpColor.B = (byte)rnd.Next(118, 138);
-                        tmpColor.G = (byte)rnd.Next(118, 138);
-                        break;
-                }
-
-                var k = tmpColor.ToInteger();
-                uint count = 0;
-                uint tmp = 0;
-                foreach (var table in colorTables)
-                {
-                    if (table is not null && table.TryGetValue(k, out tmp))
-                        count += tmp;
-                }
-                if (count < bestColorSameCount)
-                {
-                    bestColor = tmpColor;
-                    bestColorSameCount = count;
-                }
-                else
-                {
-                    bestColor = tmpColor;
-                    bestColorSameCount = 0;
-                    break;
-                }
+                // 此处令 B 总是等于 R, 并且强制保证 A 分量设置为 0
+                value.A = 0;
+                value.B = value.R;
+                mutex.WaitOne();
+                backgroundColor = value;
+                mutex.ReleaseMutex();
             }
-
-            Debug.WriteLine($"Background Color: {bestColor}, Count: {bestColorSameCount}");
-
-            mutex.WaitOne();
-            clearColor = bestColor;
-            mutex.ReleaseMutex();
-            Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, Opacity, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
         }
-
-        /// <summary>
-        /// 互斥锁, 用于同步临界数据
-        /// </summary>
-        protected Mutex mutex = new();
-
-        /// <summary>
-        /// 取消令牌, 用于结束窗口线程
-        /// </summary>
-        private CancellationTokenSource cancelTokenSrc = new();
-
-        /// <summary>
-        /// 窗口创建事件, 用于同步等待窗口创建完成
-        /// </summary>
-        private ManualResetEvent windowCreatedEvent = new(false);
-
-        /// <summary>
-        /// 计时器, 计算每一帧的时间间隔
-        /// </summary>
-        private SFML.System.Clock clock = new();
-
-        /// <summary>
-        /// 窗口背景色, 会影响显示半透明边缘颜色效果
-        /// </summary>
-        private SFML.Graphics.Color clearColor = new(128, 128, 128);
+        private SFML.Graphics.Color backgroundColor = new(128, 128, 128);
 
         /// <summary>
         /// 用于系统 api 设置透明颜色键
         /// </summary>
-        private uint crKey { get => BinaryPrimitives.ReverseEndianness(clearColor.ToInteger()); }
+        private uint crKey { get => BinaryPrimitives.ReverseEndianness(backgroundColor.ToInteger()); }
 
         /// <summary>
-        /// SFML 窗口对象
+        /// 显示窗口
         /// </summary>
-        protected SFML.Graphics.RenderWindow? window;
-
-        /// <summary>
-        /// 窗口循环线程
-        /// </summary>
-        private Task? windowLoopTask;
-
-        private BackgroudColor backgroudColor = BackgroudColor.Gray;
-
-        /// <summary>
-        /// 窗口可见性成员变量
-        /// </summary>
+        public bool Visible
+        {
+            get { mutex.WaitOne(); var v = visible; mutex.ReleaseMutex(); return v; }
+            set { mutex.WaitOne(); visible = value; mutex.ReleaseMutex(); window.SetVisible(value); if (value) Trigger_Show(); }
+        }
         private bool visible = false;
 
         /// <summary>
-        /// 窗口最大帧率成员变量
+        /// 最大帧率
         /// </summary>
+        public uint MaxFps
+        {
+            get => maxFps;
+            set { maxFps = value; window.SetFramerateLimit(value); }
+        }
         private uint maxFps = 30;
-
-        /// <summary>
-        /// 记录点击时的窗口点击位置
-        /// </summary>
-        private SFML.System.Vector2i? windowPressedPosition = null;
-
-        /// <summary>
-        /// 记录点击时 Spine 的世界位置
-        /// </summary>
-        private SFML.System.Vector2f? spinePressedPosition = null;
-
-        /// <summary>
-        /// 双击行为计时器
-        /// </summary>
-        private SFML.System.Clock doubleClickClock = new();
-
-        /// <summary>
-        /// 是否处于双击检测中
-        /// </summary>
-        private bool doubleClickChecking = false;
-
-        /// <summary>
-        /// 是否处于拖动状态
-        /// </summary>
-        private bool isDragging = false;
-
-        /// <summary>
-        /// 休眠判定超时时间
-        /// </summary>
-        private const float TimeToSleep = 300f;
-
-        /// <summary>
-        /// 最近一次记录的用户上次输入时间间隔
-        /// </summary>
-        private float lastLastInputTime = 1f;
-
-        /// <summary>
-        /// 线程函数
-        /// </summary>
-        private static void SpineWindowTask(SpineWindow self)
-        {
-            self.CreateWindow();
-            self.WindowLoop();
-        }
-
-        /// <summary>
-        /// 窗口句柄
-        /// </summary>
-        public IntPtr Handle { get => window.SystemHandle; }
-
-        /// <summary>
-        /// 要使用的背景颜色
-        /// </summary>
-        public BackgroudColor BackgroudColor 
-        {
-            get => backgroudColor;
-            set { backgroudColor = value; UpdateProperBackgroudColor(); }
-        }
-
-        /// <summary>
-        /// 具体的背景颜色
-        /// </summary>
-        public SFML.Graphics.Color ClearColor { get { mutex.WaitOne(); var c = clearColor; mutex.ReleaseMutex(); return c; } }
 
         /// <summary>
         /// 窗口整体透明度
@@ -533,10 +415,27 @@ namespace SpineWindow
         }
 
         /// <summary>
+        /// 鼠标穿透
+        /// </summary>
+        public bool MouseClickThrough
+        {
+            get => (Win32.GetWindowLong(window.SystemHandle, Win32.GWL_EXSTYLE) & Win32.WS_EX_TRANSPARENT) != 0;
+            set
+            {
+                var exStyle = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_EXSTYLE);
+                if (value)
+                    exStyle |= Win32.WS_EX_TRANSPARENT;
+                else
+                    exStyle &= ~Win32.WS_EX_TRANSPARENT;
+                Win32.SetWindowLong(window.SystemHandle, Win32.GWL_EXSTYLE, exStyle);
+            }
+        }
+
+        /// <summary>
         /// 壁纸模式, 嵌入桌面
         /// </summary>
-        public bool WallpaperMode 
-        { 
+        public bool WallpaperMode
+        {
             get
             {
                 // WS_POPUP 要用 GetAncestor 获取父窗口
@@ -575,47 +474,11 @@ namespace SpineWindow
             }
         }
 
-
-        /// <summary>
-        /// 鼠标穿透
-        /// </summary>
-        public bool MouseClickThrough
-        {
-            get => (Win32.GetWindowLong(window.SystemHandle, Win32.GWL_EXSTYLE) & Win32.WS_EX_TRANSPARENT) != 0;
-            set
-            {
-                var exStyle = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_EXSTYLE);
-                if (value)
-                    exStyle |= Win32.WS_EX_TRANSPARENT;
-                else
-                    exStyle &= ~Win32.WS_EX_TRANSPARENT;
-                Win32.SetWindowLong(window.SystemHandle, Win32.GWL_EXSTYLE, exStyle);
-            }
-        }
-
-        /// <summary>
-        /// 显示窗口
-        /// </summary>
-        public bool Visible
-        {
-            get { mutex.WaitOne(); var v = visible; mutex.ReleaseMutex(); return v; }
-            set { mutex.WaitOne(); visible = value; mutex.ReleaseMutex(); window.SetVisible(value); if (value) Trigger_Show(); }
-        }
-
-        /// <summary>
-        /// 最大帧率
-        /// </summary>
-        public uint MaxFps
-        {
-            get => maxFps;
-            set { maxFps = value; window.SetFramerateLimit(value); }
-        }
-
         /// <summary>
         /// 窗口位置
         /// </summary>
-        public SFML.System.Vector2i Position 
-        { 
+        public SFML.System.Vector2i Position
+        {
             get => window.Position;
             set { window.Position = value; PositionReg = value; }
         }
@@ -692,6 +555,15 @@ namespace SpineWindow
         }
 
         /// <summary>
+        /// 线程函数
+        /// </summary>
+        private static void SpineWindowTask(SpineWindow self)
+        {
+            self.CreateWindow();
+            self.WindowLoop();
+        }
+
+        /// <summary>
         /// 重置窗口和 Spine 的位置和大小
         /// </summary>
         public void ResetPositionAndSize()
@@ -736,7 +608,7 @@ namespace SpineWindow
         }
 
         /// <summary>
-        /// 窗口事件循环
+        /// 窗口主循环
         /// </summary>
         private void WindowLoop()
         {
@@ -752,7 +624,7 @@ namespace SpineWindow
                 window.DispatchEvents();
                 Update();
 
-                mutex.WaitOne(); var v = visible; var c = clearColor; mutex.ReleaseMutex();
+                mutex.WaitOne(); var v = visible; var c = backgroundColor; mutex.ReleaseMutex();
                 if (v)
                 {
                     window.Clear(c);
@@ -767,6 +639,7 @@ namespace SpineWindow
         /// </summary>
         private void Update()
         {
+            // 更新内部对象状态
             var delta = clock.ElapsedTime.AsSeconds();
             clock.Restart();
             mutex.WaitOne();
@@ -774,6 +647,7 @@ namespace SpineWindow
             mutex.ReleaseMutex();
             Trigger_StateUpdated();
 
+            // 检测用户上次输入时间
             var lastInputTime = (float)Win32.GetLastInputTime().TotalSeconds;
             if (lastInputTime >= TimeToSleep && lastLastInputTime < TimeToSleep)
                 Trigger_FallAsleep();
@@ -788,10 +662,81 @@ namespace SpineWindow
         private void Render()
         {
             mutex.WaitOne();
-            for (int i = spineSlots.Length - 1; i >= 0; i--) { var sp = spineSlots[i];  if (sp is not null) window.Draw(sp); }
+            for (int i = spineSlots.Length - 1; i >= 0; i--) { var sp = spineSlots[i]; if (sp is not null) window.Draw(sp); }
             mutex.ReleaseMutex();
         }
 
+        /// <summary>
+        /// 自动背景色模式下设置一个正确的背景色, 如果未使用自动颜色则不做任何操作
+        /// </summary>
+        private void SetProperAutoBackgroudColor()
+        {
+            if (autoBackgroudColor == AutoBackgroudColorType.None)
+                return;
+
+            // 确保每个加载了 Spine 的槽位有颜色表
+            for (int i = 0; i < spineSlots.Length; i++)
+            {
+                if (spineSlots[i] is not null && colorTables[i] is null)
+                    colorTables[i] = spineSlots[i].ColorTable;
+            }
+
+            var rnd = new Random();
+            var bestColor = SFML.Graphics.Color.Transparent;
+            uint bestColorSameCount = uint.MaxValue;
+            var currentColor = SFML.Graphics.Color.Transparent;
+            for (int i = 0; i < 10; i++)
+            {
+                // BUG: SetLayeredWindowAttributes 的 R 和 B 分量必须相等才能让背景部分的透明和穿透同时生效
+                switch (autoBackgroudColor)
+                {
+                    case AutoBackgroudColorType.Black:
+                        currentColor.R = currentColor.B = (byte)rnd.Next(0, 20);
+                        currentColor.G = (byte)rnd.Next(0, 20);
+                        break;
+                    case AutoBackgroudColorType.White:
+                        currentColor.R = currentColor.B = (byte)rnd.Next(235, 255);
+                        currentColor.G = (byte)rnd.Next(235, 255);
+                        break;
+                    case AutoBackgroudColorType.Gray:
+                        currentColor.R = currentColor.B = (byte)rnd.Next(118, 138);
+                        currentColor.G = (byte)rnd.Next(118, 138);
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Invalid type: {autoBackgroudColor}");
+                }
+
+                var k = currentColor.ToInteger();
+                uint count = 0;
+                uint tmp = 0;
+                // 统计在所有表中该颜色出现的次数
+                // 选择重复次数最少的颜色, 如果发现了 0 次, 则立即结束查找
+                foreach (var table in colorTables)
+                {
+                    if (table is not null && table.TryGetValue(k, out tmp))
+                        count += tmp;
+                }
+                if (count < bestColorSameCount)
+                {
+                    bestColor = currentColor;
+                    bestColorSameCount = count;
+                }
+                if (bestColorSameCount <= 0)
+                    break;
+            }
+
+            Debug.WriteLine($"AutoBackground Color: {bestColor}, Count: {bestColorSameCount}");
+
+            mutex.WaitOne();
+            backgroundColor = bestColor;
+            mutex.ReleaseMutex();
+            Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, Opacity, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
+        }
+    }
+
+    // 窗口事件实现
+    partial class SpineWindow
+    {
         /// <summary>
         /// 注册所有窗口事件
         /// </summary>
@@ -843,7 +788,7 @@ namespace SpineWindow
             var windowDelta = new SFML.System.Vector2i(0, 0);
             var worldDelta = new SFML.System.Vector2f(0, 0);
             if (windowPressedPosition is not null)
-            { 
+            {
                 var windowSrc = (SFML.System.Vector2i)windowPressedPosition;
                 var windowDst = new SFML.System.Vector2i(e.X, e.Y);
                 var worldSrc = window.MapPixelToCoords(windowSrc);
@@ -859,7 +804,7 @@ namespace SpineWindow
             // 判断是否开始拖动
             // 任意一个键是按下的且移动距离大于阈值
             if (!isDragging && (leftDown || rightDown) && (Math.Abs(windowDelta.X) > 4 || Math.Abs(windowDelta.Y) > 4))
-            { 
+            {
                 isDragging = true;
                 doubleClickChecking = false;
                 Trigger_MouseDragBegin(e);
@@ -986,7 +931,7 @@ namespace SpineWindow
         protected virtual void Trigger_MouseWheelScroll(SFML.Window.MouseWheelScrollEventArgs e) { }
         protected virtual void Trigger_WorkBegin() { }
         protected virtual void Trigger_WorkEnd() { }
-        protected virtual void Trigger_FallAsleep() {  }
+        protected virtual void Trigger_FallAsleep() { }
         protected virtual void Trigger_WakeUp() { }
         protected virtual void Trigger_Show() { }
 
@@ -1099,7 +1044,7 @@ namespace SpineWindow
                 uint tickCount = (uint)Environment.TickCount;
                 uint lastInputTick = lastInputInfo.dwTime;
                 idleTimeMillis = tickCount - lastInputTick;
-            }          
+            }
             return TimeSpan.FromMilliseconds(idleTimeMillis);
         }
 
