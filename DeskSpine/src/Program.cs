@@ -114,8 +114,10 @@ namespace DeskSpine
             get
             {
                 var config = new Config();
+
                 config.SystemConfig.AutuRun = AutoRun;
                 config.SystemConfig.Visible = WindowSpine.Visible;
+
                 config.BasicConfig.WallpaperMode = WindowSpine.WallpaperMode;
                 config.BasicConfig.MouseClickThrough = WindowSpine.MouseClickThrough;
                 config.BasicConfig.SpineScale = WindowSpine.SpineScale;
@@ -123,6 +125,8 @@ namespace DeskSpine
                 config.BasicConfig.Opacity = WindowSpine.Opacity;
                 config.BasicConfig.MaxFps = WindowSpine.MaxFps;
                 config.BasicConfig.BackgroudColor = WindowSpine.BackgroudColor;
+                config.BasicConfig.SpineUsePMA = WindowSpine.SpineUsePMA;
+
                 config.SpineConfig.WindowType = WindowSpine.Type;
                 config.SpineConfig.SpineVersion = WindowSpine.SpineVersion;
                 for (int i = 0; i < WindowSpine.SlotCount; i++)
