@@ -114,11 +114,9 @@ namespace SpineWindow
                 windowLoopTask = null;
             }
         }
-    }
 
-    // Spine 相关功能实现
-    partial class SpineWindow
-    {
+        #region Spine 相关功能实现
+
         protected Spine.Spine?[] spineSlots;                    // Spine 对象装载数组
         public int SlotCount { get => spineSlots.Length; }      // 窗口可用最大 Spine 装载数
         private Dictionary<uint, uint>?[] colorTables;           // 背景颜色表, 供自动生成背景颜色时使用
@@ -327,11 +325,11 @@ namespace SpineWindow
             mutex.ReleaseMutex();
             return v;
         }
-    }
 
-    // 窗口相关功能实现
-    partial class SpineWindow
-    {
+        #endregion
+
+        #region 窗口相关功能实现
+
         protected SFML.Graphics.RenderWindow? window;                   // SFML 窗口对象
         public IntPtr Handle { get => window.SystemHandle; }            // 窗口句柄, 假定 window 一定不是 null
         private Task? windowLoopTask;                                   // 窗口循环线程
@@ -738,11 +736,11 @@ namespace SpineWindow
             mutex.ReleaseMutex();
             Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, Opacity, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
         }
-    }
 
-    // 窗口事件实现
-    partial class SpineWindow
-    {
+        #endregion
+
+        #region 窗口事件实现
+
         /// <summary>
         /// 注册所有窗口事件
         /// </summary>
@@ -948,6 +946,8 @@ namespace SpineWindow
         private static void MouseMoved(SpineWindow self, SFML.Window.MouseMoveEventArgs e) { self.MouseMoved(e); }
         private static void MouseButtonReleased(SpineWindow self, SFML.Window.MouseButtonEventArgs e) { self.MouseButtonReleased(e); }
         private static void MouseWheelScrolled(SpineWindow self, SFML.Window.MouseWheelScrollEventArgs e) { self.MouseWheelScrolled(e); }
+
+        #endregion
     }
 
     /// <summary>
