@@ -371,7 +371,7 @@ namespace SpineWindow
                 mutex.ReleaseMutex();
             }
         }
-        private SFML.Graphics.Color backgroundColor = new(128, 128, 128);
+        private SFML.Graphics.Color backgroundColor = new(128, 128, 128, 0);
 
         /// <summary>
         /// 用于系统 api 设置透明颜色键
