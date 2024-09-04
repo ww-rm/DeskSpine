@@ -13,6 +13,7 @@ namespace DeskSpine
     /// </summary>
     public class SystemConfig
     {
+        [JsonIgnore]
         public bool AutuRun { get; set; } = false;
         public bool Visible { get; set; } = true;
     }
@@ -28,7 +29,8 @@ namespace DeskSpine
         public bool SpineFlip { get; set; } = false;
         public byte Opacity { get; set; } = 255;
         public uint MaxFps { get; set; } = 30;
-        public SpineWindow.BackgroudColor BackgroudColor { get; set; } = SpineWindow.BackgroudColor.Gray;
+        public SpineWindow.AutoBackgroudColorType AutoBackgroudColor { get; set; } = SpineWindow.AutoBackgroudColorType.Gray;
+        public SFML.Graphics.Color BackgroundColor { get; set; } =  new (128, 128, 128, 0);
         public bool SpineUsePMA { get; set; } = true;
 
         [JsonIgnore]
@@ -43,8 +45,6 @@ namespace DeskSpine
         public float SpinePositionX { get; set; } = 0;
         [JsonIgnore]
         public float SpinePositionY { get; set; } = 0;
-        [JsonIgnore]
-        public SFML.Graphics.Color ClearColor { get; set; }
     }
 
     /// <summary>
