@@ -64,7 +64,7 @@ namespace Spine
             {
                 throw new ArgumentException($"Unknown skeleton file format {SkelPath}");
             }
-            animationStateData = new AnimationStateData(skeletonData) { DefaultMix = 0.15f };
+            animationStateData = new AnimationStateData(skeletonData) { DefaultMix = AnimationMix };
             skeleton = new Skeleton(skeletonData);
             animationState = new AnimationState(animationStateData);
 
@@ -107,7 +107,7 @@ namespace Spine
                 }
 
                 // reload skel-dependent data
-                animationStateData = new AnimationStateData(skeletonData);
+                animationStateData = new AnimationStateData(skeletonData) { DefaultMix = AnimationMix };
                 skeleton = new Skeleton(skeletonData);
                 animationState = new AnimationState(animationStateData);
 
@@ -197,17 +197,21 @@ namespace Spine
             vertexArray.Clear();
             states.Texture = null;
 
-            foreach (var slot in skeleton.Slots)
+            // 要用 DrawOrder 而不是 Slots
+            foreach (var slot in skeleton.DrawOrder)
             {
                 var attachment = slot.Attachment;
                 if (attachment is null)
                     continue;
 
                 SFML.Graphics.Texture texture;
-                float[] worldVertices = worldVerticesBuffer;
-                int worldVerticesCount;
-                int[] worldTriangleIndices;
-                float[] uvs;
+
+                
+                float[] worldVertices = worldVerticesBuffer;    // 顶点世界坐标, 连续的 [x0, y0, x1, y1, ...] 坐标值
+                int worldVerticesCount;                         // 等于顶点数组的长度除以 2
+                int[] worldTriangleIndices;                     // 三角形索引, 从顶点坐标数组取的时候要乘以 2, 最大值是 worldVerticesCount - 1
+                int worldTriangleIndicesLength;                 // 三角形索引数组长度
+                float[] uvs;                                    // 纹理坐标
                 float tintR = skeleton.R * slot.R;
                 float tintG = skeleton.G * slot.G;
                 float tintB = skeleton.B * slot.B;
@@ -220,6 +224,7 @@ namespace Spine
                     regionAttachment.ComputeWorldVertices(slot.Bone, worldVertices, 0);
                     worldVerticesCount = 4;
                     worldTriangleIndices = [0, 1, 2, 2, 3, 0];
+                    worldTriangleIndicesLength = 6;
                     uvs = regionAttachment.UVs;
                     tintR *= regionAttachment.R;
                     tintG *= regionAttachment.G;
@@ -235,6 +240,7 @@ namespace Spine
                     meshAttachment.ComputeWorldVertices(slot, worldVertices);
                     worldVerticesCount = meshAttachment.WorldVerticesLength / 2;
                     worldTriangleIndices = meshAttachment.Triangles;
+                    worldTriangleIndicesLength = meshAttachment.Triangles.Length;
                     uvs = meshAttachment.UVs;
                     tintR *= meshAttachment.R;
                     tintG *= meshAttachment.G;
@@ -243,7 +249,7 @@ namespace Spine
                 }
                 else if (attachment is ClippingAttachment clippingAttachment)
                 {
-                    //clipping.ClipStart(slot, clippingAttachment);
+                    clipping.ClipStart(slot, clippingAttachment);
                     continue;
                 }
                 else
@@ -267,11 +273,13 @@ namespace Spine
 
                 if (clipping.IsClipping)
                 {
-                    clipping.ClipTriangles(worldVertices, worldVerticesCount * 2, worldTriangleIndices, worldTriangleIndices.Length, uvs);
+                    // 这里必须单独记录 Count, 和 Items 的 Length 是不一致的
+                    clipping.ClipTriangles(worldVertices, worldVerticesCount * 2, worldTriangleIndices, worldTriangleIndicesLength, uvs);
                     worldVertices = clipping.ClippedVertices.Items;
                     worldVerticesCount = clipping.ClippedVertices.Count / 2;
-                    uvs = clipping.ClippedUVs.Items;
                     worldTriangleIndices = clipping.ClippedTriangles.Items;
+                    worldTriangleIndicesLength = clipping.ClippedTriangles.Count;
+                    uvs = clipping.ClippedUVs.Items;
                 }
 
                 var textureSizeX = texture.Size.X;
@@ -283,9 +291,10 @@ namespace Spine
                 vertex.Color.B = (byte)(tintB * 255);
                 vertex.Color.A = (byte)(tintA * 255);
 
-                foreach (var i in worldTriangleIndices)
+                // 必须用 worldTriangleIndicesLength 不能直接 foreach
+                for (int i = 0; i < worldTriangleIndicesLength; i++)
                 {
-                    var index = i * 2;
+                    var index = worldTriangleIndices[i] * 2;
                     vertex.Position.X = worldVertices[index];
                     vertex.Position.Y = worldVertices[index + 1];
                     vertex.TexCoords.X = uvs[index] * textureSizeX;
