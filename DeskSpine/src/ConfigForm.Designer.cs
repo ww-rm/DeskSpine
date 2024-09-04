@@ -33,7 +33,10 @@
             notifyIcon = new NotifyIcon(components);
             contextMenuStrip = new ContextMenuStrip(components);
             commandShowSpine = new ToolStripMenuItem();
+            commandWallpaperMode = new ToolStripMenuItem();
             commandMouseClickThrough = new ToolStripMenuItem();
+            toolStripSeparator2 = new ToolStripSeparator();
+            commandSetFullScreen = new ToolStripMenuItem();
             commandResetSpine = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
             commandConfig = new ToolStripMenuItem();
@@ -95,7 +98,7 @@
             label10 = new Label();
             numericUpDown_PositionX = new NumericUpDown();
             tableLayoutPanel8 = new TableLayoutPanel();
-            comboBox_BackgroudColor = new ComboBox();
+            comboBox_AutoBackgroudColor = new ComboBox();
             textBox_ClearColor = new TextBox();
             label17 = new Label();
             tableLayoutPanel10 = new TableLayoutPanel();
@@ -159,7 +162,6 @@
             label39 = new Label();
             tableLayoutPanel_Buttons = new TableLayoutPanel();
             openFileDialog_SelectSkel = new OpenFileDialog();
-            commandSetFullScreen = new ToolStripMenuItem();
             contextMenuStrip.SuspendLayout();
             tableLayoutPanel_Window.SuspendLayout();
             tabControl_Config.SuspendLayout();
@@ -196,63 +198,82 @@
             notifyIcon.Icon = (Icon)resources.GetObject("notifyIcon.Icon");
             notifyIcon.Text = "DeskSpine";
             notifyIcon.Visible = true;
-            notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
             notifyIcon.MouseClick += NotifyIcon_MouseClick;
+            notifyIcon.MouseDoubleClick += NotifyIcon_MouseDoubleClick;
             // 
             // contextMenuStrip
             // 
             contextMenuStrip.ImageScalingSize = new Size(24, 24);
-            contextMenuStrip.Items.AddRange(new ToolStripItem[] { commandShowSpine, commandMouseClickThrough, commandSetFullScreen, commandResetSpine, toolStripSeparator1, commandConfig, commandAbout, commandExit });
+            contextMenuStrip.Items.AddRange(new ToolStripItem[] { commandShowSpine, commandWallpaperMode, commandMouseClickThrough, toolStripSeparator2, commandSetFullScreen, commandResetSpine, toolStripSeparator1, commandConfig, commandAbout, commandExit });
             contextMenuStrip.Name = "contextMenuStrip";
-            contextMenuStrip.Size = new Size(241, 253);
+            contextMenuStrip.Size = new Size(153, 256);
             contextMenuStrip.Opening += contextMenuStrip_Opening;
             // 
             // commandShowSpine
             // 
             commandShowSpine.Name = "commandShowSpine";
-            commandShowSpine.Size = new Size(240, 30);
+            commandShowSpine.Size = new Size(152, 30);
             commandShowSpine.Text = "显示精灵";
             commandShowSpine.Click += commandShowSpine_Click;
+            // 
+            // commandWallpaperMode
+            // 
+            commandWallpaperMode.Name = "commandWallpaperMode";
+            commandWallpaperMode.Size = new Size(152, 30);
+            commandWallpaperMode.Text = "壁纸模式";
+            commandWallpaperMode.Click += commandWallpaperMode_Click;
             // 
             // commandMouseClickThrough
             // 
             commandMouseClickThrough.Name = "commandMouseClickThrough";
-            commandMouseClickThrough.Size = new Size(240, 30);
+            commandMouseClickThrough.Size = new Size(152, 30);
             commandMouseClickThrough.Text = "鼠标穿透";
             commandMouseClickThrough.Click += commandMouseClickThrough_Click;
+            // 
+            // toolStripSeparator2
+            // 
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new Size(149, 6);
+            // 
+            // commandSetFullScreen
+            // 
+            commandSetFullScreen.Name = "commandSetFullScreen";
+            commandSetFullScreen.Size = new Size(152, 30);
+            commandSetFullScreen.Text = "一键全屏";
+            commandSetFullScreen.Click += commandSetFullScreen_Click;
             // 
             // commandResetSpine
             // 
             commandResetSpine.Name = "commandResetSpine";
-            commandResetSpine.Size = new Size(240, 30);
+            commandResetSpine.Size = new Size(152, 30);
             commandResetSpine.Text = "窗口复位";
             commandResetSpine.Click += commandResetSpine_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(237, 6);
+            toolStripSeparator1.Size = new Size(149, 6);
             // 
             // commandConfig
             // 
             commandConfig.Name = "commandConfig";
-            commandConfig.Size = new Size(240, 30);
+            commandConfig.Size = new Size(152, 30);
             commandConfig.Text = "设置";
             commandConfig.Click += commandConfig_Click;
             // 
             // commandAbout
             // 
             commandAbout.Name = "commandAbout";
-            commandAbout.Size = new Size(240, 30);
+            commandAbout.Size = new Size(152, 30);
             commandAbout.Text = "关于";
             commandAbout.Click += commandAbout_Click;
             // 
             // commandExit
             // 
             commandExit.Name = "commandExit";
-            commandExit.Size = new Size(240, 30);
+            commandExit.Size = new Size(152, 30);
             commandExit.Text = "退出";
-            commandExit.Click += CommandExit_Click;
+            commandExit.Click += commandExit_Click;
             // 
             // button_Ok
             // 
@@ -970,7 +991,7 @@
             tableLayoutPanel8.ColumnCount = 2;
             tableLayoutPanel8.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 61.22449F));
             tableLayoutPanel8.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 38.77551F));
-            tableLayoutPanel8.Controls.Add(comboBox_BackgroudColor, 0, 0);
+            tableLayoutPanel8.Controls.Add(comboBox_AutoBackgroudColor, 0, 0);
             tableLayoutPanel8.Controls.Add(textBox_ClearColor, 1, 0);
             tableLayoutPanel8.Dock = DockStyle.Fill;
             tableLayoutPanel8.Location = new Point(235, 513);
@@ -981,17 +1002,16 @@
             tableLayoutPanel8.Size = new Size(362, 57);
             tableLayoutPanel8.TabIndex = 17;
             // 
-            // comboBox_BackgroudColor
+            // comboBox_AutoBackgroudColor
             // 
-            comboBox_BackgroudColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            comboBox_BackgroudColor.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBox_BackgroudColor.FormattingEnabled = true;
-            comboBox_BackgroudColor.Items.AddRange(new object[] { "黑色", "灰色", "白色" });
-            comboBox_BackgroudColor.Location = new Point(0, 12);
-            comboBox_BackgroudColor.Margin = new Padding(0, 0, 3, 0);
-            comboBox_BackgroudColor.Name = "comboBox_BackgroudColor";
-            comboBox_BackgroudColor.Size = new Size(218, 32);
-            comboBox_BackgroudColor.TabIndex = 0;
+            comboBox_AutoBackgroudColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            comboBox_AutoBackgroudColor.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox_AutoBackgroudColor.FormattingEnabled = true;
+            comboBox_AutoBackgroudColor.Location = new Point(0, 12);
+            comboBox_AutoBackgroudColor.Margin = new Padding(0, 0, 3, 0);
+            comboBox_AutoBackgroudColor.Name = "comboBox_AutoBackgroudColor";
+            comboBox_AutoBackgroudColor.Size = new Size(218, 32);
+            comboBox_AutoBackgroudColor.TabIndex = 0;
             // 
             // textBox_ClearColor
             // 
@@ -1711,7 +1731,6 @@
             comboBox_WindowType.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_WindowType.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_WindowType.FormattingEnabled = true;
-            comboBox_WindowType.Items.AddRange(new object[] { "碧蓝航线_后宅小人", "碧蓝航线_动态立绘", "明日方舟_动态立绘" });
             comboBox_WindowType.Location = new Point(233, 68);
             comboBox_WindowType.Margin = new Padding(0);
             comboBox_WindowType.Name = "comboBox_WindowType";
@@ -1745,7 +1764,6 @@
             comboBox_SpineVersion.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_SpineVersion.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SpineVersion.FormattingEnabled = true;
-            comboBox_SpineVersion.Items.AddRange(new object[] { "3.8.x", "3.6.x" });
             comboBox_SpineVersion.Location = new Point(233, 12);
             comboBox_SpineVersion.Margin = new Padding(0);
             comboBox_SpineVersion.Name = "comboBox_SpineVersion";
@@ -1791,13 +1809,6 @@
             openFileDialog_SelectSkel.AddToRecent = false;
             openFileDialog_SelectSkel.Filter = "Skel 文件 (*.skel; *.json)|*.skel;*.json";
             openFileDialog_SelectSkel.RestoreDirectory = true;
-            // 
-            // commandSetFullScreen
-            // 
-            commandSetFullScreen.Name = "commandSetFullScreen";
-            commandSetFullScreen.Size = new Size(240, 30);
-            commandSetFullScreen.Text = "一键全屏";
-            commandSetFullScreen.Click += commandSetFullScreen_Click;
             // 
             // ConfigForm
             // 
@@ -1855,7 +1866,6 @@
             tableLayoutPanel_Buttons.ResumeLayout(false);
             ResumeLayout(false);
         }
-
         #endregion
 
         private NotifyIcon notifyIcon;
@@ -1904,7 +1914,7 @@
         private Label label18;
         private Label label19;
         private TableLayoutPanel tableLayoutPanel8;
-        private ComboBox comboBox_BackgroudColor;
+        private ComboBox comboBox_AutoBackgroudColor;
         private TextBox textBox_ClearColor;
         private Label label23;
         private TableLayoutPanel tableLayoutPanel9;
@@ -1988,5 +1998,7 @@
         private CheckBox checkBox_SpineUsePMA;
         private Label label42;
         private ToolStripMenuItem commandSetFullScreen;
+        private ToolStripMenuItem commandWallpaperMode;
+        private ToolStripSeparator toolStripSeparator2;
     }
 }

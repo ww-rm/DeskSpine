@@ -1,10 +1,32 @@
-using SpineWindow;
 using System.Diagnostics;
 
 namespace DeskSpine
 {
     public partial class ConfigForm : Form
     {
+        protected Dictionary<string, SpineWindow.AutoBackgroudColorType> comboBox_AutoBackgroudColor_KV = new()
+        {
+            { "黑色", SpineWindow.AutoBackgroudColorType.Black },
+            { "白色", SpineWindow.AutoBackgroudColorType.White },
+            { "灰色", SpineWindow.AutoBackgroudColorType.Gray },
+            { "自定义", SpineWindow.AutoBackgroudColorType.None },
+        };
+
+        protected Dictionary<string, string> comboBox_SpineVersion_KV = new()
+        {
+            { "3.6.x", "3.6.x" },
+            { "3.8.x", "3.8.x" },
+        };
+
+        protected Dictionary<string, SpineWindow.SpineWindowType> comboBox_WindowType_KV = new()
+        {
+            { "碧蓝航线_后宅小人", SpineWindow.SpineWindowType.AzurLaneSD },
+            { "碧蓝航线_动态立绘", SpineWindow.SpineWindowType.AzurLaneDynamic },
+            { "明日方舟_动态立绘", SpineWindow.SpineWindowType.ArknightsDynamic },
+            { "明日方舟_基建小人", SpineWindow.SpineWindowType.ArknightsBuild },
+            { "明日方舟_战斗小人", SpineWindow.SpineWindowType.ArknightsBattle },
+        };
+
         public ConfigForm()
         {
             InitializeComponent();
@@ -34,27 +56,15 @@ namespace DeskSpine
                 v.BasicConfig.MaxFps = (uint)trackBar_MaxFps.Value;
                 v.BasicConfig.SpineUsePMA = checkBox_SpineUsePMA.Checked;
 
-                // 获取背景颜色
-                v.BasicConfig.BackgroudColor = comboBox_BackgroudColor.SelectedItem switch
-                {
-                    "黑色" => SpineWindow.BackgroudColor.Black,
-                    "白色" => SpineWindow.BackgroudColor.White,
-                    "灰色" => SpineWindow.BackgroudColor.Gray,
-                    _ => SpineWindow.BackgroudColor.Gray
-                };
+                // 获取自动背景颜色
+                v.BasicConfig.AutoBackgroudColor = (SpineWindow.AutoBackgroudColorType)comboBox_AutoBackgroudColor.SelectedValue;
 
-                // 获取清除颜色
-                v.BasicConfig.ClearColor = new(0, 0, 0, 0);
+                // TODO: 获取清除颜色
+                v.BasicConfig.BackgroundColor = new(0, 0, 0, 0);
 
                 // Spine 设置
-                v.SpineConfig.SpineVersion = (string)comboBox_SpineVersion.SelectedItem;
-                v.SpineConfig.WindowType = comboBox_WindowType.SelectedItem switch
-                {
-                    "碧蓝航线_后宅小人" => SpineWindow.SpineWindowType.AzurLaneSD,
-                    "碧蓝航线_动态立绘" => SpineWindow.SpineWindowType.AzurLaneDynamic,
-                    "明日方舟_动态立绘" => SpineWindow.SpineWindowType.ArknightsDynamic,
-                    _ => SpineWindow.SpineWindowType.AzurLaneSD
-                };
+                v.SpineConfig.SpineVersion = (string)comboBox_SpineVersion.SelectedValue;
+                v.SpineConfig.WindowType = (SpineWindow.SpineWindowType)comboBox_WindowType.SelectedValue;
 
                 // 设置 Spine 路径
                 v.SpineConfig.SkelPath0 = string.IsNullOrEmpty(textBox_SkelPath0.Text) ? null : textBox_SkelPath0.Text;
@@ -91,24 +101,12 @@ namespace DeskSpine
                 trackBar_Opacity.Value = value.BasicConfig.Opacity;
                 trackBar_MaxFps.Value = (int)value.BasicConfig.MaxFps;
                 checkBox_SpineUsePMA.Checked = value.BasicConfig.SpineUsePMA;
-                comboBox_BackgroudColor.SelectedItem = value.BasicConfig.BackgroudColor switch
-                {
-                    SpineWindow.BackgroudColor.Black => "黑色",
-                    SpineWindow.BackgroudColor.White => "白色",
-                    SpineWindow.BackgroudColor.Gray => "灰色",
-                    _ => "灰色"
-                };
-                textBox_ClearColor.Text = $"#{value.BasicConfig.ClearColor.ToInteger():X8}";
+                comboBox_AutoBackgroudColor.SelectedValue = value.BasicConfig.AutoBackgroudColor;
+                textBox_ClearColor.Text = $"#{value.BasicConfig.BackgroundColor.ToInteger():X8}"; // TODO: 提供自定义颜色设置
 
                 // Spine 设置
-                comboBox_SpineVersion.SelectedItem = value.SpineConfig.SpineVersion;
-                comboBox_WindowType.SelectedItem = value.SpineConfig.WindowType switch
-                {
-                    SpineWindow.SpineWindowType.AzurLaneSD => "碧蓝航线_后宅小人",
-                    SpineWindow.SpineWindowType.AzurLaneDynamic => "碧蓝航线_动态立绘",
-                    SpineWindow.SpineWindowType.ArknightsDynamic => "明日方舟_动态立绘",
-                    _ => "碧蓝航线_后宅小人",
-                };
+                comboBox_SpineVersion.SelectedValue = value.SpineConfig.SpineVersion;
+                comboBox_WindowType.SelectedValue = value.SpineConfig.WindowType;
                 textBox_SkelPath0.Text = value.SpineConfig.SkelPath0;
                 textBox_SkelPath1.Text = value.SpineConfig.SkelPath1;
                 textBox_SkelPath2.Text = value.SpineConfig.SkelPath2;
@@ -122,12 +120,26 @@ namespace DeskSpine
             }
         }
 
+        #region 窗体事件
+
         private void ConfigForm_Load(object sender, EventArgs e)
         {
-            comboBox_BackgroudColor.SelectedItem = "灰色";
-            comboBox_SpineVersion.SelectedItem = "3.8.x";
-            comboBox_WindowType.SelectedItem = "碧蓝航线_后宅小人";
+            comboBox_AutoBackgroudColor.DataSource = new BindingSource(comboBox_AutoBackgroudColor_KV, null);
+            comboBox_AutoBackgroudColor.DisplayMember = "Key";
+            comboBox_AutoBackgroudColor.ValueMember = "Value";
+            comboBox_AutoBackgroudColor.SelectedValue = SpineWindow.AutoBackgroudColorType.Gray;
+
+            comboBox_SpineVersion.DataSource = new BindingSource(comboBox_SpineVersion_KV, null);
+            comboBox_SpineVersion.DisplayMember = "Key";
+            comboBox_SpineVersion.ValueMember = "Value";
+            comboBox_SpineVersion.SelectedValue = "3.8.x";
+
+            comboBox_WindowType.DataSource = new BindingSource(comboBox_WindowType_KV, null);
+            comboBox_WindowType.DisplayMember = "Key";
+            comboBox_WindowType.ValueMember = "Value";
+            comboBox_WindowType.SelectedValue = SpineWindow.SpineWindowType.AzurLaneSD;
         }
+
         private void ConfigForm_VisibleChanged(object sender, EventArgs e)
         {
             if (this.Visible)
@@ -135,6 +147,7 @@ namespace DeskSpine
                 Value = Program.CurrentConfig;
             }
         }
+
         private void ConfigForm_FormClosing(object? sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
@@ -144,9 +157,150 @@ namespace DeskSpine
             }
         }
 
+        private void button_OpenDataFolder_Click(object sender, EventArgs e)
+        {
+            try { Process.Start("explorer.exe", Program.ProgramDataDirectory); }
+            catch (Exception ex) { MessageBox.Show($"无法打开文件夹: {ex.Message}", Program.ProgramName); }
+        }
+
+        private void button_Ok_Click(object sender, EventArgs e)
+        {
+            button_Apply_Click(sender, e);
+            this.Hide();
+        }
+
+        private void button_Apply_Click(object sender, EventArgs e)
+        {
+            Program.CurrentConfig = Value;
+        }
+
+        #endregion
+
+        #region 通知栏图标事件
+
+        private void NotifyIcon_MouseClick(object? sender, EventArgs e)
+        {
+            
+        }
+
+        private void NotifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                commandConfig_Click(sender, EventArgs.Empty);
+            }
+        }
+
+        #endregion
+
+        #region 菜单命令事件
+
+        private void contextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var currentConfig = Program.CurrentConfig;
+            commandShowSpine.Checked = currentConfig.SystemConfig.Visible;
+            commandWallpaperMode.Checked = currentConfig.BasicConfig.WallpaperMode;
+            commandMouseClickThrough.Checked = currentConfig.BasicConfig.MouseClickThrough;
+        }
+
+        private void commandShowSpine_Click(object sender, EventArgs e)
+        {
+            var currentConfig = Program.CurrentConfig;
+            if (commandShowSpine.Checked)
+            {
+                Program.WindowSpine.Visible = false;
+                currentConfig.SystemConfig.Visible = false;
+            }
+            else
+            {
+                Program.WindowSpine.Visible = true;
+                currentConfig.SystemConfig.Visible = true;
+            }
+            Program.LocalConfig = currentConfig;
+        }
+
+        private void commandWallpaperMode_Click(object sender, EventArgs e)
+        {
+            var currentConfig = Program.CurrentConfig;
+            if (commandWallpaperMode.Checked)
+            {
+                Program.WindowSpine.WallpaperMode = false;
+                currentConfig.BasicConfig.WallpaperMode = false;
+            }
+            else
+            {
+                Program.WindowSpine.WallpaperMode = true;
+                currentConfig.BasicConfig.WallpaperMode = true;
+            }
+            Program.LocalConfig = currentConfig;
+        }
+
+        private void commandMouseClickThrough_Click(object sender, EventArgs e)
+        {
+            var currentConfig = Program.CurrentConfig;
+            if (commandMouseClickThrough.Checked)
+            {
+                Program.WindowSpine.MouseClickThrough = false;
+                currentConfig.BasicConfig.MouseClickThrough = false;
+            }
+            else
+            {
+                Program.WindowSpine.MouseClickThrough = true;
+                currentConfig.BasicConfig.MouseClickThrough = true;
+            }
+            Program.LocalConfig = currentConfig;
+        }
+
+        private void commandSetFullScreen_Click(object sender, EventArgs e)
+        {
+            var screenBounds = Screen.FromHandle(Program.WindowSpine.Handle).Bounds;
+            var screenPosition = screenBounds.Location;
+            var screenSize = screenBounds.Size;
+            var currentConfig = Program.CurrentConfig;
+            Program.WindowSpine.Position = new(screenPosition.X, screenPosition.Y);
+            Program.WindowSpine.Size = new((uint)screenSize.Width, (uint)screenSize.Height);
+            currentConfig.BasicConfig.PositionX = screenPosition.X;
+            currentConfig.BasicConfig.PositionY = screenPosition.Y;
+            currentConfig.BasicConfig.SizeX = (uint)screenSize.Width;
+            currentConfig.BasicConfig.SizeY = (uint)screenSize.Height;
+            Program.LocalConfig = currentConfig;
+        }
+
+        private void commandResetSpine_Click(object sender, EventArgs e)
+        {
+            Program.WindowSpine.ResetPositionAndSize();
+        }
+
+        private void commandConfig_Click(object sender, EventArgs e)
+        {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+            this.Activate();
+            this.BringToFront();
+        }
+
+        private void commandAbout_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void commandExit_Click(object? sender, EventArgs e)
+        {
+            Program.LocalConfig = Program.CurrentConfig;
+            Application.Exit();
+        }
+
+        #endregion
+
+        #region 基础设置控件事件
+
         private void trackBar_SpineScale_ValueChanged(object sender, EventArgs e) { label_SpineScale.Text = $"{trackBar_SpineScale.Value}"; }
         private void trackBar_Opacity_ValueChanged(object sender, EventArgs e) { label_Opacity.Text = $"{trackBar_Opacity.Value}"; }
         private void trackBar_MaxFps_ValueChanged(object sender, EventArgs e) { label_MaxFps.Text = $"{trackBar_MaxFps.Value}"; }
+
+        #endregion
+
+        #region Spine 设置控件事件
 
         private void button_SelectSkel0_Click(object sender, EventArgs e)
         {
@@ -270,113 +424,6 @@ namespace DeskSpine
             textBox_SkelPath9.Text = string.Empty;
         }
 
-        private void button_OpenDataFolder_Click(object sender, EventArgs e)
-        {
-            try { Process.Start("explorer.exe", Program.ProgramDataDirectory); }
-            catch (Exception ex) { MessageBox.Show($"无法打开文件夹: {ex.Message}", Program.ProgramName); }
-        }
-
-        private void button_Ok_Click(object sender, EventArgs e)
-        {
-            button_Apply_Click(sender, e);
-            this.Hide();
-        }
-
-        private void button_Apply_Click(object sender, EventArgs e)
-        {
-            Program.ApplyConfig(Value);
-        }
-
-
-        private void NotifyIcon_MouseClick(object? sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-
-                //Win32.SetParent(Program.WindowSpine.window.SystemHandle, 0x3b0880);
-            }
-        }
-
-        private void NotifyIcon_DoubleClick(object? sender, EventArgs e)
-        {
-
-
-        }
-
-        private void contextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            var currentConfig = Program.CurrentConfig;
-            commandShowSpine.Checked = currentConfig.SystemConfig.Visible;
-            commandMouseClickThrough.Checked = currentConfig.BasicConfig.MouseClickThrough;
-        }
-
-        private void commandShowSpine_Click(object sender, EventArgs e)
-        {
-            var currentConfig = Program.CurrentConfig;
-            if (commandShowSpine.Checked)
-            {
-                Program.WindowSpine.Visible = false;
-                currentConfig.SystemConfig.Visible = false;
-            }
-            else
-            {
-                Program.WindowSpine.Visible = true;
-                currentConfig.SystemConfig.Visible = true;
-            }
-            Program.LocalConfig = currentConfig;
-        }
-
-        private void commandMouseClickThrough_Click(object sender, EventArgs e)
-        {
-            var currentConfig = Program.CurrentConfig;
-            if (commandMouseClickThrough.Checked)
-            {
-                Program.WindowSpine.MouseClickThrough = false;
-                currentConfig.BasicConfig.MouseClickThrough = false;
-            }
-            else
-            {
-                Program.WindowSpine.MouseClickThrough = true;
-                currentConfig.BasicConfig.MouseClickThrough = true;
-            }
-            Program.LocalConfig = currentConfig;
-        }
-
-        private void commandSetFullScreen_Click(object sender, EventArgs e)
-        {
-            var screenBounds = Screen.FromHandle(Program.WindowSpine.Handle).Bounds;
-            var screenPosition = screenBounds.Location;
-            var screenSize = screenBounds.Size;
-            var currentConfig = Program.CurrentConfig;
-            Program.WindowSpine.Position = new(screenPosition.X, screenPosition.Y);
-            Program.WindowSpine.Size = new((uint)screenSize.Width, (uint)screenSize.Height);
-            currentConfig.BasicConfig.PositionX = screenPosition.X;
-            currentConfig.BasicConfig.PositionY = screenPosition.Y;
-            currentConfig.BasicConfig.SizeX = (uint)screenSize.Width;
-            currentConfig.BasicConfig.SizeY = (uint)screenSize.Height;
-            Program.LocalConfig = currentConfig;
-        }
-
-        private void commandResetSpine_Click(object sender, EventArgs e)
-        {
-            Program.WindowSpine.ResetPositionAndSize();
-        }
-
-        private void commandConfig_Click(object sender, EventArgs e)
-        {
-            this.Show();
-            this.Activate();
-        }
-
-        private void commandAbout_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void CommandExit_Click(object? sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
+        #endregion
     }
 }
