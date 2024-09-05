@@ -175,7 +175,7 @@ namespace Spine
                     BlendMode.Additive => SFMLBlendMode.Additive,
                     BlendMode.Multiply => SFMLBlendMode.Multiply,
                     BlendMode.Screen => SFMLBlendMode.Screen,
-                    _ => SFMLBlendMode.Normal,
+                    _ => throw new NotImplementedException($"{spineBlendMode}"),
                 };
             }
             else
@@ -186,7 +186,7 @@ namespace Spine
                     BlendMode.Additive => SFMLBlendMode.AdditivePma,
                     BlendMode.Multiply => SFMLBlendMode.MultiplyPma,
                     BlendMode.Screen => SFMLBlendMode.ScreenPma,
-                    _ => SFMLBlendMode.NormalPma,
+                    _ => throw new NotImplementedException($"{spineBlendMode}"),
                 };
             }
             return blendMode;
