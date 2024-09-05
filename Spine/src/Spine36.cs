@@ -193,10 +193,12 @@ namespace Spine
             {
                 var attachment = slot.Attachment;
                 if (attachment is null)
+                {
+                    clipping.ClipEnd(slot);
                     continue;
+                }
 
                 SFML.Graphics.Texture texture;
-
 
                 float[] worldVertices = worldVerticesBuffer;    // 顶点世界坐标, 连续的 [x0, y0, x1, y1, ...] 坐标值
                 int worldVerticesCount;                         // 等于顶点数组的长度除以 2
