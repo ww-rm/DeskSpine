@@ -373,6 +373,7 @@ namespace SpineWindow
                 mutex.WaitOne();
                 backgroundColor = value;
                 mutex.ReleaseMutex();
+                Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, Opacity, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
             }
         }
         private SFML.Graphics.Color backgroundColor = new(128, 128, 128, 0);
