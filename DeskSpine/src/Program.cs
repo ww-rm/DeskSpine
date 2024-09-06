@@ -93,38 +93,16 @@ namespace DeskSpine
 
             set
             {
+                var cur = CurrentConfig;
+
                 // 优先检测是否需要更换窗口类型, 重新创建窗口实例之后再设置其他配置
-                if (CurrentConfig.SpineConfig.WindowType != value.SpineConfig.WindowType)
+                if (cur.SpineConfig.WindowType != value.SpineConfig.WindowType)
                 {
                     WindowSpine.Dispose();
                     WindowSpine = SpineWindow.SpineWindow.New(value.SpineConfig.WindowType, SpineConfig.SlotCount);
                 }
 
-                var cur = CurrentConfig;
-
-                // 系统设置
-                if (cur.SystemConfig.AutuRun != value.SystemConfig.AutuRun)
-                    AutoRun = value.SystemConfig.AutuRun;
-
-                // 基础设置
-                if (cur.BasicConfig.WallpaperMode != value.BasicConfig.WallpaperMode)
-                    WindowSpine.WallpaperMode = value.BasicConfig.WallpaperMode;
-                if (cur.BasicConfig.MouseClickThrough != value.BasicConfig.MouseClickThrough)
-                    WindowSpine.MouseClickThrough = value.BasicConfig.MouseClickThrough;
-                if (cur.BasicConfig.PositionX != value.BasicConfig.PositionX || cur.BasicConfig.PositionY != value.BasicConfig.PositionY)
-                    WindowSpine.Position = new(value.BasicConfig.PositionX, value.BasicConfig.PositionY);
-                if (cur.BasicConfig.SizeX != value.BasicConfig.SizeX || cur.BasicConfig.SizeY != value.BasicConfig.SizeY)
-                    WindowSpine.Size = new(value.BasicConfig.SizeX, value.BasicConfig.SizeY);
-                if (cur.BasicConfig.Opacity != value.BasicConfig.Opacity)
-                    WindowSpine.Opacity = value.BasicConfig.Opacity;
-                if (cur.BasicConfig.MaxFps != value.BasicConfig.MaxFps)
-                    WindowSpine.MaxFps = value.BasicConfig.MaxFps;
-                if (cur.BasicConfig.AutoBackgroudColor != value.BasicConfig.AutoBackgroudColor)
-                    WindowSpine.AutoBackgroudColor = value.BasicConfig.AutoBackgroudColor;
-                if (cur.BasicConfig.BackgroundColor != value.BasicConfig.BackgroundColor)
-                    WindowSpine.BackgroudColor = value.BasicConfig.BackgroundColor;     // 要先设置 AutoBackgroudColor 再设置 BackgroudColor
-
-                // Spine 设置
+                // 检查是否需要更换资源
                 if (cur.SpineConfig.SpineVersion != value.SpineConfig.SpineVersion)
                 {
                     for (int i = 0; i < WindowSpine.SlotCount; i++)
@@ -154,6 +132,31 @@ namespace DeskSpine
                         }
                     }
                 }
+
+                // 重新取一次现在的运行时配置
+                cur = CurrentConfig;
+
+                // 系统设置
+                if (cur.SystemConfig.AutuRun != value.SystemConfig.AutuRun)
+                    AutoRun = value.SystemConfig.AutuRun;
+
+                // 基础设置
+                if (cur.BasicConfig.WallpaperMode != value.BasicConfig.WallpaperMode)
+                    WindowSpine.WallpaperMode = value.BasicConfig.WallpaperMode;
+                if (cur.BasicConfig.MouseClickThrough != value.BasicConfig.MouseClickThrough)
+                    WindowSpine.MouseClickThrough = value.BasicConfig.MouseClickThrough;
+                if (cur.BasicConfig.PositionX != value.BasicConfig.PositionX || cur.BasicConfig.PositionY != value.BasicConfig.PositionY)
+                    WindowSpine.Position = new(value.BasicConfig.PositionX, value.BasicConfig.PositionY);
+                if (cur.BasicConfig.SizeX != value.BasicConfig.SizeX || cur.BasicConfig.SizeY != value.BasicConfig.SizeY)
+                    WindowSpine.Size = new(value.BasicConfig.SizeX, value.BasicConfig.SizeY);
+                if (cur.BasicConfig.Opacity != value.BasicConfig.Opacity)
+                    WindowSpine.Opacity = value.BasicConfig.Opacity;
+                if (cur.BasicConfig.MaxFps != value.BasicConfig.MaxFps)
+                    WindowSpine.MaxFps = value.BasicConfig.MaxFps;
+                if (cur.BasicConfig.AutoBackgroudColor != value.BasicConfig.AutoBackgroudColor)
+                    WindowSpine.AutoBackgroudColor = value.BasicConfig.AutoBackgroudColor;
+                if (cur.BasicConfig.BackgroundColor != value.BasicConfig.BackgroundColor)
+                    WindowSpine.BackgroudColor = value.BasicConfig.BackgroundColor;     // 要先设置 AutoBackgroudColor 再设置 BackgroudColor
 
                 // scale 的设置有代价, 并且会重置动画, 所以有改动时再设置
                 if (Math.Abs(cur.BasicConfig.SpineScale - value.BasicConfig.SpineScale) > 1e-3)
