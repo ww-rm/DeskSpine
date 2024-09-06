@@ -18,7 +18,7 @@ namespace DeskSpine
             { "3.8.x", "3.8.x" },
         };
 
-        protected static  Dictionary<string, SpineWindow.SpineWindowType> comboBox_WindowType_KV = new()
+        protected static Dictionary<string, SpineWindow.SpineWindowType> comboBox_WindowType_KV = new()
         {
             { "碧蓝航线_后宅小人", SpineWindow.SpineWindowType.AzurLaneSD },
             { "碧蓝航线_动态立绘", SpineWindow.SpineWindowType.AzurLaneDynamic },
@@ -59,8 +59,11 @@ namespace DeskSpine
                 // 获取自动背景颜色
                 v.BasicConfig.AutoBackgroudColor = (SpineWindow.AutoBackgroudColorType)comboBox_AutoBackgroudColor.SelectedValue;
 
-                // TODO: 获取清除颜色
-                v.BasicConfig.BackgroundColor = new(0, 0, 0, 0);
+                // 获取实际背景颜色
+                v.BasicConfig.BackgroundColor = new((byte)numericUpDown_BackgroundColorR.Value,
+                                                    (byte)numericUpDown_BackgroundColorG.Value,
+                                                    (byte)numericUpDown_BackgroundColorB.Value,
+                                                    0);
 
                 // Spine 设置
                 v.SpineConfig.SpineVersion = (string)comboBox_SpineVersion.SelectedValue;
@@ -102,7 +105,9 @@ namespace DeskSpine
                 trackBar_MaxFps.Value = (int)value.BasicConfig.MaxFps;
                 checkBox_SpineUsePMA.Checked = value.BasicConfig.SpineUsePMA;
                 comboBox_AutoBackgroudColor.SelectedValue = value.BasicConfig.AutoBackgroudColor;
-                textBox_ClearColor.Text = $"#{value.BasicConfig.BackgroundColor.ToInteger():X8}"; // TODO: 提供自定义颜色设置
+                numericUpDown_BackgroundColorR.Value = value.BasicConfig.BackgroundColor.R;
+                numericUpDown_BackgroundColorG.Value = value.BasicConfig.BackgroundColor.G;
+                numericUpDown_BackgroundColorB.Value = value.BasicConfig.BackgroundColor.B;
 
                 // Spine 设置
                 comboBox_SpineVersion.SelectedValue = value.SpineConfig.SpineVersion;
@@ -172,15 +177,16 @@ namespace DeskSpine
         private void button_Apply_Click(object sender, EventArgs e)
         {
             Program.CurrentConfig = Value;
+            Value = Program.CurrentConfig; // 刷新页面值
         }
 
         #endregion
 
         #region 通知栏图标事件
 
-        private void NotifyIcon_MouseClick(object? sender, EventArgs e)
+        private void NotifyIcon_MouseClick(object? sender, MouseEventArgs e)
         {
-            
+
         }
 
         private void NotifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -297,6 +303,36 @@ namespace DeskSpine
         private void trackBar_SpineScale_ValueChanged(object sender, EventArgs e) { label_SpineScale.Text = $"{trackBar_SpineScale.Value}"; }
         private void trackBar_Opacity_ValueChanged(object sender, EventArgs e) { label_Opacity.Text = $"{trackBar_Opacity.Value}"; }
         private void trackBar_MaxFps_ValueChanged(object sender, EventArgs e) { label_MaxFps.Text = $"{trackBar_MaxFps.Value}"; }
+
+        private void comboBox_AutoBackgroudColor_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (comboBox_AutoBackgroudColor.SelectedValue is SpineWindow.AutoBackgroudColorType t && t == SpineWindow.AutoBackgroudColorType.None)
+            {
+                numericUpDown_BackgroundColorR.Enabled = true;
+                numericUpDown_BackgroundColorG.Enabled = true;
+                numericUpDown_BackgroundColorB.Enabled = true;
+            }
+            else
+            {
+                numericUpDown_BackgroundColorR.Enabled = false;
+                numericUpDown_BackgroundColorG.Enabled = false;
+                numericUpDown_BackgroundColorB.Enabled = false;
+            }
+        }
+
+        private void numericUpDown_BackgroundColorR_ValueChanged(object sender, EventArgs e)
+        {
+            if (numericUpDown_BackgroundColorB.Value != numericUpDown_BackgroundColorR.Value)
+                numericUpDown_BackgroundColorB.Value = numericUpDown_BackgroundColorR.Value;
+        }
+
+        private void numericUpDown_BackgroundColorG_ValueChanged(object sender, EventArgs e) { }
+
+        private void numericUpDown_BackgroundColorB_ValueChanged(object sender, EventArgs e)
+        {
+            if (numericUpDown_BackgroundColorR.Value != numericUpDown_BackgroundColorB.Value)
+                numericUpDown_BackgroundColorR.Value = numericUpDown_BackgroundColorB.Value;
+        }
 
         #endregion
 
@@ -425,5 +461,6 @@ namespace DeskSpine
         }
 
         #endregion
+
     }
 }
