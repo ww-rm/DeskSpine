@@ -8,6 +8,39 @@ using System.Threading.Tasks;
 
 namespace DeskSpine
 {
+    public class BackgroundColorConverter : JsonConverter<SFML.Graphics.Color>
+    {
+        public override SFML.Graphics.Color Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            // 读取 RGB 值，忽略 A
+            var jsonDocument = JsonDocument.ParseValue(ref reader);
+            var jsonObject = jsonDocument.RootElement;
+
+            try
+            {
+                // 返回 Color 并将 Alpha 设置为 0
+                byte r = jsonObject.GetProperty("R").GetByte();
+                byte g = jsonObject.GetProperty("G").GetByte();
+                byte b = jsonObject.GetProperty("B").GetByte();
+                return new(r, g, b, 0);
+            }
+            catch (KeyNotFoundException)
+            {
+                return new(128, 128, 128, 0);
+            }
+        }
+
+        public override void Write(Utf8JsonWriter writer, SFML.Graphics.Color value, JsonSerializerOptions options)
+        {
+            // 序列化 R、G、B 值，忽略 A
+            writer.WriteStartObject();
+            writer.WriteNumber("R", value.R);
+            writer.WriteNumber("G", value.G);
+            writer.WriteNumber("B", value.B);
+            writer.WriteEndObject();
+        }
+    }
+
     /// <summary>
     /// 系统设置
     /// </summary>
@@ -30,7 +63,9 @@ namespace DeskSpine
         public byte Opacity { get; set; } = 255;
         public uint MaxFps { get; set; } = 30;
         public SpineWindow.AutoBackgroudColorType AutoBackgroudColor { get; set; } = SpineWindow.AutoBackgroudColorType.Gray;
-        public SFML.Graphics.Color BackgroundColor { get; set; } =  new (128, 128, 128, 0);
+
+        [JsonConverter(typeof(BackgroundColorConverter))] // 结构体不会自动保存字段, 需要用自定义的转换器
+        public SFML.Graphics.Color BackgroundColor { get; set; } = new(128, 128, 128, 0);
         public bool SpineUsePMA { get; set; } = true;
 
         [JsonIgnore]
@@ -120,7 +155,7 @@ namespace DeskSpine
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error reading config file: {ex.Message}");
+                    Console.WriteLine($"Error reading config file: {ex}");
                     return false;
                 }
             }
