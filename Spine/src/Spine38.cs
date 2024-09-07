@@ -92,7 +92,7 @@ namespace Spine
                 var flipY = FlipY;
                 var x = X;
                 var y = Y;
-                var currentAnimation = CurrentAnimation;
+                var savedTrack0 = animationState.GetCurrent(0);
 
                 var val = Math.Clamp(value, ScaleMin, ScaleMax);
                 if (skeletonBinary is not null)
@@ -116,7 +116,20 @@ namespace Spine
                 FlipY = flipY;
                 X = x;
                 Y = y;
-                CurrentAnimation = currentAnimation;
+
+                // 恢复原本 Track0 上所有动画
+                if (savedTrack0 is not null)
+                {
+                    var entry = animationState.SetAnimation(0, savedTrack0.Animation, true);
+                    entry.TrackTime = savedTrack0.TrackTime;
+                    var savedEntry = savedTrack0.Next;
+                    while (savedEntry is not null)
+                    {
+                        entry = animationState.AddAnimation(0, savedEntry.Animation, true, 0);
+                        entry.TrackTime = savedEntry.TrackTime;
+                        savedEntry = savedEntry.Next;
+                    }
+                }
             }
         }
 
