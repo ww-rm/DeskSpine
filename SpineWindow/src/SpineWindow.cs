@@ -469,12 +469,19 @@ namespace SpineWindow
                 }
                 else
                 {
+                    // 一个奇怪的 BUG, 如果在解除 WorkerW 父窗口时透明度不是 255
+                    // 则解除之后透明度不会超过解除时的值
+                    var opacity = Opacity;
+                    Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, 255, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
                     Win32.SetParent(hWnd, IntPtr.Zero);
 
                     // 触发一次内部窗口大小修改逻辑
                     var s = window.Size;
                     window.Size = new(s.X + 1, s.Y + 1);
                     window.Size = s;
+
+                    // 必须重设分层属性, 否则透明度有问题
+                    Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, opacity, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
                 }
             }
         }
