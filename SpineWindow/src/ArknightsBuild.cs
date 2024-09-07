@@ -24,10 +24,9 @@ namespace SpineWindow
         private string animation_MouseLeftDoubleClick = "";
         private string animation_MouseRightClick = "";
         private string animation_MouseRightDoubleClick = "";
-        private string animation_MouseWheelScroll = "";
         private string animation_Working = "";
         private string animation_Sleep = "";
-        private string animation_Stand = "";
+        private string animation_Relax = "";
 
         private State state = State.Idle;
         private State previousState = State.Idle;
@@ -52,15 +51,12 @@ namespace SpineWindow
                 var animationNames = spineSlots[0].AnimationNames;
                 var defaultName = spineSlots[0].DefaultAnimationName;
 
-                //"Default; Interact; Move; Relax; Sit; Sleep; Special;"
-                animation_Idle = animationNames.Contains("Idle") ? "Idle" : defaultName;
-                animation_Dragging = animationNames.Contains("tuozhuai") ? "tuozhuai" : (animationNames.Contains("tuozhuai2") ? "tuozhuai2" : "");
-                animation_MouseLeftClick = animationNames.Contains("Attack") ? "Skill_2_Loop" : "";
-                animation_MouseLeftDoubleClick = animationNames.Contains("motou") ? "motou" : "";
-                animation_MouseWheelScroll = animationNames.Contains("yun") ? "yun" : "";
-                animation_Working = animationNames.Contains("walk") ? "walk" : "";
+                animation_Idle = animationNames.Contains("Relax") ? "Relax" : defaultName;
+                animation_Dragging = animationNames.Contains("Move") ? "Move" : "";
+                animation_MouseLeftClick = animationNames.Contains("Interact") ? "Interact" : "";
+                animation_MouseLeftDoubleClick = animationNames.Contains("Interact") ? "Interact" : "";
+                animation_Working = animationNames.Contains("Move") ? "Move" : "";
                 animation_Sleep = animationNames.Contains("Sleep") ? "Sleep" : "";
-                animation_Stand = animationNames.Contains("stand") ? "stand" : (animationNames.Contains("stand2") ? "stand2" : "");
 
                 spineSlots[0].CurrentAnimation = animation_Idle;
                 state = State.Idle;
@@ -79,14 +75,14 @@ namespace SpineWindow
                 clockStand.Restart();
                 nextStandTime = (float)(-meanWaitingTime * Math.Log(rnd.NextSingle()));
                 Debug.WriteLine($"Next time to stand: {nextStandTime}");
-                if (!string.IsNullOrEmpty(animation_Stand) && state == State.Idle)
+                if (state == State.Idle)
                 {
                     mutex.WaitOne();
                     if (spineSlots[0] is not null)
                     {
                         if (spineSlots[0].CurrentAnimation == animation_Idle)
                         {
-                            spineSlots[0].CurrentAnimation = animation_Stand;
+                            spineSlots[0].CurrentAnimation = animation_Relax;
                             spineSlots[0].AddAnimation(animation_Idle);
                         }
                     }
@@ -114,12 +110,10 @@ namespace SpineWindow
                 switch (e.Button)
                 {
                     case Mouse.Button.Left:
-                        if (!string.IsNullOrEmpty(animation_MouseLeftClick))
-                            spineSlots[0].CurrentAnimation = animation_MouseLeftClick;
+                        spineSlots[0].CurrentAnimation = animation_MouseLeftClick;
                         break;
                     case Mouse.Button.Right:
-                        if (!string.IsNullOrEmpty(animation_MouseRightClick))
-                            spineSlots[0].CurrentAnimation = animation_MouseRightClick;
+                        spineSlots[0].CurrentAnimation = animation_MouseRightClick;
                         break;
                 }
 
@@ -155,52 +149,11 @@ namespace SpineWindow
                 switch (e.Button)
                 {
                     case Mouse.Button.Left:
-                        if (!string.IsNullOrEmpty(animation_MouseLeftDoubleClick))
-                            spineSlots[0].CurrentAnimation = animation_MouseLeftDoubleClick;
+                        spineSlots[0].CurrentAnimation = animation_MouseLeftDoubleClick;
                         break;
                     case Mouse.Button.Right:
-                        if (!string.IsNullOrEmpty(animation_MouseRightDoubleClick))
-                            spineSlots[0].CurrentAnimation = animation_MouseRightDoubleClick;
+                        spineSlots[0].CurrentAnimation = animation_MouseRightDoubleClick;
                         break;
-                }
-
-                spineSlots[0].AddAnimation(nextAnimation);
-                state = state switch
-                {
-                    State.Idle => State.Idle,
-                    State.Dragging => State.Dragging,
-                    State.Working => State.Working,
-                    State.Sleeping => State.Idle,
-                    _ => state,
-                };
-            }
-            mutex.ReleaseMutex();
-        }
-
-        protected override void Trigger_MouseWheelScroll(MouseWheelScrollEventArgs e)
-        {
-            base.Trigger_MouseWheelScroll(e);
-
-            mutex.WaitOne();
-            if (spineSlots[0] is not null)
-            {
-                string nextAnimation = state switch
-                {
-                    State.Idle => animation_Idle,
-                    State.Dragging => animation_Dragging,
-                    State.Working => animation_Working,
-                    State.Sleeping => animation_Idle,
-                    _ => spineSlots[0].CurrentAnimation,
-                };
-
-                if (!string.IsNullOrEmpty(animation_MouseWheelScroll))
-                {
-                    if (spineSlots[0].CurrentAnimation != animation_MouseWheelScroll)
-                    {
-                        spineSlots[0].CurrentAnimation = animation_MouseWheelScroll;
-                        for (int i = 0; i < (int)Math.Abs(e.Delta); i++)
-                            spineSlots[0].AddAnimation(animation_MouseWheelScroll);
-                    }
                 }
 
                 spineSlots[0].AddAnimation(nextAnimation);
@@ -223,8 +176,7 @@ namespace SpineWindow
             mutex.WaitOne();
             if (spineSlots[0] is not null)
             {
-                if (!string.IsNullOrEmpty(animation_Dragging))
-                    spineSlots[0].CurrentAnimation = animation_Dragging;
+                spineSlots[0].CurrentAnimation = animation_Dragging;
 
                 previousState = state;
                 state = state switch
@@ -274,8 +226,7 @@ namespace SpineWindow
             mutex.WaitOne();
             if (spineSlots[0] is not null && state == State.Idle)
             {
-                if (!string.IsNullOrEmpty(animation_Sleep))
-                    spineSlots[0].CurrentAnimation = animation_Sleep;
+                spineSlots[0].CurrentAnimation = animation_Sleep;
                 state = State.Sleeping;
             }
             mutex.ReleaseMutex();
