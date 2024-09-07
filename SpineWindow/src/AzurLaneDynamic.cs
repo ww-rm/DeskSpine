@@ -24,7 +24,7 @@ namespace SpineWindow
         {
             base.Trigger_MouseButtonClick(e);
             mutex.WaitOne();
-            foreach (var sp in spineSlots) { if (sp is not null) sp.CurrentAnimation = "click"; }
+            foreach (var sp in spineSlots) { if (sp is not null) { sp.CurrentAnimation = "click"; sp.AddAnimation("normal"); } }
             mutex.ReleaseMutex();
         }
     }
