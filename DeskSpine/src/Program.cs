@@ -102,10 +102,18 @@ namespace DeskSpine
                     WindowSpine = SpineWindow.SpineWindow.New(value.SpineConfig.WindowType, SpineConfig.SlotCount);
                 }
 
-                // 检查是否需要更换资源
-                if (cur.SpineConfig.SpineVersion != value.SpineConfig.SpineVersion)
+                // 如果窗口或者版本发生了变化, 需要把 Spine 内容清空
+                if (cur.SpineConfig.WindowType != value.SpineConfig.WindowType || 
+                    cur.SpineConfig.SpineVersion != value.SpineConfig.SpineVersion)
                 {
-                    for (int i = 0; i < WindowSpine.SlotCount; i++)
+                    for (int i = 0; i < SpineConfig.SlotCount; i++)
+                        cur.SpineConfig.SetSkelPath(i, null);
+                }
+
+                // 检查是否需要更换资源
+                for (int i = 0; i < WindowSpine.SlotCount; i++)
+                {
+                    if (cur.SpineConfig.GetSkelPath(i) != value.SpineConfig.GetSkelPath(i))
                     {
                         WindowSpine.UnloadSpine(i);
                         var skelPath = value.SpineConfig.GetSkelPath(i);
@@ -116,24 +124,8 @@ namespace DeskSpine
                         }
                     }
                 }
-                else
-                {
-                    for (int i = 0; i < WindowSpine.SlotCount; i++)
-                    {
-                        if (cur.SpineConfig.GetSkelPath(i) != value.SpineConfig.GetSkelPath(i))
-                        {
-                            WindowSpine.UnloadSpine(i);
-                            var skelPath = value.SpineConfig.GetSkelPath(i);
-                            if (!string.IsNullOrEmpty(skelPath))
-                            {
-                                try { WindowSpine.LoadSpine(value.SpineConfig.SpineVersion, skelPath, index: i); }
-                                catch (Exception ex) { MessageBox.Show($"{skelPath} 加载失败\n\n{ex}", ProgramName); }
-                            }
-                        }
-                    }
-                }
 
-                // 重新取一次现在的运行时配置
+                // 重新取一次现在的运行时配置, 因为窗口重建和 Spine 重新加载会导致运行时配置发生变化
                 cur = CurrentConfig;
 
                 // 系统设置
