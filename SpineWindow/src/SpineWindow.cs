@@ -74,7 +74,7 @@ namespace SpineWindow
                 if (t == typeof(AzurLaneSD)) return SpineWindowType.AzurLaneSD;
                 if (t == typeof(AzurLaneDynamic)) return SpineWindowType.AzurLaneDynamic;
                 if (t == typeof(ArknightsDynamic)) return SpineWindowType.ArknightsDynamic;
-                if (t == typeof(ArknightsBuild)) return SpineWindowType.AzurLaneSD;
+                if (t == typeof(ArknightsBuild)) return SpineWindowType.ArknightsBuild;
                 if (t == typeof(ArknightsBattle)) return SpineWindowType.ArknightsBattle;
                 throw new InvalidOperationException($"Unknown SpineWindow type {this}");
             }
