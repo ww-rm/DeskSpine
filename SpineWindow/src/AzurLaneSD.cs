@@ -78,7 +78,7 @@ namespace SpineWindow
                 clockStand.Restart();
                 nextStandTime = (float)(-meanWaitingTime * Math.Log(rnd.NextSingle()));
                 Debug.WriteLine($"Next time to stand: {nextStandTime}");
-                if (!string.IsNullOrEmpty(animation_Stand) && state == State.Idle)
+                if (state == State.Idle)
                 {
                     mutex.WaitOne();
                     if (spineSlots[0] is not null)
@@ -188,14 +188,11 @@ namespace SpineWindow
                     _ => spineSlots[0].CurrentAnimation,
                 };
 
-                if (!string.IsNullOrEmpty(animation_MouseWheelScroll))
+                if (spineSlots[0].CurrentAnimation != animation_MouseWheelScroll)
                 {
-                    if (spineSlots[0].CurrentAnimation != animation_MouseWheelScroll)
-                    {
-                        spineSlots[0].CurrentAnimation = animation_MouseWheelScroll;
-                        for (int i = 0; i < (int)Math.Abs(e.Delta); i++)
-                            spineSlots[0].AddAnimation(animation_MouseWheelScroll);
-                    }
+                    spineSlots[0].CurrentAnimation = animation_MouseWheelScroll;
+                    for (int i = 0; i < (int)Math.Abs(e.Delta); i++)
+                        spineSlots[0].AddAnimation(animation_MouseWheelScroll);
                 }
 
                 spineSlots[0].AddAnimation(nextAnimation);
