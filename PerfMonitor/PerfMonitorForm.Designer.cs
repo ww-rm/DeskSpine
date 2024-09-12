@@ -1,6 +1,6 @@
 ﻿namespace PerfMonitor
 {
-    partial class PerfMonitor
+    partial class PerfMonitorForm
     {
         /// <summary>
         /// Required designer variable.

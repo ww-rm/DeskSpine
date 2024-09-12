@@ -22,7 +22,7 @@ namespace PerfMonitor
         }
     }
 
-    public partial class PerfMonitor : Form
+    public partial class PerfMonitorForm : Form
     {
         private PerformanceCounter cpuCounter = new PerformanceCounter("Processor Information", "% Processor Utility", "_Total");
         private PerformanceCounter memCounter = new PerformanceCounter("Memory", "% Committed Bytes In Use");
@@ -128,7 +128,7 @@ namespace PerfMonitor
         public float RowHeight { get => Size.Height / 4f; }
         public float CellPadding { get => RowHeight / 10f; }
 
-        public PerfMonitor()
+        public PerfMonitorForm()
         {
             // 初始化窗体
             InitializeComponent();
