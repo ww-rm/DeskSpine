@@ -38,14 +38,14 @@ namespace DeskSpine
                 if (path is null)
                 {
                     balloonIconPath = null;
-                    balloonIcon = null; 
+                    balloonIcon = null;
                 }
                 else
                 {
                     Bitmap newIcon = null;
                     try { newIcon = new Bitmap(path); }
                     catch { throw; }
-                    balloonIconPath = path; 
+                    balloonIconPath = path;
                     balloonIcon = newIcon;
                 }
             }
@@ -65,9 +65,11 @@ namespace DeskSpine
             get
             {
                 var v = new Config();
+
                 // 系统设置
                 v.SystemConfig.AutuRun = checkBox_AutoRun.Checked;
                 v.SystemConfig.Visible = checkBox_Visible.Checked;
+                v.SystemConfig.BalloonIconPath = textBox_BalloonIconPath.Text;
 
                 // 基础设置
                 v.BasicConfig.WallpaperMode = checkBox_WallpaperMode.Checked;
@@ -117,6 +119,7 @@ namespace DeskSpine
                 // 系统设置
                 checkBox_AutoRun.Checked = value.SystemConfig.AutuRun;
                 checkBox_Visible.Checked = value.SystemConfig.Visible;
+                textBox_BalloonIconPath.Text = value.SystemConfig.BalloonIconPath;
 
                 // 基础设置
                 checkBox_WallpaperMode.Checked = value.BasicConfig.WallpaperMode;
@@ -330,13 +333,26 @@ namespace DeskSpine
 
         private void commandAbout_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show("还没实现");
         }
 
         private void commandExit_Click(object? sender, EventArgs e)
         {
             Program.LocalConfig = Program.CurrentConfig;
             Application.Exit();
+        }
+
+        #endregion
+
+        #region 系统设置控件事件
+
+        private void button_SelectBalloonIconPath_Click(object sender, EventArgs e)
+        {
+            openFileDialog_BalloonIconPath.InitialDirectory = Path.GetDirectoryName(textBox_BalloonIconPath.Text);
+            if (openFileDialog_BalloonIconPath.ShowDialog() == DialogResult.OK)
+            {
+                textBox_BalloonIconPath.Text = Path.GetFullPath(openFileDialog_BalloonIconPath.FileName);
+            }
         }
 
         #endregion

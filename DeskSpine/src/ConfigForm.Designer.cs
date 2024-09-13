@@ -49,12 +49,20 @@
             tabControl_Config = new TabControl();
             tabPage_SystemConfig = new TabPage();
             tableLayoutPanel_SystemConfig = new TableLayoutPanel();
+            label53 = new Label();
+            label52 = new Label();
+            checkBox_TimeAlarm = new CheckBox();
+            label51 = new Label();
+            label50 = new Label();
             label4 = new Label();
             label3 = new Label();
             label1 = new Label();
             checkBox_AutoRun = new CheckBox();
             label2 = new Label();
             checkBox_Visible = new CheckBox();
+            tableLayoutPanel_BalloonIconPath = new TableLayoutPanel();
+            textBox_BalloonIconPath = new TextBox();
+            button_SelectBalloonIconPath = new Button();
             tabPage_BasicConfig = new TabPage();
             tableLayoutPanel_BasicConfig = new TableLayoutPanel();
             label46 = new Label();
@@ -168,11 +176,13 @@
             label39 = new Label();
             tableLayoutPanel_Buttons = new TableLayoutPanel();
             openFileDialog_SelectSkel = new OpenFileDialog();
+            openFileDialog_BalloonIconPath = new OpenFileDialog();
             contextMenuStrip.SuspendLayout();
             tableLayoutPanel_Window.SuspendLayout();
             tabControl_Config.SuspendLayout();
             tabPage_SystemConfig.SuspendLayout();
             tableLayoutPanel_SystemConfig.SuspendLayout();
+            tableLayoutPanel_BalloonIconPath.SuspendLayout();
             tabPage_BasicConfig.SuspendLayout();
             tableLayoutPanel_BasicConfig.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
@@ -365,28 +375,90 @@
             tableLayoutPanel_SystemConfig.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 19.3965511F));
             tableLayoutPanel_SystemConfig.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 29.5689659F));
             tableLayoutPanel_SystemConfig.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 51.03448F));
+            tableLayoutPanel_SystemConfig.Controls.Add(label53, 2, 3);
+            tableLayoutPanel_SystemConfig.Controls.Add(label52, 2, 2);
+            tableLayoutPanel_SystemConfig.Controls.Add(checkBox_TimeAlarm, 1, 3);
+            tableLayoutPanel_SystemConfig.Controls.Add(label51, 0, 3);
+            tableLayoutPanel_SystemConfig.Controls.Add(label50, 0, 2);
             tableLayoutPanel_SystemConfig.Controls.Add(label4, 2, 1);
             tableLayoutPanel_SystemConfig.Controls.Add(label3, 2, 0);
             tableLayoutPanel_SystemConfig.Controls.Add(label1, 0, 0);
             tableLayoutPanel_SystemConfig.Controls.Add(checkBox_AutoRun, 1, 0);
             tableLayoutPanel_SystemConfig.Controls.Add(label2, 0, 1);
             tableLayoutPanel_SystemConfig.Controls.Add(checkBox_Visible, 1, 1);
+            tableLayoutPanel_SystemConfig.Controls.Add(tableLayoutPanel_BalloonIconPath, 1, 2);
             tableLayoutPanel_SystemConfig.Dock = DockStyle.Top;
             tableLayoutPanel_SystemConfig.Location = new Point(0, 0);
             tableLayoutPanel_SystemConfig.Margin = new Padding(0);
             tableLayoutPanel_SystemConfig.Name = "tableLayoutPanel_SystemConfig";
-            tableLayoutPanel_SystemConfig.RowCount = 3;
-            tableLayoutPanel_SystemConfig.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
-            tableLayoutPanel_SystemConfig.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
-            tableLayoutPanel_SystemConfig.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
-            tableLayoutPanel_SystemConfig.Size = new Size(1470, 178);
+            tableLayoutPanel_SystemConfig.RowCount = 4;
+            tableLayoutPanel_SystemConfig.RowStyles.Add(new RowStyle(SizeType.Percent, 25.0006237F));
+            tableLayoutPanel_SystemConfig.RowStyles.Add(new RowStyle(SizeType.Percent, 25.0006275F));
+            tableLayoutPanel_SystemConfig.RowStyles.Add(new RowStyle(SizeType.Percent, 25.0006237F));
+            tableLayoutPanel_SystemConfig.RowStyles.Add(new RowStyle(SizeType.Percent, 24.9981289F));
+            tableLayoutPanel_SystemConfig.Size = new Size(1470, 248);
             tableLayoutPanel_SystemConfig.TabIndex = 0;
+            // 
+            // label53
+            // 
+            label53.Anchor = AnchorStyles.Left;
+            label53.AutoSize = true;
+            label53.Location = new Point(749, 205);
+            label53.Margin = new Padding(30, 0, 3, 0);
+            label53.Name = "label53";
+            label53.Size = new Size(203, 24);
+            label53.TabIndex = 36;
+            label53.Text = "是时候提醒你要摸鱼了~";
+            // 
+            // label52
+            // 
+            label52.Anchor = AnchorStyles.Left;
+            label52.AutoSize = true;
+            label52.Location = new Point(749, 143);
+            label52.Margin = new Padding(30, 0, 3, 0);
+            label52.Name = "label52";
+            label52.Size = new Size(226, 24);
+            label52.TabIndex = 35;
+            label52.Text = "设置弹出气泡消息时的图标";
+            // 
+            // checkBox_TimeAlarm
+            // 
+            checkBox_TimeAlarm.Anchor = AnchorStyles.Left;
+            checkBox_TimeAlarm.AutoSize = true;
+            checkBox_TimeAlarm.Location = new Point(285, 206);
+            checkBox_TimeAlarm.Margin = new Padding(0);
+            checkBox_TimeAlarm.Name = "checkBox_TimeAlarm";
+            checkBox_TimeAlarm.Size = new Size(22, 21);
+            checkBox_TimeAlarm.TabIndex = 33;
+            checkBox_TimeAlarm.UseVisualStyleBackColor = true;
+            // 
+            // label51
+            // 
+            label51.Anchor = AnchorStyles.Left;
+            label51.AutoSize = true;
+            label51.Location = new Point(30, 205);
+            label51.Margin = new Padding(30, 0, 3, 0);
+            label51.Name = "label51";
+            label51.Size = new Size(82, 24);
+            label51.TabIndex = 32;
+            label51.Text = "整点报时";
+            // 
+            // label50
+            // 
+            label50.Anchor = AnchorStyles.Left;
+            label50.AutoSize = true;
+            label50.Location = new Point(30, 143);
+            label50.Margin = new Padding(30, 0, 3, 0);
+            label50.Name = "label50";
+            label50.Size = new Size(118, 24);
+            label50.TabIndex = 6;
+            label50.Text = "气泡消息图标";
             // 
             // label4
             // 
             label4.Anchor = AnchorStyles.Left;
             label4.AutoSize = true;
-            label4.Location = new Point(749, 76);
+            label4.Location = new Point(749, 81);
             label4.Margin = new Padding(30, 0, 3, 0);
             label4.Name = "label4";
             label4.Size = new Size(172, 24);
@@ -397,7 +469,7 @@
             // 
             label3.Anchor = AnchorStyles.Left;
             label3.AutoSize = true;
-            label3.Location = new Point(749, 17);
+            label3.Location = new Point(749, 19);
             label3.Margin = new Padding(30, 0, 3, 0);
             label3.Name = "label3";
             label3.Size = new Size(154, 24);
@@ -408,7 +480,7 @@
             // 
             label1.Anchor = AnchorStyles.Left;
             label1.AutoSize = true;
-            label1.Location = new Point(30, 17);
+            label1.Location = new Point(30, 19);
             label1.Margin = new Padding(30, 0, 3, 0);
             label1.Name = "label1";
             label1.Size = new Size(82, 24);
@@ -419,7 +491,7 @@
             // 
             checkBox_AutoRun.Anchor = AnchorStyles.Left;
             checkBox_AutoRun.AutoSize = true;
-            checkBox_AutoRun.Location = new Point(285, 19);
+            checkBox_AutoRun.Location = new Point(285, 20);
             checkBox_AutoRun.Margin = new Padding(0);
             checkBox_AutoRun.Name = "checkBox_AutoRun";
             checkBox_AutoRun.Size = new Size(22, 21);
@@ -430,7 +502,7 @@
             // 
             label2.Anchor = AnchorStyles.Left;
             label2.AutoSize = true;
-            label2.Location = new Point(30, 76);
+            label2.Location = new Point(30, 81);
             label2.Margin = new Padding(30, 0, 3, 0);
             label2.Name = "label2";
             label2.Size = new Size(82, 24);
@@ -441,12 +513,50 @@
             // 
             checkBox_Visible.Anchor = AnchorStyles.Left;
             checkBox_Visible.AutoSize = true;
-            checkBox_Visible.Location = new Point(285, 78);
+            checkBox_Visible.Location = new Point(285, 82);
             checkBox_Visible.Margin = new Padding(0);
             checkBox_Visible.Name = "checkBox_Visible";
             checkBox_Visible.Size = new Size(22, 21);
             checkBox_Visible.TabIndex = 3;
             checkBox_Visible.UseVisualStyleBackColor = true;
+            // 
+            // tableLayoutPanel_BalloonIconPath
+            // 
+            tableLayoutPanel_BalloonIconPath.ColumnCount = 2;
+            tableLayoutPanel_BalloonIconPath.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel_BalloonIconPath.ColumnStyles.Add(new ColumnStyle());
+            tableLayoutPanel_BalloonIconPath.Controls.Add(textBox_BalloonIconPath, 0, 0);
+            tableLayoutPanel_BalloonIconPath.Controls.Add(button_SelectBalloonIconPath, 1, 0);
+            tableLayoutPanel_BalloonIconPath.Dock = DockStyle.Fill;
+            tableLayoutPanel_BalloonIconPath.Location = new Point(285, 124);
+            tableLayoutPanel_BalloonIconPath.Margin = new Padding(0);
+            tableLayoutPanel_BalloonIconPath.Name = "tableLayoutPanel_BalloonIconPath";
+            tableLayoutPanel_BalloonIconPath.RowCount = 1;
+            tableLayoutPanel_BalloonIconPath.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel_BalloonIconPath.Size = new Size(434, 62);
+            tableLayoutPanel_BalloonIconPath.TabIndex = 34;
+            // 
+            // textBox_BalloonIconPath
+            // 
+            textBox_BalloonIconPath.Anchor = AnchorStyles.Left;
+            textBox_BalloonIconPath.BackColor = SystemColors.Window;
+            textBox_BalloonIconPath.Location = new Point(3, 16);
+            textBox_BalloonIconPath.Name = "textBox_BalloonIconPath";
+            textBox_BalloonIconPath.Size = new Size(389, 30);
+            textBox_BalloonIconPath.TabIndex = 30;
+            // 
+            // button_SelectBalloonIconPath
+            // 
+            button_SelectBalloonIconPath.Anchor = AnchorStyles.None;
+            button_SelectBalloonIconPath.AutoSize = true;
+            button_SelectBalloonIconPath.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            button_SelectBalloonIconPath.Location = new Point(399, 14);
+            button_SelectBalloonIconPath.Name = "button_SelectBalloonIconPath";
+            button_SelectBalloonIconPath.Size = new Size(32, 34);
+            button_SelectBalloonIconPath.TabIndex = 31;
+            button_SelectBalloonIconPath.Text = "...";
+            button_SelectBalloonIconPath.UseVisualStyleBackColor = true;
+            button_SelectBalloonIconPath.Click += button_SelectBalloonIconPath_Click;
             // 
             // tabPage_BasicConfig
             // 
@@ -1913,8 +2023,15 @@
             // 
             openFileDialog_SelectSkel.AddExtension = false;
             openFileDialog_SelectSkel.AddToRecent = false;
-            openFileDialog_SelectSkel.Filter = "Skel 文件 (*.skel; *.json)|*.skel;*.json";
+            openFileDialog_SelectSkel.Filter = "Skel 文件 (*.skel; *.json)|*.skel;*.json|所有文件 (*.*)|*.*";
             openFileDialog_SelectSkel.RestoreDirectory = true;
+            // 
+            // openFileDialog_BalloonIconPath
+            // 
+            openFileDialog_BalloonIconPath.AddExtension = false;
+            openFileDialog_BalloonIconPath.AddToRecent = false;
+            openFileDialog_BalloonIconPath.Filter = "图像文件 (*.jpg; *.jpeg; *.png; *.bmp; *.ico)|*.jpg;*.jpeg;*.png;*.bmp;*.ico|所有文件 (*.*)|*.*";
+            openFileDialog_BalloonIconPath.RestoreDirectory = true;
             // 
             // ConfigForm
             // 
@@ -1938,6 +2055,8 @@
             tabPage_SystemConfig.ResumeLayout(false);
             tableLayoutPanel_SystemConfig.ResumeLayout(false);
             tableLayoutPanel_SystemConfig.PerformLayout();
+            tableLayoutPanel_BalloonIconPath.ResumeLayout(false);
+            tableLayoutPanel_BalloonIconPath.PerformLayout();
             tabPage_BasicConfig.ResumeLayout(false);
             tableLayoutPanel_BasicConfig.ResumeLayout(false);
             tableLayoutPanel_BasicConfig.PerformLayout();
@@ -2117,5 +2236,14 @@
         private NumericUpDown numericUpDown_BackgroundColorB;
         private NumericUpDown numericUpDown_BackgroundColorG;
         private NumericUpDown numericUpDown_BackgroundColorR;
+        private TextBox textBox_BalloonIconPath;
+        private Label label50;
+        private Button button_SelectBalloonIconPath;
+        private CheckBox checkBox_TimeAlarm;
+        private Label label51;
+        private TableLayoutPanel tableLayoutPanel_BalloonIconPath;
+        private Label label53;
+        private Label label52;
+        private OpenFileDialog openFileDialog_BalloonIconPath;
     }
 }

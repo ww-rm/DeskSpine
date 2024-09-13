@@ -100,7 +100,7 @@ namespace DeskSpine
 
                 if (cur.SystemConfig.BalloonIconPath != value.SystemConfig.BalloonIconPath)
                 {
-                    try { ConfigForm.BalloonIconPath = value.SystemConfig.BalloonIconPath; }
+                    try { ConfigForm.BalloonIconPath = value.SystemConfig.BalloonIconPath; ConfigForm.ShowBalloonTip("图标修改成功", "来看看效果吧~"); }
                     catch (Exception ex) { MessageBox.Show($"{value.SystemConfig.BalloonIconPath} 加载失败\n\n{ex}", "气泡图标资源加载失败"); }
                 }
 
