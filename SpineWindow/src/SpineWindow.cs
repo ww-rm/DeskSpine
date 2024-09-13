@@ -766,10 +766,18 @@ namespace SpineWindow
         private void Resized(SFML.Window.SizeEventArgs e)
         {
             // 设置 Size 属性的时候会触发该事件
-            var view = window.GetView();
-            view.Size = new(window.Size.X, -window.Size.Y);
-            window.SetView(view);
-            SizeReg = window.Size;
+            var desktopMode = SFML.Window.VideoMode.DesktopMode;
+            if (e.Height == desktopMode.Height && e.Width == desktopMode.Width)
+            {
+                window.Size = new(e.Width, e.Height + 1);
+            }
+            else
+            {
+                var view = window.GetView();
+                view.Size = new(window.Size.X, -window.Size.Y);
+                window.SetView(view);
+                SizeReg = window.Size;
+            }
         }
 
         private void MouseButtonPressed(SFML.Window.MouseButtonEventArgs e)
