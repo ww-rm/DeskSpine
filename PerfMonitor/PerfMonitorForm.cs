@@ -131,9 +131,7 @@ namespace PerfMonitor
 
         public PerfMonitorForm()
         {
-            // 初始化窗体
             InitializeComponent();
-            CreateHandle();
 
             // 初始化计数器
             foreach (var name in (new PerformanceCounterCategory("Network Interface")).GetInstanceNames())
@@ -152,6 +150,19 @@ namespace PerfMonitor
             updateTimer.Elapsed += UpdateTimer_Elapsed;
             updateTimer.AutoReset = true;
             updateTimer.Enabled = true;
+        }
+
+        public void Popup()
+        {
+            Show();
+            Activate();
+            BringToFront();
+        }
+
+        public void Popup(Point location)
+        {
+            Location = location;
+            Popup();
         }
 
         /// <summary>
@@ -267,6 +278,12 @@ namespace PerfMonitor
         {
             base.OnResize(e);
             InitGraphicsObjects();
+        }
+
+        protected override void OnDeactivate(EventArgs e)
+        {
+            base.OnDeactivate(e);
+            Hide();
         }
 
         protected override void OnPaint(PaintEventArgs e)
