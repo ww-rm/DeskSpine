@@ -634,11 +634,11 @@ namespace SpineWindow
                 }
 
                 window.DispatchEvents();
-                Update();
 
                 mutex.WaitOne(); var v = visible; var c = backgroundColor; mutex.ReleaseMutex();
                 if (v)
                 {
+                    Update();
                     window.Clear(c);
                     Render();
                     window.Display();
