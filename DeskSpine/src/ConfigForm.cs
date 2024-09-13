@@ -53,11 +53,15 @@ namespace DeskSpine
         private string? balloonIconPath;
         private Bitmap? balloonIcon;
 
+        private System.Timers.Timer timeAlarmTimer = new(100) { AutoReset = true };
+        private bool hasAlarmed = false;
+
         public ConfigForm()
         {
             InitializeComponent();
             _ = Handle; // 强制创建窗口
             shellNotifyIcon = new(notifyIcon);
+            timeAlarmTimer.Elapsed += TimeAlarmTimer_Elapsed;
         }
 
         /// <summary>
@@ -159,6 +163,8 @@ namespace DeskSpine
             }
         }
 
+        public bool TimeAlarm { get => timeAlarmTimer.Enabled; set => timeAlarmTimer.Enabled = value; }
+
         public void ShowBalloonTip(string title, string info)
         {
             if (balloonIcon is null) { ShowBalloonTip(title, info, ToolTipIcon.None); }
@@ -230,6 +236,23 @@ namespace DeskSpine
         {
             Program.CurrentConfig = Value;
             Value = Program.CurrentConfig; // 刷新页面值
+        }
+
+        private void TimeAlarmTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            DateTime now = DateTime.Now;
+            if (now.Minute == 0)
+            {
+                if (!hasAlarmed)
+                {
+                    hasAlarmed = true;
+                    ShowBalloonTip($"北京时间 {now.Hour:d2}: {now.Minute:d2}", "Take a break~");
+                }
+            }
+            else
+            {
+                hasAlarmed = false;
+            }
         }
 
         #endregion
