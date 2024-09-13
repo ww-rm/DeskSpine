@@ -27,9 +27,13 @@ namespace DeskSpine
             { "明日方舟_战斗小人", SpineWindow.SpineWindowType.ArknightsBattle },
         };
 
+        private ShellNotifyIcon shellNotifyIcon;
+
         public ConfigForm()
         {
             InitializeComponent();
+            shellNotifyIcon = new(notifyIcon);
+            IntPtr _hWnd = Handle; // 强制创建窗口
         }
 
         public Config Value
@@ -125,6 +129,9 @@ namespace DeskSpine
             }
         }
 
+        public void ShowBalloonTip(string title, string info, Icon balloonIcon) { shellNotifyIcon.ShowBalloonTip(title, info, balloonIcon); }
+        public void ShowBalloonTip(string title, string info, ToolTipIcon balloonIcon) { try { notifyIcon.ShowBalloonTip(5, title, info, balloonIcon); } catch (ArgumentException) { } }
+
         #region 窗体事件
 
         private void ConfigForm_Load(object sender, EventArgs e)
@@ -186,7 +193,13 @@ namespace DeskSpine
 
         private void NotifyIcon_MouseClick(object? sender, MouseEventArgs e)
         {
-
+            if (e.Button == MouseButtons.Left)
+            {
+                var size = Program.PerfMonitorForm.Size;
+                var iconRect = shellNotifyIcon.Rectangle;
+                var location = new Point(iconRect.X - (size.Width - iconRect.Width) / 2, iconRect.Y - size.Height);
+                Program.PerfMonitorForm.Popup(location);
+            }
         }
 
         private void NotifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -462,5 +475,17 @@ namespace DeskSpine
 
         #endregion
 
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+
+            switch (m.Msg)
+            {
+                // WM_SETTINGCHANGE
+                case 0x001A:
+                    Program.PerfMonitorForm.UseLightTheme = Program.SystemUseLightTheme;
+                    break;
+            }
+        }
     }
 }
