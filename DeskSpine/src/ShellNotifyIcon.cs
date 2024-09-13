@@ -48,7 +48,7 @@ namespace DeskSpine
         /// <summary>
         /// 弹出气泡消息
         /// </summary>
-        public bool ShowBalloonTip(string title, string info, Icon balloonIcon)
+        public bool ShowBalloonTip(string title, string info, IntPtr balloonIcon)
         {
             title ??= "";
             info ??= "";
@@ -60,7 +60,7 @@ namespace DeskSpine
             nid.uID = ID;
             nid.szInfoTitle = title;
             nid.szInfo = info;
-            nid.hBalloonIcon = balloonIcon.Handle;
+            nid.hBalloonIcon = balloonIcon;
             nid.uFlags |= (Win32.NIF_INFO | Win32.NIF_REALTIME);
             nid.dwInfoFlags |= (Win32.NIIF_USER | Win32.NIIF_LARGE_ICON);
             return Win32.Shell_NotifyIcon(Win32.NIM_MODIFY, ref nid);
