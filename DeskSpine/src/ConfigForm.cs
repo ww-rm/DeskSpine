@@ -29,6 +29,30 @@ namespace DeskSpine
 
         private ShellNotifyIcon shellNotifyIcon;
 
+        public string? BalloonIconPath
+        {
+            get => balloonIconPath;
+            set
+            {
+                var path = string.IsNullOrEmpty(value) ? null : value;
+                if (path is null)
+                {
+                    balloonIconPath = null;
+                    balloonIcon = null; 
+                }
+                else
+                {
+                    Bitmap newIcon = null;
+                    try { newIcon = new Bitmap(path); }
+                    catch (ArgumentException) { throw; }
+                    balloonIconPath = path; 
+                    balloonIcon = newIcon;
+                }
+            }
+        }
+        private string? balloonIconPath;
+        private Bitmap? balloonIcon;
+
         public ConfigForm()
         {
             InitializeComponent();
@@ -129,7 +153,12 @@ namespace DeskSpine
             }
         }
 
-        public void ShowBalloonTip(string title, string info, Icon balloonIcon) { shellNotifyIcon.ShowBalloonTip(title, info, balloonIcon); }
+        public void ShowBalloonTip(string title, string info)
+        {
+            if (balloonIcon is null) { ShowBalloonTip(title, info, ToolTipIcon.None); }
+            else { ShowBalloonTip(title, info, balloonIcon.GetHicon()); }
+        }
+        public void ShowBalloonTip(string title, string info, IntPtr balloonIcon) { shellNotifyIcon.ShowBalloonTip(title, info, balloonIcon); }
         public void ShowBalloonTip(string title, string info, ToolTipIcon balloonIcon) { try { notifyIcon.ShowBalloonTip(5, title, info, balloonIcon); } catch (ArgumentException) { } }
 
         #region ´°ÌåÊÂ¼þ
