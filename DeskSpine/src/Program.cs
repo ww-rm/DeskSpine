@@ -173,7 +173,7 @@ namespace DeskSpine
                     WindowSpine.Visible = value.SystemConfig.Visible;
 
                 // ±£´æ±¾µØ
-                LocalConfig = value;
+                LocalConfig = CurrentConfig;
             }
         }
 
