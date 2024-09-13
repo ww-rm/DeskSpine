@@ -60,6 +60,9 @@ namespace DeskSpine
             _ = Handle; // 强制创建窗口
         }
 
+        /// <summary>
+        /// 获取和填充设置项
+        /// </summary>
         public Config Value
         {
             get
@@ -161,8 +164,18 @@ namespace DeskSpine
             if (balloonIcon is null) { ShowBalloonTip(title, info, ToolTipIcon.None); }
             else { ShowBalloonTip(title, info, balloonIcon.GetHicon()); }
         }
-        public void ShowBalloonTip(string title, string info, IntPtr balloonIcon) { shellNotifyIcon.ShowBalloonTip(title, info, balloonIcon); }
-        public void ShowBalloonTip(string title, string info, ToolTipIcon balloonIcon) { try { notifyIcon.ShowBalloonTip(5, title, info, balloonIcon); } catch (ArgumentException) { } }
+        public void ShowBalloonTip(string title, string info, IntPtr balloonIcon) 
+        {
+            title ??= ""; info ??= "";
+            if (title.Length <= 0 && info.Length <= 0) info = "~";
+            shellNotifyIcon.ShowBalloonTip(title, info, balloonIcon); 
+        }
+        public void ShowBalloonTip(string title, string info, ToolTipIcon balloonIcon) 
+        {
+            title ??= ""; info ??= "";
+            if (title.Length <= 0 && info.Length <= 0) info = "~";
+            notifyIcon.ShowBalloonTip(5, title, info, balloonIcon);
+        }
 
         #region 窗体事件
 
@@ -530,6 +543,7 @@ namespace DeskSpine
                 // WM_SETTINGCHANGE
                 case 0x001A:
                     Program.PerfMonitorForm.UseLightTheme = Program.SystemUseLightTheme;
+                    // TODO: 更换图标颜色
                     break;
             }
         }
