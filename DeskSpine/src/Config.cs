@@ -133,7 +133,7 @@ namespace DeskSpine
         public Config()
         {
             // 给一个默认的路径
-            SpineConfig.SkelPath0 = Path.Combine(Program.ProgramDirectory, @"res\spines\AzurLaneSD\guanghui_2.skel");
+            SpineConfig.SkelPath0 = Path.Combine(Program.ProgramResourceDirectory, @"spines\AzurLaneSD\guanghui_2.skel");
         }
 
         public bool Load(string configPath)
