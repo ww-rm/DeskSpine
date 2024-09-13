@@ -49,6 +49,7 @@ namespace DeskSpine
         [JsonIgnore]
         public bool AutuRun { get; set; } = false;
         public bool Visible { get; set; } = true;
+        public string BalloonIconPath { get; set; }
     }
 
     /// <summary>
@@ -132,8 +133,8 @@ namespace DeskSpine
 
         public Config()
         {
-            // 给一个默认的路径
-            SpineConfig.SkelPath0 = Path.Combine(Program.ProgramResourceDirectory, @"spines\AzurLaneSD\guanghui_2.skel");
+            SystemConfig.BalloonIconPath = Path.Combine(Program.ProgramResourceDirectory, @"image\timealarm.ico");
+            SpineConfig.SkelPath0 = Path.Combine(Program.ProgramResourceDirectory, @"spines\guanghui_2\guanghui_2.skel");
         }
 
         public bool Load(string configPath)
