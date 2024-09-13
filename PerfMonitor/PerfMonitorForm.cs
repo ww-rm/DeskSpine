@@ -150,6 +150,8 @@ namespace PerfMonitor
             updateTimer.Elapsed += UpdateTimer_Elapsed;
             updateTimer.AutoReset = true;
             updateTimer.Enabled = true;
+
+            _ = Handle;
         }
 
         public void Popup()

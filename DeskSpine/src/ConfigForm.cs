@@ -33,7 +33,7 @@ namespace DeskSpine
         {
             InitializeComponent();
             shellNotifyIcon = new(notifyIcon);
-            IntPtr _hWnd = Handle; // 强制创建窗口
+            _ = Handle; // 强制创建窗口
         }
 
         public Config Value
