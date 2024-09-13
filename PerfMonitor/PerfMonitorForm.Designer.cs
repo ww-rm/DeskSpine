@@ -43,6 +43,8 @@
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "PerfMonitorForm";
+            Opacity = 0.75D;
+            ShowIcon = false;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.Manual;
             TopMost = true;
