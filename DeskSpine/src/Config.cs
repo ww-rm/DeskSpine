@@ -50,6 +50,7 @@ namespace DeskSpine
         public bool AutuRun { get; set; } = false;
         public bool Visible { get; set; } = true;
         public string BalloonIconPath { get; set; }
+        public bool TimeAlarm = true;
     }
 
     /// <summary>
