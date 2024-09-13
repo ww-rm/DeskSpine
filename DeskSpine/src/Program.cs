@@ -13,11 +13,13 @@ namespace DeskSpine
         public static string LocalAppdataDirectory { get; } = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         public static string ProgramDirectory { get; } = Path.GetDirectoryName(Application.ExecutablePath);
         public static string ProgramDataDirectory { get; } = Path.Combine(LocalAppdataDirectory, ProgramName);
+        public static string ProgramResourceDirectory { get; } = Path.Combine(ProgramDirectory, "res");
         public static string ProgramConfigPath { get; } = Path.Combine(ProgramDataDirectory, "config.json");
 
-        public static ConfigForm ConfigForm { get; private set; }                   // 设置窗口 (主窗口)
-        public static SpineWindow.SpineWindow WindowSpine { get; private set; }     // Spine 窗口
-        private static Mutex programMutex;                                          // 程序单一启动锁
+        public static PerfMonitor.PerfMonitorForm PerfMonitorForm { get; private set; } // 性能浮窗
+        public static SpineWindow.SpineWindow WindowSpine { get; private set; }         // Spine 窗口
+        public static ConfigForm ConfigForm { get; private set; }                       // 设置窗口 (主窗口)
+        private static Mutex programMutex;                                              // 程序单一启动锁
 
         /// <summary>
         /// 是否开机自启
@@ -234,8 +236,22 @@ namespace DeskSpine
             if (!Directory.Exists(ProgramDataDirectory))
                 Directory.CreateDirectory(ProgramDataDirectory);
             InitFromConfig(LocalConfig);
+            PerfMonitorForm = new() { UseLightTheme = SystemUseLightTheme };
             ConfigForm = new ConfigForm();
+
             Application.Run();
+        }
+
+        /// <summary>
+        /// 获取系统主题颜色
+        /// </summary>
+        public static bool SystemUseLightTheme
+        {
+            get
+            {
+                using (RegistryKey personalizeKey = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"))
+                    return int.Parse(personalizeKey.GetValue("SystemUsesLightTheme", "0").ToString()) != 0;
+            }
         }
     }
 }
