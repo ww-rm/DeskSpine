@@ -77,6 +77,7 @@ namespace DeskSpine
                 v.SystemConfig.AutuRun = checkBox_AutoRun.Checked;
                 v.SystemConfig.Visible = checkBox_Visible.Checked;
                 v.SystemConfig.BalloonIconPath = textBox_BalloonIconPath.Text;
+                v.SystemConfig.TimeAlarm = checkBox_TimeAlarm.Checked;
 
                 // 基础设置
                 v.BasicConfig.WallpaperMode = checkBox_WallpaperMode.Checked;
@@ -127,6 +128,7 @@ namespace DeskSpine
                 checkBox_AutoRun.Checked = value.SystemConfig.AutuRun;
                 checkBox_Visible.Checked = value.SystemConfig.Visible;
                 textBox_BalloonIconPath.Text = value.SystemConfig.BalloonIconPath;
+                checkBox_TimeAlarm.Checked = value.SystemConfig.TimeAlarm;
 
                 // 基础设置
                 checkBox_WallpaperMode.Checked = value.BasicConfig.WallpaperMode;
