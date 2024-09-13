@@ -30,20 +30,21 @@
         {
             SuspendLayout();
             // 
-            // PerfMonitor
+            // PerfMonitorForm
             // 
             AutoScaleDimensions = new SizeF(144F, 144F);
             AutoScaleMode = AutoScaleMode.Dpi;
             BackColor = Color.White;
-            ClientSize = new Size(800, 600);
+            ClientSize = new Size(500, 400);
             ControlBox = false;
             DoubleBuffered = true;
             ForeColor = Color.White;
             FormBorderStyle = FormBorderStyle.None;
             MaximizeBox = false;
             MinimizeBox = false;
-            Name = "PerfMonitor";
+            Name = "PerfMonitorForm";
             ShowInTaskbar = false;
+            StartPosition = FormStartPosition.Manual;
             TopMost = true;
             ResumeLayout(false);
         }
