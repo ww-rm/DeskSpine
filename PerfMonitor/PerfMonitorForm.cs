@@ -170,9 +170,9 @@ namespace PerfMonitor
         /// </summary>
         private void InitGraphicsObjects()
         {
-            circlePen = new(Color.Transparent, RowHeight / 10);
+            circlePen = new(Color.Transparent, RowHeight / 15);
             circleRect = new(CellPadding, CellPadding, RowHeight - CellPadding * 2, RowHeight - CellPadding * 2);
-            font = new Font("Consolas", RowHeight / 6, GraphicsUnit.Pixel);
+            font = new Font("Consolas", RowHeight / 5, GraphicsUnit.Pixel);
             barPen = new(Color.Transparent, (Size.Width - RowHeight - CellPadding * 2) / MaxPerfDataCount - 1);
         }
 
