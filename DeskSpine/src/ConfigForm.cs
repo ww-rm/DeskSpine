@@ -44,7 +44,7 @@ namespace DeskSpine
                 {
                     Bitmap newIcon = null;
                     try { newIcon = new Bitmap(path); }
-                    catch (ArgumentException) { throw; }
+                    catch { throw; }
                     balloonIconPath = path; 
                     balloonIcon = newIcon;
                 }
