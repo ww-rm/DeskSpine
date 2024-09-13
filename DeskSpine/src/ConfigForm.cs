@@ -265,6 +265,7 @@ namespace DeskSpine
         {
             if (e.Button == MouseButtons.Left)
             {
+                // TODO: 判断任务栏方向
                 var size = Program.PerfMonitorForm.Size;
                 var iconRect = shellNotifyIcon.Rectangle;
                 var location = new Point(iconRect.X - (size.Width - iconRect.Width) / 2, iconRect.Y - size.Height);
@@ -567,8 +568,10 @@ namespace DeskSpine
             {
                 // WM_SETTINGCHANGE
                 case 0x001A:
-                    Program.PerfMonitorForm.UseLightTheme = Program.SystemUseLightTheme;
-                    MessageBox.Show("图标颜色随主题变化还没做");
+                    var useLightTheme = Program.SystemUseLightTheme;
+                    var resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigForm));
+                    Program.PerfMonitorForm.UseLightTheme = useLightTheme;
+                    notifyIcon.Icon = (Icon?)(useLightTheme ? resources.GetObject("$this.Icon") : resources.GetObject("notifyIcon.Icon"));
                     break;
             }
         }
