@@ -60,6 +60,7 @@ namespace DeskSpine
 
                 config.SystemConfig.Visible = WindowSpine.Visible;
                 config.SystemConfig.BalloonIconPath = ConfigForm.BalloonIconPath;
+                config.SystemConfig.TimeAlarm = ConfigForm.TimeAlarm;
 
                 config.BasicConfig.WallpaperMode = WindowSpine.WallpaperMode;
                 config.BasicConfig.MouseClickThrough = WindowSpine.MouseClickThrough;
@@ -98,12 +99,6 @@ namespace DeskSpine
             {
                 var cur = CurrentConfig;
 
-                if (cur.SystemConfig.BalloonIconPath != value.SystemConfig.BalloonIconPath)
-                {
-                    try { ConfigForm.BalloonIconPath = value.SystemConfig.BalloonIconPath; ConfigForm.ShowBalloonTip("图标修改成功", "来看看效果吧~"); }
-                    catch (Exception ex) { MessageBox.Show($"{value.SystemConfig.BalloonIconPath} 加载失败\n\n{ex}", "气泡图标资源加载失败"); }
-                }
-
                 // 优先检测是否需要更换窗口类型, 重新创建窗口实例之后再设置其他配置
                 if (cur.SpineConfig.WindowType != value.SpineConfig.WindowType)
                 {
@@ -140,6 +135,13 @@ namespace DeskSpine
                 // 系统设置
                 if (cur.SystemConfig.AutuRun != value.SystemConfig.AutuRun)
                     AutoRun = value.SystemConfig.AutuRun;
+                if (cur.SystemConfig.BalloonIconPath != value.SystemConfig.BalloonIconPath)
+                {
+                    try { ConfigForm.BalloonIconPath = value.SystemConfig.BalloonIconPath; ConfigForm.ShowBalloonTip("图标修改成功", "来看看效果吧~"); }
+                    catch (Exception ex) { MessageBox.Show($"{value.SystemConfig.BalloonIconPath} 加载失败\n\n{ex}", "气泡图标资源加载失败"); }
+                }
+                if (cur.SystemConfig.TimeAlarm != value.SystemConfig.TimeAlarm)
+                    ConfigForm.TimeAlarm = value.SystemConfig.TimeAlarm;
 
                 // 基础设置
                 if (cur.BasicConfig.WallpaperMode != value.BasicConfig.WallpaperMode)
@@ -194,6 +196,7 @@ namespace DeskSpine
             // 系统配置
             try { ConfigForm.BalloonIconPath = config.SystemConfig.BalloonIconPath; }
             catch (Exception ex) { MessageBox.Show($"{config.SystemConfig.BalloonIconPath} 加载失败\n\n{ex}", "气泡图标资源加载失败"); }
+            ConfigForm.TimeAlarm = config.SystemConfig.TimeAlarm;
 
             // 基础配置
             WindowSpine = SpineWindow.SpineWindow.New(config.SpineConfig.WindowType, SpineConfig.SlotCount);
