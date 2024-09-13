@@ -132,6 +132,7 @@ namespace PerfMonitor
         public PerfMonitorForm()
         {
             InitializeComponent();
+            _ = Handle;
 
             // 初始化计数器
             foreach (var name in (new PerformanceCounterCategory("Network Interface")).GetInstanceNames())
@@ -150,8 +151,6 @@ namespace PerfMonitor
             updateTimer.Elapsed += UpdateTimer_Elapsed;
             updateTimer.AutoReset = true;
             updateTimer.Enabled = true;
-
-            _ = Handle;
         }
 
         public void Popup()

@@ -56,8 +56,8 @@ namespace DeskSpine
         public ConfigForm()
         {
             InitializeComponent();
-            shellNotifyIcon = new(notifyIcon);
             _ = Handle; // 强制创建窗口
+            shellNotifyIcon = new(notifyIcon);
         }
 
         /// <summary>
@@ -543,7 +543,7 @@ namespace DeskSpine
                 // WM_SETTINGCHANGE
                 case 0x001A:
                     Program.PerfMonitorForm.UseLightTheme = Program.SystemUseLightTheme;
-                    // TODO: 更换图标颜色
+                    MessageBox.Show("图标颜色随主题变化还没做");
                     break;
             }
         }
