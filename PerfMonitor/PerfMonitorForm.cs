@@ -156,6 +156,7 @@ namespace PerfMonitor
         {
             Show();
             Activate();
+            Focus();
             BringToFront();
         }
 

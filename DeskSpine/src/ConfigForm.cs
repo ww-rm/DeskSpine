@@ -292,9 +292,10 @@ namespace DeskSpine
 
         private void commandConfig_Click(object sender, EventArgs e)
         {
-            this.Show();
             this.WindowState = FormWindowState.Normal;
+            this.Show();
             this.Activate();
+            this.Focus();
             this.BringToFront();
         }
 
