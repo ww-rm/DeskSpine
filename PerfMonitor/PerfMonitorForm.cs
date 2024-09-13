@@ -30,6 +30,7 @@ namespace PerfMonitor
         private List<PerformanceCounter> downloadCounters = [];
         private System.Timers.Timer updateTimer = new(1000);
         private Queue<PerfData> dataQueue = new();
+        private Mutex dataMutex = new();
 
         private Color[] gradientColors = [
             Color.FromArgb(255, 0, 255),
@@ -174,9 +175,11 @@ namespace PerfMonitor
             data.memUsage = memCounter.NextValue();
             data.uploadBytes = uploadCounters.Sum(e => e.NextValue());
             data.downloadBytes = downloadCounters.Sum(e => e.NextValue());
+            dataMutex.WaitOne();
             dataQueue.Enqueue(data);
             while (dataQueue.Count > MaxPerfDataCount)
                 dataQueue.Dequeue();
+            dataMutex.ReleaseMutex();
         }
 
         /// <summary>
@@ -276,17 +279,24 @@ namespace PerfMonitor
             if (dataQueue.Count > 0)
             {
                 // 绘制最新时刻圆圈图
+                dataMutex.WaitOne();
                 var lastData = dataQueue.Last();
+                var cpuHist = dataQueue.Select(v => v.cpuUsage / 100).ToArray();
+                var memHist = dataQueue.Select(v => v.memUsage / 100).ToArray();
+                var uploadHist = dataQueue.Select(v => GetSpeedPercent(v.uploadBytes)).ToArray();
+                var downloadHist = dataQueue.Select(v => GetSpeedPercent(v.downloadBytes)).ToArray();
+                dataMutex.ReleaseMutex();
+
                 DrawCircleWithText(g, 0, lastData.cpuUsage / 100, $"C:{lastData.cpuUsage:f0}%");
                 DrawCircleWithText(g, 1, lastData.memUsage / 100, $"M:{lastData.memUsage:f0}%");
                 DrawCircleWithText(g, 2, GetSpeedPercent(lastData.uploadBytes), $"{GetSpeedText(lastData.uploadBytes)}↑");
                 DrawCircleWithText(g, 3, GetSpeedPercent(lastData.downloadBytes), $"{GetSpeedText(lastData.downloadBytes)}↓");
 
                 // 绘制历史柱状图
-                DrawHistoryBar(g, 0, dataQueue.Select(v => v.cpuUsage / 100).ToArray());
-                DrawHistoryBar(g, 1, dataQueue.Select(v => v.memUsage / 100).ToArray());
-                DrawHistoryBar(g, 2, dataQueue.Select(v => GetSpeedPercent(v.uploadBytes)).ToArray());
-                DrawHistoryBar(g, 3, dataQueue.Select(v => GetSpeedPercent(v.downloadBytes)).ToArray());
+                DrawHistoryBar(g, 0, cpuHist);
+                DrawHistoryBar(g, 1, memHist);
+                DrawHistoryBar(g, 2, uploadHist);
+                DrawHistoryBar(g, 3, downloadHist);
             }
         }
     }
