@@ -769,7 +769,7 @@ namespace SpineWindow
             var desktopMode = SFML.Window.VideoMode.DesktopMode;
             if (e.Height == desktopMode.Height && e.Width == desktopMode.Width)
             {
-                window.Size = new(e.Width, e.Height + 1);
+                window.Size = new(e.Width, e.Height - 1);
             }
             else
             {
