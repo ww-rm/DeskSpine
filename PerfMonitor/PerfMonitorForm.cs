@@ -149,7 +149,6 @@ namespace PerfMonitor
 
             // 开启定时更新
             updateTimer.Elapsed += UpdateTimer_Elapsed;
-            updateTimer.AutoReset = true;
             updateTimer.Enabled = true;
         }
 
