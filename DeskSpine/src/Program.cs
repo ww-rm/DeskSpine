@@ -247,8 +247,8 @@ namespace DeskSpine
 
             if (!Directory.Exists(ProgramDataDirectory))
                 Directory.CreateDirectory(ProgramDataDirectory);
-            ConfigForm = new ConfigForm();
             PerfMonitorForm = new() { UseLightTheme = SystemUseLightTheme };
+            ConfigForm = new ConfigForm();
             InitFromConfig(LocalConfig);
 
             Application.Run();
