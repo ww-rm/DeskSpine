@@ -410,18 +410,18 @@ namespace DeskSpine
 
         private void label_Position_Click(object sender, EventArgs e)
         {
-            numericUpDown_PositionX.Enabled = true;
-            numericUpDown_PositionY.Enabled = true;
+            numericUpDown_PositionX.Enabled = !numericUpDown_PositionX.Enabled;
+            numericUpDown_PositionY.Enabled = !numericUpDown_PositionY.Enabled;
         }
         private void label_Size_Click(object sender, EventArgs e)
         {
-            numericUpDown_SizeX.Enabled = true;
-            numericUpDown_SizeY.Enabled = true;
+            numericUpDown_SizeX.Enabled = !numericUpDown_SizeX.Enabled;
+            numericUpDown_SizeY.Enabled = !numericUpDown_SizeY.Enabled;
         }
         private void label_SpinePosition_Click(object sender, EventArgs e)
         {
-            numericUpDown_SpinePositionX.Enabled = true;
-            numericUpDown_SpinePositionY.Enabled = true;
+            numericUpDown_SpinePositionX.Enabled = !numericUpDown_SpinePositionX.Enabled;
+            numericUpDown_SpinePositionY.Enabled = !numericUpDown_SpinePositionY.Enabled;
         }
 
         private void trackBar_SpineScale_ValueChanged(object sender, EventArgs e) { label_SpineScale.Text = $"{trackBar_SpineScale.Value}"; }
