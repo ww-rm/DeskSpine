@@ -532,7 +532,7 @@ namespace SpineWindow
         public SFML.System.Vector2u Size
         {
             get => window.Size;
-            set => window.Size = value; // 会触发 Resized 事件
+            set => window.Size = value; // 当 Size 不同时会触发 Resized 事件
         }
 
         /// <summary>
@@ -628,6 +628,9 @@ namespace SpineWindow
             {
                 if (cancelTokenSrc.Token.IsCancellationRequested)
                 {
+                    SpinePositionReg = SpinePosition;
+                    PositionReg = Position;
+                    SizeReg = Size;
                     window.Close();
                     window = null;
                     break;
