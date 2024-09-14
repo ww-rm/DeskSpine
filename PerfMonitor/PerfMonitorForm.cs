@@ -22,6 +22,9 @@ namespace PerfMonitor
         }
     }
 
+    /// <summary>
+    /// 性能监视浮窗, 可显示当前及历史处理器. 内存, 上传下载速度情况
+    /// </summary>
     public partial class PerfMonitorForm : Form
     {
         private PerformanceCounter cpuCounter = new PerformanceCounter("Processor Information", "% Processor Utility", "_Total");
@@ -105,6 +108,12 @@ namespace PerfMonitor
 
         private Pen barPen;
 
+        private float RowHeight { get => Size.Height / 4f; }
+        private float CellPadding { get => RowHeight / 10f; }
+
+        /// <summary>
+        /// 是否使用浅色主题
+        /// </summary>
         public bool UseLightTheme 
         { 
             get => BackColor == Color.White; 
@@ -125,10 +134,14 @@ namespace PerfMonitor
             } 
         }
 
+        /// <summary>
+        /// 保留的最大历史记录数
+        /// </summary>
         public const int MaxPerfDataCount = 60;
-        public float RowHeight { get => Size.Height / 4f; }
-        public float CellPadding { get => RowHeight / 10f; }
 
+        /// <summary>
+        /// 实例化监视窗口并开始监视性能数据
+        /// </summary>
         public PerfMonitorForm()
         {
             InitializeComponent();
@@ -150,8 +163,16 @@ namespace PerfMonitor
             // 开启定时更新
             updateTimer.Elapsed += UpdateTimer_Elapsed;
             updateTimer.Enabled = true;
+
+            // 立即刷新一次画面
+            Invalidate();
+            Update();
+            UpdateStyles();
         }
 
+        /// <summary>
+        /// 在当前位置显示浮窗
+        /// </summary>
         public void Popup()
         {
             Show();
@@ -160,6 +181,9 @@ namespace PerfMonitor
             BringToFront();
         }
 
+        /// <summary>
+        /// 在指定位置显示浮窗
+        /// </summary>
         public void Popup(Point location)
         {
             Location = location;
@@ -275,18 +299,27 @@ namespace PerfMonitor
             if (Visible) if (InvokeRequired) Invoke(Invalidate); else Invalidate();
         }
 
+        /// <summary>
+        /// 窗口大小发生变化后需要重新实例化绘图对象
+        /// </summary>
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
             InitGraphicsObjects();
         }
 
+        /// <summary>
+        /// 窗口失去激活自动隐藏
+        /// </summary>
         protected override void OnDeactivate(EventArgs e)
         {
             base.OnDeactivate(e);
             Hide();
         }
 
+        /// <summary>
+        /// 绘制数据画面
+        /// </summary>
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
