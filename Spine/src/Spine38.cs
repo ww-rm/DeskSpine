@@ -120,12 +120,12 @@ namespace Spine
                 // 恢复原本 Track0 上所有动画
                 if (savedTrack0 is not null)
                 {
-                    var entry = animationState.SetAnimation(0, savedTrack0.Animation, true);
+                    var entry = animationState.SetAnimation(0, savedTrack0.Animation.Name, true);
                     entry.TrackTime = savedTrack0.TrackTime;
                     var savedEntry = savedTrack0.Next;
                     while (savedEntry is not null)
                     {
-                        entry = animationState.AddAnimation(0, savedEntry.Animation, true, 0);
+                        entry = animationState.AddAnimation(0, savedEntry.Animation.Name, true, 0);
                         entry.TrackTime = savedEntry.TrackTime;
                         savedEntry = savedEntry.Next;
                     }
