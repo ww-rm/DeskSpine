@@ -84,12 +84,12 @@ namespace DeskSpine
                 // 基础设置
                 v.BasicConfig.WallpaperMode = checkBox_WallpaperMode.Checked;
                 v.BasicConfig.MouseClickThrough = checkBox_MouseClickThrough.Checked;
-                v.BasicConfig.PositionX = (int)numericUpDown_PositionX.Value;
-                v.BasicConfig.PositionY = (int)numericUpDown_PositionY.Value;
-                v.BasicConfig.SizeX = (uint)numericUpDown_SizeX.Value;
-                v.BasicConfig.SizeY = (uint)numericUpDown_SizeY.Value;
-                v.BasicConfig.SpinePositionX = (float)numericUpDown_SpinePositionX.Value;
-                v.BasicConfig.SpinePositionY = (float)numericUpDown_SpinePositionY.Value;
+                v.BasicConfig.PositionX = numericUpDown_PositionX.Enabled ? (int)numericUpDown_PositionX.Value : Program.WindowSpine.Position.X;
+                v.BasicConfig.PositionY = numericUpDown_PositionY.Enabled ? (int)numericUpDown_PositionY.Value : Program.WindowSpine.Position.Y;
+                v.BasicConfig.SizeX = numericUpDown_SizeX.Enabled ? (uint)numericUpDown_SizeX.Value : Program.WindowSpine.Size.X;
+                v.BasicConfig.SizeY = numericUpDown_SizeY.Enabled ? (uint)numericUpDown_SizeY.Value : Program.WindowSpine.Size.Y;
+                v.BasicConfig.SpinePositionX = numericUpDown_SpinePositionX.Enabled ? (float)numericUpDown_SpinePositionX.Value : Program.WindowSpine.SpinePosition.X;
+                v.BasicConfig.SpinePositionY = numericUpDown_SpinePositionY.Enabled ? (float)numericUpDown_SpinePositionY.Value : Program.WindowSpine.SpinePosition.Y;
                 v.BasicConfig.SpineFlip = checkBox_SpineFlip.Checked;
                 v.BasicConfig.SpineScale = trackBar_SpineScale.Value / 100.0f;
                 v.BasicConfig.Opacity = (byte)trackBar_Opacity.Value;
@@ -174,13 +174,13 @@ namespace DeskSpine
             if (balloonIcon is null) { ShowBalloonTip(title, info, ToolTipIcon.None); }
             else { ShowBalloonTip(title, info, balloonIcon.GetHicon()); }
         }
-        public void ShowBalloonTip(string title, string info, IntPtr balloonIcon) 
+        public void ShowBalloonTip(string title, string info, IntPtr balloonIcon)
         {
             title ??= ""; info ??= "";
             if (title.Length <= 0 && info.Length <= 0) info = "~";
-            shellNotifyIcon.ShowBalloonTip(title, info, balloonIcon); 
+            shellNotifyIcon.ShowBalloonTip(title, info, balloonIcon);
         }
-        public void ShowBalloonTip(string title, string info, ToolTipIcon balloonIcon) 
+        public void ShowBalloonTip(string title, string info, ToolTipIcon balloonIcon)
         {
             title ??= ""; info ??= "";
             if (title.Length <= 0 && info.Length <= 0) info = "~";
@@ -212,6 +212,14 @@ namespace DeskSpine
             if (this.Visible)
             {
                 Value = Program.CurrentConfig;
+
+                // 默认锁定位置大小调整
+                numericUpDown_PositionX.Enabled = false;
+                numericUpDown_PositionY.Enabled = false;
+                numericUpDown_SizeX.Enabled = false;
+                numericUpDown_SizeY.Enabled = false;
+                numericUpDown_SpinePositionX.Enabled = false;
+                numericUpDown_SpinePositionY.Enabled = false;
             }
         }
 
@@ -400,6 +408,22 @@ namespace DeskSpine
 
         #region 基础设置控件事件
 
+        private void label_Position_Click(object sender, EventArgs e)
+        {
+            numericUpDown_PositionX.Enabled = true;
+            numericUpDown_PositionY.Enabled = true;
+        }
+        private void label_Size_Click(object sender, EventArgs e)
+        {
+            numericUpDown_SizeX.Enabled = true;
+            numericUpDown_SizeY.Enabled = true;
+        }
+        private void label_SpinePosition_Click(object sender, EventArgs e)
+        {
+            numericUpDown_SpinePositionX.Enabled = true;
+            numericUpDown_SpinePositionY.Enabled = true;
+        }
+
         private void trackBar_SpineScale_ValueChanged(object sender, EventArgs e) { label_SpineScale.Text = $"{trackBar_SpineScale.Value}"; }
         private void trackBar_Opacity_ValueChanged(object sender, EventArgs e) { label_Opacity.Text = $"{trackBar_Opacity.Value}"; }
         private void trackBar_MaxFps_ValueChanged(object sender, EventArgs e) { label_MaxFps.Text = $"{trackBar_MaxFps.Value}"; }
@@ -425,9 +449,7 @@ namespace DeskSpine
             if (numericUpDown_BackgroundColorB.Value != numericUpDown_BackgroundColorR.Value)
                 numericUpDown_BackgroundColorB.Value = numericUpDown_BackgroundColorR.Value;
         }
-
         private void numericUpDown_BackgroundColorG_ValueChanged(object sender, EventArgs e) { }
-
         private void numericUpDown_BackgroundColorB_ValueChanged(object sender, EventArgs e)
         {
             if (numericUpDown_BackgroundColorR.Value != numericUpDown_BackgroundColorB.Value)
@@ -577,5 +599,6 @@ namespace DeskSpine
                     break;
             }
         }
+
     }
 }

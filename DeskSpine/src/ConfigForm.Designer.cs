@@ -79,14 +79,14 @@
             label41 = new Label();
             label25 = new Label();
             label24 = new Label();
-            label38 = new Label();
+            label_Size = new Label();
             label23 = new Label();
             tableLayoutPanel9 = new TableLayoutPanel();
             numericUpDown_SpinePositionY = new NumericUpDown();
             label21 = new Label();
             label22 = new Label();
             numericUpDown_SpinePositionX = new NumericUpDown();
-            label20 = new Label();
+            label_SpinePosition = new Label();
             label19 = new Label();
             label18 = new Label();
             tableLayoutPanel7 = new TableLayoutPanel();
@@ -98,7 +98,7 @@
             label6 = new Label();
             label7 = new Label();
             checkBox_WallpaperMode = new CheckBox();
-            label8 = new Label();
+            label_Position = new Label();
             label9 = new Label();
             tableLayoutPanel6 = new TableLayoutPanel();
             numericUpDown_PositionY = new NumericUpDown();
@@ -226,72 +226,72 @@
             contextMenuStrip.ImageScalingSize = new Size(24, 24);
             contextMenuStrip.Items.AddRange(new ToolStripItem[] { commandShowSpine, commandWallpaperMode, commandMouseClickThrough, toolStripSeparator2, commandSetFullScreen, commandResetSpine, toolStripSeparator1, commandConfig, commandAbout, commandExit });
             contextMenuStrip.Name = "contextMenuStrip";
-            contextMenuStrip.Size = new Size(241, 289);
+            contextMenuStrip.Size = new Size(153, 256);
             contextMenuStrip.Opening += contextMenuStrip_Opening;
             // 
             // commandShowSpine
             // 
             commandShowSpine.Name = "commandShowSpine";
-            commandShowSpine.Size = new Size(240, 30);
+            commandShowSpine.Size = new Size(152, 30);
             commandShowSpine.Text = "显示精灵";
             commandShowSpine.Click += commandShowSpine_Click;
             // 
             // commandWallpaperMode
             // 
             commandWallpaperMode.Name = "commandWallpaperMode";
-            commandWallpaperMode.Size = new Size(240, 30);
+            commandWallpaperMode.Size = new Size(152, 30);
             commandWallpaperMode.Text = "壁纸模式";
             commandWallpaperMode.Click += commandWallpaperMode_Click;
             // 
             // commandMouseClickThrough
             // 
             commandMouseClickThrough.Name = "commandMouseClickThrough";
-            commandMouseClickThrough.Size = new Size(240, 30);
+            commandMouseClickThrough.Size = new Size(152, 30);
             commandMouseClickThrough.Text = "鼠标穿透";
             commandMouseClickThrough.Click += commandMouseClickThrough_Click;
             // 
             // toolStripSeparator2
             // 
             toolStripSeparator2.Name = "toolStripSeparator2";
-            toolStripSeparator2.Size = new Size(237, 6);
+            toolStripSeparator2.Size = new Size(149, 6);
             // 
             // commandSetFullScreen
             // 
             commandSetFullScreen.Name = "commandSetFullScreen";
-            commandSetFullScreen.Size = new Size(240, 30);
+            commandSetFullScreen.Size = new Size(152, 30);
             commandSetFullScreen.Text = "一键全屏";
             commandSetFullScreen.Click += commandSetFullScreen_Click;
             // 
             // commandResetSpine
             // 
             commandResetSpine.Name = "commandResetSpine";
-            commandResetSpine.Size = new Size(240, 30);
+            commandResetSpine.Size = new Size(152, 30);
             commandResetSpine.Text = "窗口复位";
             commandResetSpine.Click += commandResetSpine_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(237, 6);
+            toolStripSeparator1.Size = new Size(149, 6);
             // 
             // commandConfig
             // 
             commandConfig.Name = "commandConfig";
-            commandConfig.Size = new Size(240, 30);
+            commandConfig.Size = new Size(152, 30);
             commandConfig.Text = "设置";
             commandConfig.Click += commandConfig_Click;
             // 
             // commandAbout
             // 
             commandAbout.Name = "commandAbout";
-            commandAbout.Size = new Size(240, 30);
+            commandAbout.Size = new Size(152, 30);
             commandAbout.Text = "关于";
             commandAbout.Click += commandAbout_Click;
             // 
             // commandExit
             // 
             commandExit.Name = "commandExit";
-            commandExit.Size = new Size(240, 30);
+            commandExit.Size = new Size(152, 30);
             commandExit.Text = "退出";
             commandExit.Click += commandExit_Click;
             // 
@@ -588,10 +588,10 @@
             tableLayoutPanel_BasicConfig.Controls.Add(label41, 0, 6);
             tableLayoutPanel_BasicConfig.Controls.Add(label25, 2, 5);
             tableLayoutPanel_BasicConfig.Controls.Add(label24, 0, 5);
-            tableLayoutPanel_BasicConfig.Controls.Add(label38, 0, 3);
+            tableLayoutPanel_BasicConfig.Controls.Add(label_Size, 0, 3);
             tableLayoutPanel_BasicConfig.Controls.Add(label23, 2, 4);
             tableLayoutPanel_BasicConfig.Controls.Add(tableLayoutPanel9, 1, 4);
-            tableLayoutPanel_BasicConfig.Controls.Add(label20, 0, 4);
+            tableLayoutPanel_BasicConfig.Controls.Add(label_SpinePosition, 0, 4);
             tableLayoutPanel_BasicConfig.Controls.Add(label19, 2, 9);
             tableLayoutPanel_BasicConfig.Controls.Add(label18, 0, 9);
             tableLayoutPanel_BasicConfig.Controls.Add(tableLayoutPanel7, 1, 3);
@@ -599,7 +599,7 @@
             tableLayoutPanel_BasicConfig.Controls.Add(label6, 2, 0);
             tableLayoutPanel_BasicConfig.Controls.Add(label7, 0, 0);
             tableLayoutPanel_BasicConfig.Controls.Add(checkBox_WallpaperMode, 1, 0);
-            tableLayoutPanel_BasicConfig.Controls.Add(label8, 0, 2);
+            tableLayoutPanel_BasicConfig.Controls.Add(label_Position, 0, 2);
             tableLayoutPanel_BasicConfig.Controls.Add(label9, 2, 3);
             tableLayoutPanel_BasicConfig.Controls.Add(tableLayoutPanel6, 1, 2);
             tableLayoutPanel_BasicConfig.Controls.Add(tableLayoutPanel8, 1, 9);
@@ -795,16 +795,18 @@
             label24.TabIndex = 24;
             label24.Text = "精灵水平翻转";
             // 
-            // label38
+            // label_Size
             // 
-            label38.Anchor = AnchorStyles.Left;
-            label38.AutoSize = true;
-            label38.Location = new Point(30, 187);
-            label38.Margin = new Padding(30, 0, 3, 0);
-            label38.Name = "label38";
-            label38.Size = new Size(82, 24);
-            label38.TabIndex = 30;
-            label38.Text = "窗口大小";
+            label_Size.Anchor = AnchorStyles.Left;
+            label_Size.AutoSize = true;
+            label_Size.Cursor = Cursors.Hand;
+            label_Size.Location = new Point(30, 187);
+            label_Size.Margin = new Padding(30, 0, 3, 0);
+            label_Size.Name = "label_Size";
+            label_Size.Size = new Size(82, 24);
+            label_Size.TabIndex = 30;
+            label_Size.Text = "窗口大小";
+            label_Size.Click += label_Size_Click;
             // 
             // label23
             // 
@@ -840,6 +842,7 @@
             // numericUpDown_SpinePositionY
             // 
             numericUpDown_SpinePositionY.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            numericUpDown_SpinePositionY.Enabled = false;
             numericUpDown_SpinePositionY.Location = new Point(326, 13);
             numericUpDown_SpinePositionY.Margin = new Padding(10, 3, 10, 3);
             numericUpDown_SpinePositionY.Maximum = new decimal(new int[] { 32767, 0, 0, 0 });
@@ -874,6 +877,7 @@
             // numericUpDown_SpinePositionX
             // 
             numericUpDown_SpinePositionX.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            numericUpDown_SpinePositionX.Enabled = false;
             numericUpDown_SpinePositionX.Location = new Point(50, 13);
             numericUpDown_SpinePositionX.Margin = new Padding(10, 3, 10, 3);
             numericUpDown_SpinePositionX.Maximum = new decimal(new int[] { 32767, 0, 0, 0 });
@@ -883,16 +887,18 @@
             numericUpDown_SpinePositionX.TabIndex = 4;
             numericUpDown_SpinePositionX.TextAlign = HorizontalAlignment.Right;
             // 
-            // label20
+            // label_SpinePosition
             // 
-            label20.Anchor = AnchorStyles.Left;
-            label20.AutoSize = true;
-            label20.Location = new Point(30, 244);
-            label20.Margin = new Padding(30, 0, 3, 0);
-            label20.Name = "label20";
-            label20.Size = new Size(82, 24);
-            label20.TabIndex = 19;
-            label20.Text = "精灵位置";
+            label_SpinePosition.Anchor = AnchorStyles.Left;
+            label_SpinePosition.AutoSize = true;
+            label_SpinePosition.Cursor = Cursors.Hand;
+            label_SpinePosition.Location = new Point(30, 244);
+            label_SpinePosition.Margin = new Padding(30, 0, 3, 0);
+            label_SpinePosition.Name = "label_SpinePosition";
+            label_SpinePosition.Size = new Size(82, 24);
+            label_SpinePosition.TabIndex = 19;
+            label_SpinePosition.Text = "精灵位置";
+            label_SpinePosition.Click += label_SpinePosition_Click;
             // 
             // label19
             // 
@@ -939,6 +945,7 @@
             // numericUpDown_SizeY
             // 
             numericUpDown_SizeY.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            numericUpDown_SizeY.Enabled = false;
             numericUpDown_SizeY.Location = new Point(326, 13);
             numericUpDown_SizeY.Margin = new Padding(10, 3, 10, 3);
             numericUpDown_SizeY.Maximum = new decimal(new int[] { 32767, 0, 0, 0 });
@@ -973,6 +980,7 @@
             // numericUpDown_SizeX
             // 
             numericUpDown_SizeX.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            numericUpDown_SizeX.Enabled = false;
             numericUpDown_SizeX.Location = new Point(50, 13);
             numericUpDown_SizeX.Margin = new Padding(10, 3, 10, 3);
             numericUpDown_SizeX.Maximum = new decimal(new int[] { 32767, 0, 0, 0 });
@@ -1026,16 +1034,18 @@
             checkBox_WallpaperMode.TabIndex = 1;
             checkBox_WallpaperMode.UseVisualStyleBackColor = true;
             // 
-            // label8
+            // label_Position
             // 
-            label8.Anchor = AnchorStyles.Left;
-            label8.AutoSize = true;
-            label8.Location = new Point(30, 130);
-            label8.Margin = new Padding(30, 0, 3, 0);
-            label8.Name = "label8";
-            label8.Size = new Size(82, 24);
-            label8.TabIndex = 2;
-            label8.Text = "窗口位置";
+            label_Position.Anchor = AnchorStyles.Left;
+            label_Position.AutoSize = true;
+            label_Position.Cursor = Cursors.Hand;
+            label_Position.Location = new Point(30, 130);
+            label_Position.Margin = new Padding(30, 0, 3, 0);
+            label_Position.Name = "label_Position";
+            label_Position.Size = new Size(82, 24);
+            label_Position.TabIndex = 2;
+            label_Position.Text = "窗口位置";
+            label_Position.Click += label_Position_Click;
             // 
             // label9
             // 
@@ -1071,6 +1081,7 @@
             // numericUpDown_PositionY
             // 
             numericUpDown_PositionY.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            numericUpDown_PositionY.Enabled = false;
             numericUpDown_PositionY.Location = new Point(326, 13);
             numericUpDown_PositionY.Margin = new Padding(10, 3, 10, 3);
             numericUpDown_PositionY.Maximum = new decimal(new int[] { 32767, 0, 0, 0 });
@@ -1105,6 +1116,7 @@
             // numericUpDown_PositionX
             // 
             numericUpDown_PositionX.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            numericUpDown_PositionX.Enabled = false;
             numericUpDown_PositionX.Location = new Point(50, 13);
             numericUpDown_PositionX.Margin = new Padding(10, 3, 10, 3);
             numericUpDown_PositionX.Maximum = new decimal(new int[] { 32767, 0, 0, 0 });
@@ -2124,7 +2136,7 @@
         private Label label6;
         private Label label7;
         private CheckBox checkBox_WallpaperMode;
-        private Label label8;
+        private Label label_Position;
         private Label label9;
         private TableLayoutPanel tableLayoutPanel6;
         private Label label10;
@@ -2151,7 +2163,7 @@
         private Label label21;
         private Label label22;
         private NumericUpDown numericUpDown_SpinePositionX;
-        private Label label20;
+        private Label label_SpinePosition;
         private TableLayoutPanel tableLayoutPanel10;
         private Label label_Opacity;
         private TableLayoutPanel tableLayoutPanel11;
@@ -2205,7 +2217,7 @@
         private Button button_SelectSkel6;
         private TextBox textBox_SkelPath6;
         private Label label34;
-        private Label label38;
+        private Label label_Size;
         private Button button_SelectSkel0;
         private OpenFileDialog openFileDialog_SelectSkel;
         private Label label43;
