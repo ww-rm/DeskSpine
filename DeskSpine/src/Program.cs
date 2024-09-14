@@ -1,8 +1,20 @@
 using Microsoft.Win32;
 using SpineWindow;
+using System.Runtime.InteropServices;
 
 namespace DeskSpine
 {
+    /// <summary>
+    /// 任务栏方向枚举
+    /// </summary>
+    public enum EdgeDirection
+    {
+        Left = 0,       // ABE_LEFT
+        Top = 1,        // ABE_TOP
+        Right = 2,      // ABE_RIGHT
+        Bottom = 3      // ABE_BOTTOM
+    }
+
     public static class Program
     {
 #if DEBUG
@@ -107,7 +119,7 @@ namespace DeskSpine
                 }
 
                 // 如果窗口或者版本发生了变化, 需要把 Spine 内容清空
-                if (cur.SpineConfig.WindowType != value.SpineConfig.WindowType || 
+                if (cur.SpineConfig.WindowType != value.SpineConfig.WindowType ||
                     cur.SpineConfig.SpineVersion != value.SpineConfig.SpineVersion)
                 {
                     for (int i = 0; i < SpineConfig.SlotCount; i++)
@@ -265,5 +277,46 @@ namespace DeskSpine
                     return int.Parse(personalizeKey.GetValue("SystemUsesLightTheme", "0").ToString()) != 0;
             }
         }
+
+        /// <summary>
+        /// 任务栏方向
+        /// </summary>
+        public static EdgeDirection TaskbarDirection
+        {
+            get
+            {
+                // ABM_GETTASKBARPOS = 0x5
+                APPBARDATA abData = new APPBARDATA();
+                abData.cbSize = Marshal.SizeOf(abData);
+                if (SHAppBarMessage(5, ref abData) != 0)
+                {
+                    return (EdgeDirection)abData.uEdge;
+                }
+                return EdgeDirection.Bottom;
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct RECT
+        {
+            public int left;
+            public int top;
+            public int right;
+            public int bottom;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct APPBARDATA
+        {
+            public int cbSize;
+            public IntPtr hWnd;
+            public int uCallbackMessage;
+            public int uEdge;
+            public RECT rc;
+            public IntPtr lParam;
+        }
+
+        [DllImport("shell32.dll", SetLastError = true)]
+        private static extern uint SHAppBarMessage(uint dwMessage, ref APPBARDATA pData);
     }
 }

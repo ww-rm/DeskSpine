@@ -275,10 +275,18 @@ namespace DeskSpine
         {
             if (e.Button == MouseButtons.Left)
             {
-                // TODO: 判断任务栏方向
-                var size = Program.PerfMonitorForm.Size;
+                var wndSize = Program.PerfMonitorForm.Size;
                 var iconRect = shellNotifyIcon.Rectangle;
-                var location = new Point(iconRect.X - (size.Width - iconRect.Width) / 2, iconRect.Y - size.Height);
+                var halfDeltaWidth = (wndSize.Width - iconRect.Width) / 2;
+                var halfDeltaHeight = (wndSize.Height - iconRect.Height) / 2;
+                Point location = Program.TaskbarDirection switch
+                {
+                    EdgeDirection.Left => new(iconRect.Right, iconRect.Top - halfDeltaHeight),
+                    EdgeDirection.Top => new(iconRect.Left - halfDeltaWidth, iconRect.Bottom),
+                    EdgeDirection.Right => new(iconRect.Left - wndSize.Width, iconRect.Top - halfDeltaHeight),
+                    EdgeDirection.Bottom => new(iconRect.Left - halfDeltaWidth, iconRect.Top - wndSize.Height),
+                    _ => throw new NotImplementedException()
+                };
                 Program.PerfMonitorForm.Popup(location);
             }
         }
