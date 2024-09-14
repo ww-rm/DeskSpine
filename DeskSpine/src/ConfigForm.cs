@@ -61,6 +61,8 @@ namespace DeskSpine
             InitializeComponent();
             _ = Handle; // 强制创建窗口
             shellNotifyIcon = new(notifyIcon);
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigForm));
+            notifyIcon.Icon = (Icon?)(Program.SystemUseLightTheme ? resources.GetObject("$this.Icon") : resources.GetObject("notifyIcon.Icon"));
             timeAlarmTimer.Elapsed += TimeAlarmTimer_Elapsed;
         }
 
