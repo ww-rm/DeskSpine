@@ -2055,6 +2055,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(1500, 0);
             Name = "ConfigForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "设置";
             TopMost = true;
             FormClosing += ConfigForm_FormClosing;
