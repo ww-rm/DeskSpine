@@ -135,7 +135,7 @@ namespace DeskSpine
         public Config()
         {
             SystemConfig.BalloonIconPath = Path.Combine(Program.ProgramResourceDirectory, @"image\timealarm.ico");
-            SpineConfig.SkelPath0 = Path.Combine(Program.ProgramResourceDirectory, @"spines\guanghui_2\guanghui_2.skel");
+            SpineConfig.SkelPath0 = Path.Combine(Program.ProgramResourceDirectory, @"spine\guanghui_2\guanghui_2.skel");
         }
 
         public bool Load(string configPath)
