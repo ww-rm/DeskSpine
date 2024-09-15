@@ -390,7 +390,7 @@ namespace DeskSpine
 
         private void commandAbout_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("还没实现");
+            new AboutForm().Show();
         }
 
         private void commandExit_Click(object? sender, EventArgs e)
