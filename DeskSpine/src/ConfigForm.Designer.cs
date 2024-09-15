@@ -226,73 +226,73 @@
             contextMenuStrip.ImageScalingSize = new Size(24, 24);
             contextMenuStrip.Items.AddRange(new ToolStripItem[] { commandShowSpine, commandWallpaperMode, commandMouseClickThrough, toolStripSeparator2, commandSetFullScreen, commandResetSpine, toolStripSeparator1, commandConfig, commandAbout, commandExit });
             contextMenuStrip.Name = "contextMenuStrip";
-            contextMenuStrip.Size = new Size(153, 256);
+            contextMenuStrip.Size = new Size(241, 289);
             contextMenuStrip.Opening += contextMenuStrip_Opening;
             // 
             // commandShowSpine
             // 
             commandShowSpine.Name = "commandShowSpine";
-            commandShowSpine.Size = new Size(152, 30);
+            commandShowSpine.Size = new Size(240, 30);
             commandShowSpine.Text = "显示精灵";
             commandShowSpine.Click += commandShowSpine_Click;
             // 
             // commandWallpaperMode
             // 
             commandWallpaperMode.Name = "commandWallpaperMode";
-            commandWallpaperMode.Size = new Size(152, 30);
+            commandWallpaperMode.Size = new Size(240, 30);
             commandWallpaperMode.Text = "壁纸模式";
             commandWallpaperMode.Click += commandWallpaperMode_Click;
             // 
             // commandMouseClickThrough
             // 
             commandMouseClickThrough.Name = "commandMouseClickThrough";
-            commandMouseClickThrough.Size = new Size(152, 30);
+            commandMouseClickThrough.Size = new Size(240, 30);
             commandMouseClickThrough.Text = "鼠标穿透";
             commandMouseClickThrough.Click += commandMouseClickThrough_Click;
             // 
             // toolStripSeparator2
             // 
             toolStripSeparator2.Name = "toolStripSeparator2";
-            toolStripSeparator2.Size = new Size(149, 6);
+            toolStripSeparator2.Size = new Size(237, 6);
             // 
             // commandSetFullScreen
             // 
             commandSetFullScreen.Name = "commandSetFullScreen";
-            commandSetFullScreen.Size = new Size(152, 30);
+            commandSetFullScreen.Size = new Size(240, 30);
             commandSetFullScreen.Text = "一键全屏";
             commandSetFullScreen.Click += commandSetFullScreen_Click;
             // 
             // commandResetSpine
             // 
             commandResetSpine.Name = "commandResetSpine";
-            commandResetSpine.Size = new Size(152, 30);
+            commandResetSpine.Size = new Size(240, 30);
             commandResetSpine.Text = "窗口复位";
             commandResetSpine.Click += commandResetSpine_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(149, 6);
+            toolStripSeparator1.Size = new Size(237, 6);
             // 
             // commandConfig
             // 
             commandConfig.Name = "commandConfig";
-            commandConfig.Size = new Size(152, 30);
-            commandConfig.Text = "设置";
+            commandConfig.Size = new Size(240, 30);
+            commandConfig.Text = "设置(&S)";
             commandConfig.Click += commandConfig_Click;
             // 
             // commandAbout
             // 
             commandAbout.Name = "commandAbout";
-            commandAbout.Size = new Size(152, 30);
-            commandAbout.Text = "关于";
+            commandAbout.Size = new Size(240, 30);
+            commandAbout.Text = "关于(&A)";
             commandAbout.Click += commandAbout_Click;
             // 
             // commandExit
             // 
             commandExit.Name = "commandExit";
-            commandExit.Size = new Size(152, 30);
-            commandExit.Text = "退出";
+            commandExit.Size = new Size(240, 30);
+            commandExit.Text = "退出(&X)";
             commandExit.Click += commandExit_Click;
             // 
             // button_Ok
