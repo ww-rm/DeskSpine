@@ -68,7 +68,7 @@ namespace DeskSpine
 
         [JsonConverter(typeof(BackgroundColorConverter))] // 结构体不会自动保存字段, 需要用自定义的转换器
         public SFML.Graphics.Color BackgroundColor { get; set; } = new(128, 128, 128, 0);
-        public bool SpineUsePMA { get; set; } = true;
+        public bool SpineUsePMA { get; set; } = false;
 
         [JsonIgnore]
         public int PositionX { get; set; } = 0;
