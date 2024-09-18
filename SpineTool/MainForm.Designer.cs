@@ -1,4 +1,4 @@
-﻿namespace SpineExporter
+﻿namespace SpineTool
 {
     partial class MainForm
     {
