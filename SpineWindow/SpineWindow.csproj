@@ -5,14 +5,11 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Platforms>x64</Platforms>
+        <NoWarn>$(NoWarn);NETSDK1206</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Spine\Spine.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <RuntimeHostConfigurationOption Include="System.Runtime.Loader.UseRidGraph" Value="true" />
     </ItemGroup>
 
 </Project>
