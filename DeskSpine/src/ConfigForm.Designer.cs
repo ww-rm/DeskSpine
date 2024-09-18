@@ -233,66 +233,66 @@
             // commandShowSpine
             // 
             commandShowSpine.Name = "commandShowSpine";
-            commandShowSpine.Size = new Size(152, 30);
+            commandShowSpine.Size = new Size(240, 30);
             commandShowSpine.Text = "显示精灵";
             commandShowSpine.Click += commandShowSpine_Click;
             // 
             // commandWallpaperMode
             // 
             commandWallpaperMode.Name = "commandWallpaperMode";
-            commandWallpaperMode.Size = new Size(152, 30);
+            commandWallpaperMode.Size = new Size(240, 30);
             commandWallpaperMode.Text = "壁纸模式";
             commandWallpaperMode.Click += commandWallpaperMode_Click;
             // 
             // commandMouseClickThrough
             // 
             commandMouseClickThrough.Name = "commandMouseClickThrough";
-            commandMouseClickThrough.Size = new Size(152, 30);
+            commandMouseClickThrough.Size = new Size(240, 30);
             commandMouseClickThrough.Text = "鼠标穿透";
             commandMouseClickThrough.Click += commandMouseClickThrough_Click;
             // 
             // toolStripSeparator2
             // 
             toolStripSeparator2.Name = "toolStripSeparator2";
-            toolStripSeparator2.Size = new Size(149, 6);
+            toolStripSeparator2.Size = new Size(237, 6);
             // 
             // commandSetFullScreen
             // 
             commandSetFullScreen.Name = "commandSetFullScreen";
-            commandSetFullScreen.Size = new Size(152, 30);
+            commandSetFullScreen.Size = new Size(240, 30);
             commandSetFullScreen.Text = "一键全屏";
             commandSetFullScreen.Click += commandSetFullScreen_Click;
             // 
             // commandResetSpine
             // 
             commandResetSpine.Name = "commandResetSpine";
-            commandResetSpine.Size = new Size(152, 30);
+            commandResetSpine.Size = new Size(240, 30);
             commandResetSpine.Text = "窗口复位";
             commandResetSpine.Click += commandResetSpine_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(149, 6);
+            toolStripSeparator1.Size = new Size(237, 6);
             // 
             // commandConfig
             // 
             commandConfig.Name = "commandConfig";
-            commandConfig.Size = new Size(152, 30);
+            commandConfig.Size = new Size(240, 30);
             commandConfig.Text = "设置(&S)";
             commandConfig.Click += commandConfig_Click;
             // 
             // commandAbout
             // 
             commandAbout.Name = "commandAbout";
-            commandAbout.Size = new Size(152, 30);
+            commandAbout.Size = new Size(240, 30);
             commandAbout.Text = "关于(&A)";
             commandAbout.Click += commandAbout_Click;
             // 
             // commandExit
             // 
             commandExit.Name = "commandExit";
-            commandExit.Size = new Size(152, 30);
+            commandExit.Size = new Size(240, 30);
             commandExit.Text = "退出(&X)";
             commandExit.Click += commandExit_Click;
             // 
@@ -570,10 +570,10 @@
             tabPage_BasicConfig.AutoScroll = true;
             tabPage_BasicConfig.BackColor = SystemColors.Control;
             tabPage_BasicConfig.Controls.Add(tableLayoutPanel_BasicConfig);
-            tabPage_BasicConfig.Location = new Point(4, 33);
+            tabPage_BasicConfig.Location = new Point(4, 40);
             tabPage_BasicConfig.Margin = new Padding(0);
             tabPage_BasicConfig.Name = "tabPage_BasicConfig";
-            tabPage_BasicConfig.Size = new Size(1570, 849);
+            tabPage_BasicConfig.Size = new Size(1570, 842);
             tabPage_BasicConfig.TabIndex = 1;
             tabPage_BasicConfig.Text = "基础设置";
             // 
@@ -814,7 +814,7 @@
             label_Size.Size = new Size(110, 31);
             label_Size.TabIndex = 30;
             label_Size.Text = "窗口大小";
-            toolTip1.SetToolTip(label_Size, "单击以解锁/上锁调整控件");
+            toolTip1.SetToolTip(label_Size, "单击以解锁/锁定调整控件");
             label_Size.Click += label_Size_Click;
             // 
             // label23
@@ -827,7 +827,7 @@
             label23.Size = new Size(590, 31);
             label23.TabIndex = 21;
             label23.Text = "调整精灵在窗口内的相对位置，也可通过右键拖动调整";
-            toolTip1.SetToolTip(label23, "单击以解锁/上锁调整控件");
+            toolTip1.SetToolTip(label23, "单击左侧标签以解锁/锁定调整控件");
             // 
             // tableLayoutPanel9
             // 
@@ -908,7 +908,7 @@
             label_SpinePosition.Size = new Size(110, 31);
             label_SpinePosition.TabIndex = 19;
             label_SpinePosition.Text = "精灵位置";
-            toolTip1.SetToolTip(label_SpinePosition, "单击以解锁/上锁调整控件");
+            toolTip1.SetToolTip(label_SpinePosition, "单击以解锁/锁定调整控件");
             label_SpinePosition.Click += label_SpinePosition_Click;
             // 
             // label19
@@ -1012,7 +1012,7 @@
             label5.Size = new Size(470, 31);
             label5.TabIndex = 5;
             label5.Text = "调节窗口位置，也可直接拖动窗口改变位置";
-            toolTip1.SetToolTip(label5, "单击以解锁/上锁调整控件");
+            toolTip1.SetToolTip(label5, "单击左侧标签以解锁/锁定调整控件");
             // 
             // label6
             // 
@@ -1058,7 +1058,7 @@
             label_Position.Size = new Size(110, 31);
             label_Position.TabIndex = 2;
             label_Position.Text = "窗口位置";
-            toolTip1.SetToolTip(label_Position, "单击以解锁/上锁调整控件");
+            toolTip1.SetToolTip(label_Position, "单击以解锁/锁定调整控件");
             label_Position.Click += label_Position_Click;
             // 
             // label9
@@ -1071,7 +1071,7 @@
             label9.Size = new Size(518, 31);
             label9.TabIndex = 7;
             label9.Text = "调节窗口大小，也可右键双击窗口解锁缩放边框";
-            toolTip1.SetToolTip(label9, "单击以解锁/上锁调整控件");
+            toolTip1.SetToolTip(label9, "单击左侧标签以解锁/锁定调整控件");
             // 
             // tableLayoutPanel6
             // 
