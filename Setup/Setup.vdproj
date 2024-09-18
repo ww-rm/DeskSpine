@@ -44,6 +44,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
         "Release"
@@ -68,6 +76,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
     }
@@ -156,15 +172,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:DeskSpine"
-        "ProductCode" = "8:{1770BCE9-560F-4881-80C4-F1449A767FE8}"
-        "PackageCode" = "8:{7354E453-6F5B-4715-ACCF-5C53CD3DDF1A}"
+        "ProductCode" = "8:{6F9658A9-B199-494F-AF69-98103B9029A0}"
+        "PackageCode" = "8:{F732A279-5BE5-43F3-98D4-DA1E21170902}"
         "UpgradeCode" = "8:{D495CA29-E442-45FF-8D47-FE99695CFA23}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
-        "RemovePreviousVersions" = "11:FALSE"
+        "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.9.1"
+        "ProductVersion" = "8:0.9.2"
         "Manufacturer" = "8:ww-rm studio"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/ww-rm/DeskSpine"
@@ -706,7 +722,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F78B85B9BF9C418EBB9F1B3813D4EC4D"
             {
-            "SourcePath" = "8:..\\DeskSpine\\obj\\x64\\Debug\\net8.0-windows10.0.17763.0\\apphost.exe"
+            "SourcePath" = "8:..\\DeskSpine\\obj\\x64\\Release\\net8.0-windows10.0.17763.0\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6673A475F6F64BFF8735B7929FB2FD0E"
