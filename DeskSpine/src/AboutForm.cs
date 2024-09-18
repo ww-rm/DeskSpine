@@ -16,7 +16,7 @@ namespace DeskSpine
         {
             InitializeComponent();
             this.Text = $"关于 {AssemblyTitle}";
-            this.label_Version.Text = $"v{AssemblyVersion}";
+            this.label_Version.Text = $"v{InformationalVersion}";
         }
 
         #region 程序集特性访问器
@@ -34,7 +34,7 @@ namespace DeskSpine
                         return titleAttribute.Title;
                     }
                 }
-                return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
+                return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location);
             }
         }
 
@@ -45,6 +45,16 @@ namespace DeskSpine
                 return Assembly.GetExecutingAssembly().GetName().Version.ToString();
             }
         }
+
+
+        public string InformationalVersion
+        {
+            get
+            {
+                return Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+            }
+        }
+
 
         public string AssemblyDescription
         {

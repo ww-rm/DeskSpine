@@ -1,59 +1,63 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Platforms>x64</Platforms>
-    <ApplicationIcon>appicon_dark.ico</ApplicationIcon>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <UseWindowsForms>true</UseWindowsForms>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Platforms>x64</Platforms>
+        <ApplicationIcon>appicon_dark.ico</ApplicationIcon>
+        <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+        <Deterministic>False</Deterministic>
+        <FileVersion>1.0.*</FileVersion>
+        <Version>0.9.1</Version>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="appicon_dark.ico" />
-  </ItemGroup>
+    <ItemGroup>
+        <Content Include="appicon_dark.ico" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\PerfMonitor\PerfMonitor.csproj" />
-    <ProjectReference Include="..\SpineWindow\SpineWindow.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\PerfMonitor\PerfMonitor.csproj" />
+        <ProjectReference Include="..\SpineWindow\SpineWindow.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Properties\Settings.Designer.cs">
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Update="Properties\Settings.Designer.cs">
+            <DesignTimeSharedInput>True</DesignTimeSharedInput>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Settings.settings</DependentUpon>
+        </Compile>
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <None Update="res\image\timealarm.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="res\spine\guanghui_2\guanghui_2.atlas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="res\spine\guanghui_2\guanghui_2.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="res\spine\guanghui_2\guanghui_2.skel">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="res\spine\yanzhan_g\yanzhan_g.atlas">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="res\spine\yanzhan_g\yanzhan_g.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="res\spine\yanzhan_g\yanzhan_g.skel">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <None Update="Properties\Settings.settings">
+            <Generator>SettingsSingleFileGenerator</Generator>
+            <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+        </None>
+        <None Update="res\image\timealarm.ico">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="res\spine\guanghui_2\guanghui_2.atlas">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="res\spine\guanghui_2\guanghui_2.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="res\spine\guanghui_2\guanghui_2.skel">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="res\spine\yanzhan_g\yanzhan_g.atlas">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="res\spine\yanzhan_g\yanzhan_g.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="res\spine\yanzhan_g\yanzhan_g.skel">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 
     <ItemGroup>
         <RuntimeHostConfigurationOption Include="System.Runtime.Loader.UseRidGraph" Value="true" />
