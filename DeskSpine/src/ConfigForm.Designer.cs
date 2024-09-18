@@ -177,6 +177,7 @@
             tableLayoutPanel_Buttons = new TableLayoutPanel();
             openFileDialog_SelectSkel = new OpenFileDialog();
             openFileDialog_BalloonIconPath = new OpenFileDialog();
+            toolTip1 = new ToolTip(components);
             contextMenuStrip.SuspendLayout();
             tableLayoutPanel_Window.SuspendLayout();
             tabControl_Config.SuspendLayout();
@@ -433,6 +434,7 @@
             checkBox_TimeAlarm.Name = "checkBox_TimeAlarm";
             checkBox_TimeAlarm.Size = new Size(22, 21);
             checkBox_TimeAlarm.TabIndex = 33;
+            toolTip1.SetToolTip(checkBox_TimeAlarm, "整点的时候会弹出气泡消息提醒时间");
             checkBox_TimeAlarm.UseVisualStyleBackColor = true;
             // 
             // label51
@@ -568,10 +570,10 @@
             tabPage_BasicConfig.AutoScroll = true;
             tabPage_BasicConfig.BackColor = SystemColors.Control;
             tabPage_BasicConfig.Controls.Add(tableLayoutPanel_BasicConfig);
-            tabPage_BasicConfig.Location = new Point(4, 33);
+            tabPage_BasicConfig.Location = new Point(4, 40);
             tabPage_BasicConfig.Margin = new Padding(0);
             tabPage_BasicConfig.Name = "tabPage_BasicConfig";
-            tabPage_BasicConfig.Size = new Size(1570, 849);
+            tabPage_BasicConfig.Size = new Size(1570, 842);
             tabPage_BasicConfig.TabIndex = 1;
             tabPage_BasicConfig.Text = "基础设置";
             // 
@@ -645,6 +647,7 @@
             label46.Size = new Size(611, 31);
             label46.TabIndex = 44;
             label46.Text = "是否使用 PMA 颜色，画面渲染异常可以尝试调节此参数";
+            toolTip1.SetToolTip(label46, "如果画面某些关节接缝处出现颜色异常，或者画面整体透明度不正常，可以尝试调整此参数");
             // 
             // checkBox_SpineUsePMA
             // 
@@ -655,6 +658,7 @@
             checkBox_SpineUsePMA.Name = "checkBox_SpineUsePMA";
             checkBox_SpineUsePMA.Size = new Size(22, 21);
             checkBox_SpineUsePMA.TabIndex = 43;
+            toolTip1.SetToolTip(checkBox_SpineUsePMA, "如果画面某些关节接缝处出现颜色异常，或者画面整体透明度不正常，可以尝试调整此参数");
             checkBox_SpineUsePMA.UseVisualStyleBackColor = true;
             // 
             // label42
@@ -810,6 +814,7 @@
             label_Size.Size = new Size(110, 31);
             label_Size.TabIndex = 30;
             label_Size.Text = "窗口大小";
+            toolTip1.SetToolTip(label_Size, "单击以解锁/上锁调整控件");
             label_Size.Click += label_Size_Click;
             // 
             // label23
@@ -822,6 +827,7 @@
             label23.Size = new Size(590, 31);
             label23.TabIndex = 21;
             label23.Text = "调整精灵在窗口内的相对位置，也可通过右键拖动调整";
+            toolTip1.SetToolTip(label23, "单击以解锁/上锁调整控件");
             // 
             // tableLayoutPanel9
             // 
@@ -902,6 +908,7 @@
             label_SpinePosition.Size = new Size(110, 31);
             label_SpinePosition.TabIndex = 19;
             label_SpinePosition.Text = "精灵位置";
+            toolTip1.SetToolTip(label_SpinePosition, "单击以解锁/上锁调整控件");
             label_SpinePosition.Click += label_SpinePosition_Click;
             // 
             // label19
@@ -911,9 +918,10 @@
             label19.Location = new Point(884, 687);
             label19.Margin = new Padding(38, 0, 4, 0);
             label19.Name = "label19";
-            label19.Size = new Size(440, 31);
+            label19.Size = new Size(350, 31);
             label19.TabIndex = 18;
-            label19.Text = "窗口背景颜色，影响精灵的边缘，RGBA";
+            label19.Text = "窗口背景颜色，影响精灵的边缘";
+            toolTip1.SetToolTip(label19, "除自定义以外的选项，均是自动随机一个合适的背景颜色，保证不与精灵本身像素颜色相同");
             // 
             // label18
             // 
@@ -1004,6 +1012,7 @@
             label5.Size = new Size(470, 31);
             label5.TabIndex = 5;
             label5.Text = "调节窗口位置，也可直接拖动窗口改变位置";
+            toolTip1.SetToolTip(label5, "单击以解锁/上锁调整控件");
             // 
             // label6
             // 
@@ -1049,6 +1058,7 @@
             label_Position.Size = new Size(110, 31);
             label_Position.TabIndex = 2;
             label_Position.Text = "窗口位置";
+            toolTip1.SetToolTip(label_Position, "单击以解锁/上锁调整控件");
             label_Position.Click += label_Position_Click;
             // 
             // label9
@@ -1061,6 +1071,7 @@
             label9.Size = new Size(518, 31);
             label9.TabIndex = 7;
             label9.Text = "调节窗口大小，也可右键双击窗口解锁缩放边框";
+            toolTip1.SetToolTip(label9, "单击以解锁/上锁调整控件");
             // 
             // tableLayoutPanel6
             // 
@@ -1156,6 +1167,7 @@
             comboBox_AutoBackgroudColor.Name = "comboBox_AutoBackgroudColor";
             comboBox_AutoBackgroudColor.Size = new Size(137, 39);
             comboBox_AutoBackgroudColor.TabIndex = 0;
+            toolTip1.SetToolTip(comboBox_AutoBackgroudColor, "除自定义以外的选项，均是自动随机一个合适的背景颜色，保证不与精灵本身像素颜色相同\r\n画面类似绿幕抠图，因此背景颜色影响抠图效果");
             comboBox_AutoBackgroudColor.SelectedValueChanged += comboBox_AutoBackgroudColor_SelectedValueChanged;
             // 
             // tableLayoutPanel_BackgroundColor
@@ -1295,6 +1307,7 @@
             trackBar_Opacity.TabIndex = 11;
             trackBar_Opacity.TickFrequency = 16;
             trackBar_Opacity.TickStyle = TickStyle.Both;
+            toolTip1.SetToolTip(trackBar_Opacity, "255为完全不透明");
             trackBar_Opacity.Value = 255;
             trackBar_Opacity.ValueChanged += trackBar_Opacity_ValueChanged;
             // 
@@ -1370,6 +1383,7 @@
             trackBar_MaxFps.TabIndex = 11;
             trackBar_MaxFps.TickFrequency = 16;
             trackBar_MaxFps.TickStyle = TickStyle.Both;
+            toolTip1.SetToolTip(trackBar_MaxFps, "一帧能动，两帧流畅，三帧电竞");
             trackBar_MaxFps.Value = 30;
             trackBar_MaxFps.ValueChanged += trackBar_MaxFps_ValueChanged;
             // 
@@ -2307,5 +2321,6 @@
         private Label label53;
         private Label label52;
         private OpenFileDialog openFileDialog_BalloonIconPath;
+        private ToolTip toolTip1;
     }
 }

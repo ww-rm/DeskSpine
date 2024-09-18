@@ -607,6 +607,5 @@ namespace DeskSpine
                     break;
             }
         }
-
     }
 }
