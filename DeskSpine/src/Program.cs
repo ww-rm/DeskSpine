@@ -246,16 +246,16 @@ namespace DeskSpine
         [STAThread]
         public static void Main()
         {
+            // To customize application configuration such as set high DPI settings or default font,
+            // see https://aka.ms/applicationconfiguration.
+            ApplicationConfiguration.Initialize();
+
             programMutex = new Mutex(true, ProgramName, out bool createNew);
             if (!createNew)
             {
                 MessageBox.Show("程序已在运行, 请勿重复启动", ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
 
             if (!Directory.Exists(ProgramDataDirectory))
                 Directory.CreateDirectory(ProgramDataDirectory);
