@@ -570,10 +570,10 @@
             tabPage_BasicConfig.AutoScroll = true;
             tabPage_BasicConfig.BackColor = SystemColors.Control;
             tabPage_BasicConfig.Controls.Add(tableLayoutPanel_BasicConfig);
-            tabPage_BasicConfig.Location = new Point(4, 40);
+            tabPage_BasicConfig.Location = new Point(4, 33);
             tabPage_BasicConfig.Margin = new Padding(0);
             tabPage_BasicConfig.Name = "tabPage_BasicConfig";
-            tabPage_BasicConfig.Size = new Size(1570, 842);
+            tabPage_BasicConfig.Size = new Size(1570, 849);
             tabPage_BasicConfig.TabIndex = 1;
             tabPage_BasicConfig.Text = "基础设置";
             // 
@@ -1162,7 +1162,7 @@
             comboBox_AutoBackgroudColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_AutoBackgroudColor.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_AutoBackgroudColor.FormattingEnabled = true;
-            comboBox_AutoBackgroudColor.Location = new Point(0, 17);
+            comboBox_AutoBackgroudColor.Location = new Point(0, 21);
             comboBox_AutoBackgroudColor.Margin = new Padding(0, 0, 4, 0);
             comboBox_AutoBackgroudColor.Name = "comboBox_AutoBackgroudColor";
             comboBox_AutoBackgroudColor.Size = new Size(137, 39);
@@ -2020,7 +2020,7 @@
             comboBox_WindowType.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_WindowType.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_WindowType.FormattingEnabled = true;
-            comboBox_WindowType.Location = new Point(234, 88);
+            comboBox_WindowType.Location = new Point(234, 92);
             comboBox_WindowType.Margin = new Padding(0);
             comboBox_WindowType.Name = "comboBox_WindowType";
             comboBox_WindowType.Size = new Size(642, 39);
@@ -2053,7 +2053,7 @@
             comboBox_SpineVersion.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_SpineVersion.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SpineVersion.FormattingEnabled = true;
-            comboBox_SpineVersion.Location = new Point(234, 16);
+            comboBox_SpineVersion.Location = new Point(234, 20);
             comboBox_SpineVersion.Margin = new Padding(0);
             comboBox_SpineVersion.Name = "comboBox_SpineVersion";
             comboBox_SpineVersion.Size = new Size(642, 39);
@@ -2096,7 +2096,7 @@
             // 
             openFileDialog_SelectSkel.AddExtension = false;
             openFileDialog_SelectSkel.AddToRecent = false;
-            openFileDialog_SelectSkel.Filter = "Skel 文件 (*.skel; *.json)|*.skel;*.json|所有文件 (*.*)|*.*";
+            openFileDialog_SelectSkel.Filter = "Skel 文件 (*.skel; *.json)|*.skel;*.json";
             openFileDialog_SelectSkel.RestoreDirectory = true;
             // 
             // openFileDialog_BalloonIconPath
