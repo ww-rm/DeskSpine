@@ -136,7 +136,7 @@ namespace DeskSpine
                         if (!string.IsNullOrEmpty(skelPath))
                         {
                             try { WindowSpine.LoadSpine(value.SpineConfig.SpineVersion, skelPath, index: i); }
-                            catch (Exception ex) { MessageBox.Show($"{skelPath} 加载失败\n\n{ex}", "Spine 资源加载失败"); }
+                            catch (Exception ex) { MessageBox.Show($"{skelPath} 加载失败\n\n{ex}", "Spine 资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); }
                         }
                     }
                 }
@@ -150,7 +150,7 @@ namespace DeskSpine
                 if (cur.SystemConfig.BalloonIconPath != value.SystemConfig.BalloonIconPath)
                 {
                     try { ConfigForm.BalloonIconPath = value.SystemConfig.BalloonIconPath; ConfigForm.ShowBalloonTip("图标修改成功", "来看看效果吧~"); }
-                    catch (Exception ex) { MessageBox.Show($"{value.SystemConfig.BalloonIconPath} 加载失败\n\n{ex}", "气泡图标资源加载失败"); }
+                    catch (Exception ex) { MessageBox.Show($"{value.SystemConfig.BalloonIconPath} 加载失败\n\n{ex}", "气泡图标资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); }
                 }
                 if (cur.SystemConfig.TimeAlarm != value.SystemConfig.TimeAlarm)
                     ConfigForm.TimeAlarm = value.SystemConfig.TimeAlarm;
@@ -207,7 +207,7 @@ namespace DeskSpine
 
             // 系统配置
             try { ConfigForm.BalloonIconPath = config.SystemConfig.BalloonIconPath; }
-            catch (Exception ex) { MessageBox.Show($"{config.SystemConfig.BalloonIconPath} 加载失败\n\n{ex}", "气泡图标资源加载失败"); }
+            catch (Exception ex) { MessageBox.Show($"{config.SystemConfig.BalloonIconPath} 加载失败\n\n{ex}", "气泡图标资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); }
             ConfigForm.TimeAlarm = config.SystemConfig.TimeAlarm;
 
             // 基础配置
@@ -227,7 +227,7 @@ namespace DeskSpine
                 if (!string.IsNullOrEmpty(skelPath))
                 {
                     try { WindowSpine.LoadSpine(spVersion, skelPath, index: i); }
-                    catch (Exception ex) { MessageBox.Show($"{skelPath} 加载失败\n\n{ex}", "Spine 资源加载失败"); }
+                    catch (Exception ex) { MessageBox.Show($"{skelPath} 加载失败\n\n{ex}", "Spine 资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); }
                 }
             }
 
@@ -249,7 +249,7 @@ namespace DeskSpine
             programMutex = new Mutex(true, ProgramName, out bool createNew);
             if (!createNew)
             {
-                MessageBox.Show("程序已在运行, 请勿重复启动", ProgramName);
+                MessageBox.Show("程序已在运行, 请勿重复启动", ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
