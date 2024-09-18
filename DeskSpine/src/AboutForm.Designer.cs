@@ -59,17 +59,16 @@
             tableLayoutPanel_About.RowStyles.Add(new RowStyle(SizeType.Percent, 16.6666679F));
             tableLayoutPanel_About.RowStyles.Add(new RowStyle(SizeType.Percent, 16.6666679F));
             tableLayoutPanel_About.RowStyles.Add(new RowStyle(SizeType.Percent, 16.6666679F));
-            tableLayoutPanel_About.Size = new Size(705, 447);
+            tableLayoutPanel_About.Size = new Size(778, 544);
             tableLayoutPanel_About.TabIndex = 0;
             // 
             // label3
             // 
             label3.Anchor = AnchorStyles.Right;
             label3.AutoSize = true;
-            label3.Location = new Point(63, 95);
-            label3.Margin = new Padding(4, 0, 4, 0);
+            label3.Location = new Point(107, 121);
             label3.Name = "label3";
-            label3.Size = new Size(134, 31);
+            label3.Size = new Size(112, 27);
             label3.TabIndex = 2;
             label3.Text = "项目地址：";
             label3.TextAlign = ContentAlignment.MiddleRight;
@@ -78,10 +77,9 @@
             // 
             label1.Anchor = AnchorStyles.Right;
             label1.AutoSize = true;
-            label1.Location = new Point(63, 21);
-            label1.Margin = new Padding(4, 0, 4, 0);
+            label1.Location = new Point(107, 31);
             label1.Name = "label1";
-            label1.Size = new Size(134, 31);
+            label1.Size = new Size(112, 27);
             label1.TabIndex = 0;
             label1.Text = "程序版本：";
             label1.TextAlign = ContentAlignment.MiddleRight;
@@ -90,10 +88,9 @@
             // 
             label_Version.Anchor = AnchorStyles.Left;
             label_Version.AutoSize = true;
-            label_Version.Location = new Point(205, 21);
-            label_Version.Margin = new Padding(4, 0, 4, 0);
+            label_Version.Location = new Point(225, 31);
             label_Version.Name = "label_Version";
-            label_Version.Size = new Size(83, 31);
+            label_Version.Size = new Size(70, 27);
             label_Version.TabIndex = 1;
             label_Version.Text = "vX.Y.Z";
             label_Version.TextAlign = ContentAlignment.MiddleLeft;
@@ -102,10 +99,9 @@
             // 
             linkLabel_RepoUrl.Anchor = AnchorStyles.Left;
             linkLabel_RepoUrl.AutoSize = true;
-            linkLabel_RepoUrl.Location = new Point(205, 95);
-            linkLabel_RepoUrl.Margin = new Padding(4, 0, 4, 0);
+            linkLabel_RepoUrl.Location = new Point(225, 121);
             linkLabel_RepoUrl.Name = "linkLabel_RepoUrl";
-            linkLabel_RepoUrl.Size = new Size(448, 31);
+            linkLabel_RepoUrl.Size = new Size(377, 27);
             linkLabel_RepoUrl.TabIndex = 3;
             linkLabel_RepoUrl.TabStop = true;
             linkLabel_RepoUrl.Text = "https://github.com/ww-rm/DeskSpine";
@@ -114,17 +110,17 @@
             // 
             // AboutForm
             // 
-            AutoScaleDimensions = new SizeF(14F, 31F);
+            AutoScaleDimensions = new SizeF(12F, 27F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Zoom;
-            ClientSize = new Size(705, 447);
+            ClientSize = new Size(778, 544);
             Controls.Add(tableLayoutPanel_About);
             DoubleBuffered = true;
-            Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 134);
+            Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 134);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Margin = new Padding(8);
+            Margin = new Padding(7, 7, 7, 7);
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "AboutForm";
