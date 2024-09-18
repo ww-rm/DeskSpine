@@ -9,8 +9,6 @@
         <Platforms>x64</Platforms>
         <ApplicationIcon>appicon_dark.ico</ApplicationIcon>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-        <Deterministic>False</Deterministic>
-        <FileVersion>1.0.*</FileVersion>
         <Version>0.9.1</Version>
     </PropertyGroup>
 
