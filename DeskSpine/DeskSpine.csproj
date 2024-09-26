@@ -10,7 +10,7 @@
         <Nullable>enable</Nullable>
         <ApplicationIcon>appicon_dark.ico</ApplicationIcon>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-        <Version>0.9.1</Version>
+        <Version>0.9.2</Version>
     </PropertyGroup>
 
     <ItemGroup>
