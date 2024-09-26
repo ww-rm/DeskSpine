@@ -648,6 +648,10 @@ namespace SpineWindow
                     Render();
                     window.Display();
                 }
+                else
+                {
+                    Thread.Sleep(10);   // 防止空转占用较高 cpu
+                }
             }
         }
 
