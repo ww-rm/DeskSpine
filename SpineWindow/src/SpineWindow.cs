@@ -277,7 +277,7 @@ namespace SpineWindow
 
             Debug.WriteLine($"Loading spine[{index}]({version}) from {skelPath}, {atlasPath}");
             Spine.Spine spineNew;
-            try { spineNew = Spine.Spine.New(version, skelPath, atlasPath); }
+            try { spineNew = Spine.Spine.New(version, skelPath, atlasPath, 0.15f); }
             catch { throw; }
 
             // 尝试用已有的 Spine 对象恢复位置

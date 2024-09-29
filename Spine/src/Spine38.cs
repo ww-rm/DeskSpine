@@ -45,7 +45,7 @@ namespace Spine
 
         private SkeletonClipping clipping = new();
 
-        public Spine38(string skelPath, string? atlasPath = null) : base(skelPath, atlasPath)
+        public Spine38(string skelPath, string? atlasPath = null, float defaultMix = 0) : base(skelPath, atlasPath)
         {
             atlas = new Atlas(AtlasPath, textureLoader);
             if (Path.GetExtension(SkelPath) == ".skel")
@@ -64,7 +64,7 @@ namespace Spine
             {
                 throw new ArgumentException($"Unknown skeleton file format {SkelPath}");
             }
-            animationStateData = new AnimationStateData(skeletonData) { DefaultMix = AnimationMix };
+            animationStateData = new AnimationStateData(skeletonData) { DefaultMix = defaultMix };
             skeleton = new Skeleton(skeletonData);
             animationState = new AnimationState(animationStateData);
 
@@ -107,7 +107,7 @@ namespace Spine
                 }
 
                 // reload skel-dependent data
-                animationStateData = new AnimationStateData(skeletonData) { DefaultMix = AnimationMix };
+                animationStateData = new AnimationStateData(skeletonData) { DefaultMix = animationStateData.DefaultMix };
                 skeleton = new Skeleton(skeletonData);
                 animationState = new AnimationState(animationStateData);
 

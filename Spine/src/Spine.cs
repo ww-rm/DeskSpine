@@ -67,17 +67,12 @@ namespace Spine
         public static readonly float ScaleMax = 5f;
 
         /// <summary>
-        /// 动画过渡间隔
-        /// </summary>
-        protected static readonly float AnimationMix = 0.15f;
-
-        /// <summary>
         /// 创建特定版本的 Spine
         /// </summary>
-        public static Spine New(string version, string skelPath, string? atlasPath = null) 
+        public static Spine New(string version, string skelPath, string? atlasPath = null, float defaultMix = 0) 
         {
-            if (version.StartsWith("3.6")) return new Spine36(skelPath, atlasPath);
-            if (version.StartsWith("3.8")) return new Spine38(skelPath, atlasPath);
+            if (version.StartsWith("3.6")) return new Spine36(skelPath, atlasPath, defaultMix);
+            if (version.StartsWith("3.8")) return new Spine38(skelPath, atlasPath, defaultMix);
             throw new NotImplementedException($"Not implemented version: {version}");
         }
 
