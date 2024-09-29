@@ -1503,7 +1503,7 @@
             button_ClearSkel9.TabIndex = 67;
             button_ClearSkel9.Text = "清除";
             button_ClearSkel9.UseVisualStyleBackColor = true;
-            button_ClearSkel9.Click += button_ClearSkel9_Click;
+            button_ClearSkel9.Click += button_ClearSkel_Click;
             // 
             // button_SelectSkel9
             // 
@@ -1517,7 +1517,7 @@
             button_SelectSkel9.TabIndex = 66;
             button_SelectSkel9.Text = "...";
             button_SelectSkel9.UseVisualStyleBackColor = true;
-            button_SelectSkel9.Click += button_SelectSkel9_Click;
+            button_SelectSkel9.Click += button_SelectSkel_Click;
             // 
             // textBox_SkelPath9
             // 
@@ -1552,7 +1552,7 @@
             button_ClearSkel8.TabIndex = 63;
             button_ClearSkel8.Text = "清除";
             button_ClearSkel8.UseVisualStyleBackColor = true;
-            button_ClearSkel8.Click += button_ClearSkel8_Click;
+            button_ClearSkel8.Click += button_ClearSkel_Click;
             // 
             // button_SelectSkel8
             // 
@@ -1566,7 +1566,7 @@
             button_SelectSkel8.TabIndex = 62;
             button_SelectSkel8.Text = "...";
             button_SelectSkel8.UseVisualStyleBackColor = true;
-            button_SelectSkel8.Click += button_SelectSkel8_Click;
+            button_SelectSkel8.Click += button_SelectSkel_Click;
             // 
             // textBox_SkelPath8
             // 
@@ -1601,7 +1601,7 @@
             button_ClearSkel7.TabIndex = 59;
             button_ClearSkel7.Text = "清除";
             button_ClearSkel7.UseVisualStyleBackColor = true;
-            button_ClearSkel7.Click += button_ClearSkel7_Click;
+            button_ClearSkel7.Click += button_ClearSkel_Click;
             // 
             // button_SelectSkel7
             // 
@@ -1615,7 +1615,7 @@
             button_SelectSkel7.TabIndex = 58;
             button_SelectSkel7.Text = "...";
             button_SelectSkel7.UseVisualStyleBackColor = true;
-            button_SelectSkel7.Click += button_SelectSkel7_Click;
+            button_SelectSkel7.Click += button_SelectSkel_Click;
             // 
             // textBox_SkelPath7
             // 
@@ -1650,7 +1650,7 @@
             button_ClearSkel6.TabIndex = 55;
             button_ClearSkel6.Text = "清除";
             button_ClearSkel6.UseVisualStyleBackColor = true;
-            button_ClearSkel6.Click += button_ClearSkel6_Click;
+            button_ClearSkel6.Click += button_ClearSkel_Click;
             // 
             // button_SelectSkel6
             // 
@@ -1664,7 +1664,7 @@
             button_SelectSkel6.TabIndex = 54;
             button_SelectSkel6.Text = "...";
             button_SelectSkel6.UseVisualStyleBackColor = true;
-            button_SelectSkel6.Click += button_SelectSkel6_Click;
+            button_SelectSkel6.Click += button_SelectSkel_Click;
             // 
             // textBox_SkelPath6
             // 
@@ -1699,7 +1699,7 @@
             button_ClearSkel5.TabIndex = 51;
             button_ClearSkel5.Text = "清除";
             button_ClearSkel5.UseVisualStyleBackColor = true;
-            button_ClearSkel5.Click += button_ClearSkel5_Click;
+            button_ClearSkel5.Click += button_ClearSkel_Click;
             // 
             // button_SelectSkel5
             // 
@@ -1713,7 +1713,7 @@
             button_SelectSkel5.TabIndex = 50;
             button_SelectSkel5.Text = "...";
             button_SelectSkel5.UseVisualStyleBackColor = true;
-            button_SelectSkel5.Click += button_SelectSkel5_Click;
+            button_SelectSkel5.Click += button_SelectSkel_Click;
             // 
             // textBox_SkelPath5
             // 
@@ -1748,7 +1748,7 @@
             button_ClearSkel4.TabIndex = 47;
             button_ClearSkel4.Text = "清除";
             button_ClearSkel4.UseVisualStyleBackColor = true;
-            button_ClearSkel4.Click += button_ClearSkel4_Click;
+            button_ClearSkel4.Click += button_ClearSkel_Click;
             // 
             // button_SelectSkel4
             // 
@@ -1762,7 +1762,7 @@
             button_SelectSkel4.TabIndex = 46;
             button_SelectSkel4.Text = "...";
             button_SelectSkel4.UseVisualStyleBackColor = true;
-            button_SelectSkel4.Click += button_SelectSkel4_Click;
+            button_SelectSkel4.Click += button_SelectSkel_Click;
             // 
             // textBox_SkelPath4
             // 
@@ -1797,7 +1797,7 @@
             button_ClearSkel3.TabIndex = 43;
             button_ClearSkel3.Text = "清除";
             button_ClearSkel3.UseVisualStyleBackColor = true;
-            button_ClearSkel3.Click += button_ClearSkel3_Click;
+            button_ClearSkel3.Click += button_ClearSkel_Click;
             // 
             // button_SelectSkel3
             // 
@@ -1811,7 +1811,7 @@
             button_SelectSkel3.TabIndex = 42;
             button_SelectSkel3.Text = "...";
             button_SelectSkel3.UseVisualStyleBackColor = true;
-            button_SelectSkel3.Click += button_SelectSkel3_Click;
+            button_SelectSkel3.Click += button_SelectSkel_Click;
             // 
             // textBox_SkelPath3
             // 
@@ -1846,7 +1846,7 @@
             button_ClearSkel2.TabIndex = 39;
             button_ClearSkel2.Text = "清除";
             button_ClearSkel2.UseVisualStyleBackColor = true;
-            button_ClearSkel2.Click += button_ClearSkel2_Click;
+            button_ClearSkel2.Click += button_ClearSkel_Click;
             // 
             // button_SelectSkel2
             // 
@@ -1860,7 +1860,7 @@
             button_SelectSkel2.TabIndex = 38;
             button_SelectSkel2.Text = "...";
             button_SelectSkel2.UseVisualStyleBackColor = true;
-            button_SelectSkel2.Click += button_SelectSkel2_Click;
+            button_SelectSkel2.Click += button_SelectSkel_Click;
             // 
             // textBox_SkelPath2
             // 
@@ -1895,7 +1895,7 @@
             button_ClearSkel1.TabIndex = 35;
             button_ClearSkel1.Text = "清除";
             button_ClearSkel1.UseVisualStyleBackColor = true;
-            button_ClearSkel1.Click += button_ClearSkel1_Click;
+            button_ClearSkel1.Click += button_ClearSkel_Click;
             // 
             // button_SelectSkel1
             // 
@@ -1909,7 +1909,7 @@
             button_SelectSkel1.TabIndex = 34;
             button_SelectSkel1.Text = "...";
             button_SelectSkel1.UseVisualStyleBackColor = true;
-            button_SelectSkel1.Click += button_SelectSkel1_Click;
+            button_SelectSkel1.Click += button_SelectSkel_Click;
             // 
             // textBox_SkelPath1
             // 
@@ -1944,7 +1944,7 @@
             button_ClearSkel0.TabIndex = 31;
             button_ClearSkel0.Text = "清除";
             button_ClearSkel0.UseVisualStyleBackColor = true;
-            button_ClearSkel0.Click += button_ClearSkel0_Click;
+            button_ClearSkel0.Click += button_ClearSkel_Click;
             // 
             // textBox_SkelPath0
             // 
@@ -1979,7 +1979,7 @@
             button_SelectSkel0.TabIndex = 30;
             button_SelectSkel0.Text = "...";
             button_SelectSkel0.UseVisualStyleBackColor = true;
-            button_SelectSkel0.Click += button_SelectSkel0_Click;
+            button_SelectSkel0.Click += button_SelectSkel_Click;
             // 
             // tableLayoutPanel_SpineConfig
             // 

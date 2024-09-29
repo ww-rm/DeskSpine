@@ -468,126 +468,25 @@ namespace DeskSpine
 
         #region Spine 设置控件事件
 
-        private void button_SelectSkel0_Click(object sender, EventArgs e)
+        private void button_SelectSkel_Click(object sender, EventArgs e)
         {
-            openFileDialog_SelectSkel.InitialDirectory = Path.GetDirectoryName(textBox_SkelPath0.Text);
+            var button = sender as Button;
+            int index = int.Parse(button.Name.Substring(button.Name.Length - 1)); // 从按钮名称中提取索引
+            var textBox = Controls.Find($"textBox_SkelPath{index}", true).FirstOrDefault() as TextBox;
+
+            openFileDialog_SelectSkel.InitialDirectory = Path.GetDirectoryName(textBox.Text);
             if (openFileDialog_SelectSkel.ShowDialog() == DialogResult.OK)
             {
-                textBox_SkelPath0.Text = Path.GetFullPath(openFileDialog_SelectSkel.FileName);
-            }
-        }
-        private void button_SelectSkel1_Click(object sender, EventArgs e)
-        {
-            openFileDialog_SelectSkel.InitialDirectory = Path.GetDirectoryName(textBox_SkelPath1.Text);
-            if (openFileDialog_SelectSkel.ShowDialog() == DialogResult.OK)
-            {
-                textBox_SkelPath1.Text = Path.GetFullPath(openFileDialog_SelectSkel.FileName);
-            }
-        }
-        private void button_SelectSkel2_Click(object sender, EventArgs e)
-        {
-            openFileDialog_SelectSkel.InitialDirectory = Path.GetDirectoryName(textBox_SkelPath2.Text);
-            if (openFileDialog_SelectSkel.ShowDialog() == DialogResult.OK)
-            {
-                textBox_SkelPath2.Text = Path.GetFullPath(openFileDialog_SelectSkel.FileName);
-            }
-        }
-        private void button_SelectSkel3_Click(object sender, EventArgs e)
-        {
-            openFileDialog_SelectSkel.InitialDirectory = Path.GetDirectoryName(textBox_SkelPath3.Text);
-            if (openFileDialog_SelectSkel.ShowDialog() == DialogResult.OK)
-            {
-                textBox_SkelPath3.Text = Path.GetFullPath(openFileDialog_SelectSkel.FileName);
-            }
-        }
-        private void button_SelectSkel4_Click(object sender, EventArgs e)
-        {
-            openFileDialog_SelectSkel.InitialDirectory = Path.GetDirectoryName(textBox_SkelPath4.Text);
-            if (openFileDialog_SelectSkel.ShowDialog() == DialogResult.OK)
-            {
-                textBox_SkelPath4.Text = Path.GetFullPath(openFileDialog_SelectSkel.FileName);
-            }
-        }
-        private void button_SelectSkel5_Click(object sender, EventArgs e)
-        {
-            openFileDialog_SelectSkel.InitialDirectory = Path.GetDirectoryName(textBox_SkelPath5.Text);
-            if (openFileDialog_SelectSkel.ShowDialog() == DialogResult.OK)
-            {
-                textBox_SkelPath5.Text = Path.GetFullPath(openFileDialog_SelectSkel.FileName);
-            }
-        }
-        private void button_SelectSkel6_Click(object sender, EventArgs e)
-        {
-            openFileDialog_SelectSkel.InitialDirectory = Path.GetDirectoryName(textBox_SkelPath6.Text);
-            if (openFileDialog_SelectSkel.ShowDialog() == DialogResult.OK)
-            {
-                textBox_SkelPath6.Text = Path.GetFullPath(openFileDialog_SelectSkel.FileName);
-            }
-        }
-        private void button_SelectSkel7_Click(object sender, EventArgs e)
-        {
-            openFileDialog_SelectSkel.InitialDirectory = Path.GetDirectoryName(textBox_SkelPath7.Text);
-            if (openFileDialog_SelectSkel.ShowDialog() == DialogResult.OK)
-            {
-                textBox_SkelPath7.Text = Path.GetFullPath(openFileDialog_SelectSkel.FileName);
-            }
-        }
-        private void button_SelectSkel8_Click(object sender, EventArgs e)
-        {
-            openFileDialog_SelectSkel.InitialDirectory = Path.GetDirectoryName(textBox_SkelPath8.Text);
-            if (openFileDialog_SelectSkel.ShowDialog() == DialogResult.OK)
-            {
-                textBox_SkelPath8.Text = Path.GetFullPath(openFileDialog_SelectSkel.FileName);
-            }
-        }
-        private void button_SelectSkel9_Click(object sender, EventArgs e)
-        {
-            openFileDialog_SelectSkel.InitialDirectory = Path.GetDirectoryName(textBox_SkelPath9.Text);
-            if (openFileDialog_SelectSkel.ShowDialog() == DialogResult.OK)
-            {
-                textBox_SkelPath9.Text = Path.GetFullPath(openFileDialog_SelectSkel.FileName);
+                textBox.Text = Path.GetFullPath(openFileDialog_SelectSkel.FileName);
             }
         }
 
-        private void button_ClearSkel0_Click(object sender, EventArgs e)
+        private void button_ClearSkel_Click(object sender, EventArgs e)
         {
-            textBox_SkelPath0.Text = string.Empty;
-        }
-        private void button_ClearSkel1_Click(object sender, EventArgs e)
-        {
-            textBox_SkelPath1.Text = string.Empty;
-        }
-        private void button_ClearSkel2_Click(object sender, EventArgs e)
-        {
-            textBox_SkelPath2.Text = string.Empty;
-        }
-        private void button_ClearSkel3_Click(object sender, EventArgs e)
-        {
-            textBox_SkelPath3.Text = string.Empty;
-        }
-        private void button_ClearSkel4_Click(object sender, EventArgs e)
-        {
-            textBox_SkelPath4.Text = string.Empty;
-        }
-        private void button_ClearSkel5_Click(object sender, EventArgs e)
-        {
-            textBox_SkelPath5.Text = string.Empty;
-        }
-        private void button_ClearSkel6_Click(object sender, EventArgs e)
-        {
-            textBox_SkelPath6.Text = string.Empty;
-        }
-        private void button_ClearSkel7_Click(object sender, EventArgs e)
-        {
-            textBox_SkelPath7.Text = string.Empty;
-        }
-        private void button_ClearSkel8_Click(object sender, EventArgs e)
-        {
-            textBox_SkelPath8.Text = string.Empty;
-        }
-        private void button_ClearSkel9_Click(object sender, EventArgs e)
-        {
-            textBox_SkelPath9.Text = string.Empty;
+            var button = sender as Button;
+            int index = int.Parse(button.Name.Substring(button.Name.Length - 1)); // 从按钮名称中提取索引
+            var textBox = Controls.Find($"textBox_SkelPath{index}", true).FirstOrDefault() as TextBox;
+            textBox.Text = string.Empty;
         }
 
         #endregion
