@@ -17,9 +17,9 @@ namespace SpineTool
         private void MainForm_Load(object sender, EventArgs e)
         {
             // 初始化预览窗口
-            exporterFrameBuffer = new(panel_Preview.Handle);
-            exporterFrameBuffer.SetFramerateLimit(30);
-            exporterFrameBuffer.SetActive(false);
+            exporterPreviewer = new(panel_Preview.Handle);
+            exporterPreviewer.SetFramerateLimit(30);
+            exporterPreviewer.SetActive(false);
             FixPreviewPosition(true);
 
             comboBox_SpineVersion.DataSource = new BindingSource(comboBox_SpineVersion_KV, null);
@@ -42,7 +42,7 @@ namespace SpineTool
         // 帧缓冲区
         private Mutex expoterMutex = new();
         private Spine.Spine[] exporterSpines = new Spine.Spine[10];
-        private SFML.Graphics.RenderWindow exporterFrameBuffer;
+        private SFML.Graphics.RenderWindow exporterPreviewer;
 
         // Preview 线程
         private Task exporterPreviewTask;
@@ -55,9 +55,74 @@ namespace SpineTool
         private void tabPage_Exporter_Enter(object sender, EventArgs e) { StartPreview(); }
         private void tabPage_Exporter_Leave(object sender, EventArgs e) { StopPreview(); }
 
-        private void button_SelectSkels_Click(object sender, EventArgs e)
+        private void textBox_SkelPath_TextChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            var textBox = sender as TextBox;
+            if (!textBox.Enabled)
+                return;
+
+            int index = int.Parse(textBox.Name.Substring(textBox.Name.Length - 1));
+            var comboBox_SelectAnime = this.Controls.Find($"comboBox_SelectAnime{index}", true).FirstOrDefault() as ComboBox;
+
+            expoterMutex.WaitOne();
+            if (string.IsNullOrEmpty(textBox.Text))
+            {
+                exporterSpines[index] = null;
+                comboBox_SelectAnime.Items.Clear();
+                comboBox_SelectAnime.Enabled = false;
+            }
+            else
+            {
+                var skelPath = textBox.Text;
+                Spine.Spine newSpine = null;
+
+                // 尝试加载
+                try { newSpine = Spine.Spine.New((string)comboBox_SpineVersion.SelectedValue, skelPath); }
+                catch (Exception ex) { MessageBox.Show($"{skelPath} 加载失败，资源未修改\n\n{ex}", "Spine 资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+
+                // 成功加载新模型
+                if (newSpine is not null)
+                {
+                    exporterSpines[index] = newSpine;
+                    comboBox_SelectAnime.Items.Clear();
+                    comboBox_SelectAnime.Items.AddRange(newSpine.AnimationNames.ToArray());
+                    comboBox_SelectAnime.Enabled = false;
+                    comboBox_SelectAnime.SelectedItem = newSpine.CurrentAnimation;
+                    comboBox_SelectAnime.Enabled = true;
+                }
+
+                // 还原路径框内容
+                textBox.Enabled = false;
+                if (exporterSpines[index] is null) textBox.Text = null;
+                else textBox.Text = exporterSpines[index].SkelPath;
+                textBox.Enabled = true;
+            }
+            expoterMutex.ReleaseMutex();
+        }
+
+        private void button_SelectSkel_Click(object sender, EventArgs e)
+        {
+            var button = sender as Button;
+            int index = int.Parse(button.Name.Substring(button.Name.Length - 1));
+            var textBox = this.Controls.Find($"textBox_SkelPath{index}", true).FirstOrDefault() as TextBox;
+
+            openFileDialog_SelectSkel.InitialDirectory = Path.GetDirectoryName(textBox.Text);
+            if (openFileDialog_SelectSkel.ShowDialog() == DialogResult.OK)
+            {
+                textBox.Text = Path.GetFullPath(openFileDialog_SelectSkel.FileName);
+            }
+        }
+
+        private void ComboBox_SelectAnime_SelectedValueChanged(object sender, EventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+            if (!comboBox.Enabled)
+                return;
+
+            int index = int.Parse(comboBox.Name.Substring(comboBox.Name.Length - 1));
+            expoterMutex.WaitOne();
+            exporterSpines[index].CurrentAnimation = comboBox.SelectedItem as string;
+            expoterMutex.ReleaseMutex();
         }
 
         private void comboBox_SpineVersion_SelectedValueChanged(object sender, EventArgs e)
@@ -115,7 +180,7 @@ namespace SpineTool
             if (e.Button == MouseButtons.Left)
             {
                 exporterPreviewPressedPosition = e.Location;
-                exporterPreviewViewPressedCenter = exporterFrameBuffer.GetView().Center;
+                exporterPreviewViewPressedCenter = exporterPreviewer.GetView().Center;
             }
         }
 
@@ -132,17 +197,17 @@ namespace SpineTool
         {
             if (exporterPreviewPressedPosition is Point srcClick && exporterPreviewViewPressedCenter is SFML.System.Vector2f srcView)
             {
-                var src = exporterFrameBuffer.MapPixelToCoords(new SFML.System.Vector2i(srcClick.X, srcClick.Y));
-                var dst = exporterFrameBuffer.MapPixelToCoords(new SFML.System.Vector2i(e.Location.X, e.Location.Y));
-                var view = exporterFrameBuffer.GetView();
+                var src = exporterPreviewer.MapPixelToCoords(new SFML.System.Vector2i(srcClick.X, srcClick.Y));
+                var dst = exporterPreviewer.MapPixelToCoords(new SFML.System.Vector2i(e.Location.X, e.Location.Y));
+                var view = exporterPreviewer.GetView();
                 view.Center = srcView - (dst - src);
-                exporterFrameBuffer.SetView(view);
+                exporterPreviewer.SetView(view);
             }
         }
 
         private void Panel_Preview_MouseWheel(object sender, MouseEventArgs e)
         {
-            var view = exporterFrameBuffer.GetView();
+            var view = exporterPreviewer.GetView();
             view.Zoom(e.Delta < 0 ? 1.1f : 0.9f);
             var scale = numericUpDown_SizeX.Value / (decimal)view.Size.X * 100;
             if (scale < numericUpDown_PreviewScale.Minimum || scale > numericUpDown_PreviewScale.Maximum)
@@ -150,7 +215,7 @@ namespace SpineTool
                 scale = Math.Clamp(scale, numericUpDown_PreviewScale.Minimum, numericUpDown_PreviewScale.Maximum);
                 view.Size = new((float)(numericUpDown_SizeX.Value / scale * 100), -(float)(numericUpDown_SizeY.Value / scale * 100));
             }
-            exporterFrameBuffer.SetView(view);
+            exporterPreviewer.SetView(view);
             label_PreviewSize.Text = $"视窗大小：[{view.Size.X:f0}, {-view.Size.Y:f0}]";
             numericUpDown_PreviewScale.Enabled = false;
             numericUpDown_PreviewScale.Value = scale;
@@ -159,14 +224,14 @@ namespace SpineTool
 
         private void numericUpDown_PreviewScale_ValueChanged(object sender, EventArgs e)
         {
-            if (numericUpDown_PreviewScale.Enabled)
-            {
-                var view = exporterFrameBuffer.GetView();
-                float scale = (float)numericUpDown_PreviewScale.Value;
-                view.Size = new((float)numericUpDown_SizeX.Value / scale * 100, -(float)numericUpDown_SizeY.Value / scale * 100);
-                exporterFrameBuffer.SetView(view);
-                label_PreviewSize.Text = $"视窗大小：[{view.Size.X:f0}, {-view.Size.Y:f0}]";
-            }
+            if (!numericUpDown_PreviewScale.Enabled)
+                return;
+
+            var view = exporterPreviewer.GetView();
+            float scale = (float)numericUpDown_PreviewScale.Value;
+            view.Size = new((float)numericUpDown_SizeX.Value / scale * 100, -(float)numericUpDown_SizeY.Value / scale * 100);
+            exporterPreviewer.SetView(view);
+            label_PreviewSize.Text = $"视窗大小：[{view.Size.X:f0}, {-view.Size.Y:f0}]";
         }
 
         private void button_Export_Click(object sender, EventArgs e)
@@ -182,9 +247,9 @@ namespace SpineTool
             // 当长宽像素发生变化时才需要将 View 的大小重置成和像素一致的大小
             if (resetViewSize)
             {
-                var view = exporterFrameBuffer.GetView();
+                var view = exporterPreviewer.GetView();
                 view.Size = new(sizeX, -sizeY);
-                exporterFrameBuffer.SetView(view);
+                exporterPreviewer.SetView(view);
                 label_PreviewSize.Text = $"视窗大小：[{sizeX:f0}, {sizeY:f0}]";
                 numericUpDown_PreviewScale.Enabled = false;
                 numericUpDown_PreviewScale.Value = 100;
@@ -204,7 +269,7 @@ namespace SpineTool
             }
             panel_Preview.Location = new((int)(panel_PreviewContainer.Width - sizeX) / 2, (int)(panel_PreviewContainer.Height - sizeY) / 2);
             panel_Preview.Size = new((int)sizeX, (int)sizeY);
-            exporterFrameBuffer.Size = new((uint)sizeX, (uint)sizeY); // 必须显式设置 SFML 的窗口 Size
+            exporterPreviewer.Size = new((uint)sizeX, (uint)sizeY); // 必须显式设置 SFML 的窗口 Size
         }
 
         private void StartPreview()
@@ -230,24 +295,24 @@ namespace SpineTool
         static private void ExporterPreviewTask(MainForm self) { self.ExporterPreviewTask(); }
         private void ExporterPreviewTask()
         {
-            exporterFrameBuffer.SetActive(true);
+            exporterPreviewer.SetActive(true);
             while (!exporterPreviewTaskCancelTokenSrc.Token.IsCancellationRequested)
             {
                 var delta = expoterPreviewClock.ElapsedTime.AsSeconds();
                 expoterPreviewClock.Restart();
 
-                exporterFrameBuffer.Clear(new SFML.Graphics.Color(0, 255, 0, 0));
+                exporterPreviewer.Clear(new SFML.Graphics.Color(0, 255, 0, 0));
                 expoterMutex.WaitOne();
-                for (int i = 0; i < exporterSpines.Length; i++)
+                for (int i = exporterSpines.Length - 1; i >= 0; i--)
                 {
                     if (exporterSpines[i] is null)
                         continue;
 
                     exporterSpines[i].Update(delta);
-                    exporterFrameBuffer.Draw(exporterSpines[i]);
+                    exporterPreviewer.Draw(exporterSpines[i]);
                 }
                 expoterMutex.ReleaseMutex();
-                exporterFrameBuffer.Display();
+                exporterPreviewer.Display();
             }
         }
 

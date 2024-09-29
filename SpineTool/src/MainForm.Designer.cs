@@ -35,7 +35,6 @@
             button_Export = new Button();
             label2 = new Label();
             comboBox_SpineVersion = new ComboBox();
-            button_SelectSkels = new Button();
             label6 = new Label();
             checkBox_UsePMA = new CheckBox();
             label4 = new Label();
@@ -44,6 +43,49 @@
             numericUpDown_SizeY = new NumericUpDown();
             label7 = new Label();
             numericUpDown_Fps = new NumericUpDown();
+            panel1 = new Panel();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            comboBox_SelectAnime9 = new ComboBox();
+            button_SelectSkel9 = new Button();
+            textBox_SkelPath9 = new TextBox();
+            label17 = new Label();
+            comboBox_SelectAnime8 = new ComboBox();
+            button_SelectSkel8 = new Button();
+            textBox_SkelPath8 = new TextBox();
+            label16 = new Label();
+            comboBox_SelectAnime7 = new ComboBox();
+            button_SelectSkel7 = new Button();
+            textBox_SkelPath7 = new TextBox();
+            label15 = new Label();
+            comboBox_SelectAnime6 = new ComboBox();
+            button_SelectSkel6 = new Button();
+            textBox_SkelPath6 = new TextBox();
+            label14 = new Label();
+            comboBox_SelectAnime5 = new ComboBox();
+            button_SelectSkel5 = new Button();
+            textBox_SkelPath5 = new TextBox();
+            label13 = new Label();
+            comboBox_SelectAnime4 = new ComboBox();
+            button_SelectSkel4 = new Button();
+            textBox_SkelPath4 = new TextBox();
+            label12 = new Label();
+            comboBox_SelectAnime3 = new ComboBox();
+            button_SelectSkel3 = new Button();
+            textBox_SkelPath3 = new TextBox();
+            label11 = new Label();
+            label10 = new Label();
+            comboBox_SelectAnime2 = new ComboBox();
+            button_SelectSkel2 = new Button();
+            textBox_SkelPath2 = new TextBox();
+            label9 = new Label();
+            comboBox_SelectAnime1 = new ComboBox();
+            button_SelectSkel1 = new Button();
+            textBox_SkelPath1 = new TextBox();
+            label8 = new Label();
+            comboBox_SelectAnime0 = new ComboBox();
+            button_SelectSkel0 = new Button();
+            textBox_SkelPath0 = new TextBox();
+            label28 = new Label();
             tableLayoutPanel_View = new TableLayoutPanel();
             tableLayoutPanel_ViewSet = new TableLayoutPanel();
             label_PreviewSize = new Label();
@@ -58,6 +100,7 @@
             tableLayoutPanel_Progress = new TableLayoutPanel();
             progressBar_SpineTool = new ProgressBar();
             label1 = new Label();
+            openFileDialog_SelectSkel = new OpenFileDialog();
             tabControl_Tools.SuspendLayout();
             tabPage_Exporter.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer_Exporter).BeginInit();
@@ -68,6 +111,8 @@
             ((System.ComponentModel.ISupportInitialize)numericUpDown_SizeX).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_SizeY).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_Fps).BeginInit();
+            panel1.SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel_View.SuspendLayout();
             tableLayoutPanel_ViewSet.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_PreviewScale).BeginInit();
@@ -124,14 +169,12 @@
             // 
             // tableLayoutPanel_ExporterOptions
             // 
-            tableLayoutPanel_ExporterOptions.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             tableLayoutPanel_ExporterOptions.ColumnCount = 2;
             tableLayoutPanel_ExporterOptions.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45.2290077F));
             tableLayoutPanel_ExporterOptions.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 54.7709923F));
             tableLayoutPanel_ExporterOptions.Controls.Add(button_Export, 0, 8);
             tableLayoutPanel_ExporterOptions.Controls.Add(label2, 0, 1);
             tableLayoutPanel_ExporterOptions.Controls.Add(comboBox_SpineVersion, 1, 1);
-            tableLayoutPanel_ExporterOptions.Controls.Add(button_SelectSkels, 0, 0);
             tableLayoutPanel_ExporterOptions.Controls.Add(label6, 0, 2);
             tableLayoutPanel_ExporterOptions.Controls.Add(checkBox_UsePMA, 1, 2);
             tableLayoutPanel_ExporterOptions.Controls.Add(label4, 0, 3);
@@ -140,19 +183,21 @@
             tableLayoutPanel_ExporterOptions.Controls.Add(numericUpDown_SizeY, 1, 4);
             tableLayoutPanel_ExporterOptions.Controls.Add(label7, 0, 5);
             tableLayoutPanel_ExporterOptions.Controls.Add(numericUpDown_Fps, 1, 5);
+            tableLayoutPanel_ExporterOptions.Controls.Add(panel1, 0, 0);
+            tableLayoutPanel_ExporterOptions.Dock = DockStyle.Fill;
             tableLayoutPanel_ExporterOptions.Location = new Point(0, 0);
             tableLayoutPanel_ExporterOptions.Name = "tableLayoutPanel_ExporterOptions";
             tableLayoutPanel_ExporterOptions.RowCount = 9;
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1099606F));
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1099644F));
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1099644F));
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1099644F));
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1099644F));
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1099644F));
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1099644F));
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1151323F));
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 11.1151323F));
-            tableLayoutPanel_ExporterOptions.Size = new Size(520, 616);
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 33.109684F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.360316F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.360316F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.360316F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.360316F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.360316F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.360316F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.364205F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.364205F));
+            tableLayoutPanel_ExporterOptions.Size = new Size(520, 838);
             tableLayoutPanel_ExporterOptions.TabIndex = 0;
             // 
             // button_Export
@@ -162,9 +207,10 @@
             tableLayoutPanel_ExporterOptions.SetColumnSpan(button_Export, 2);
             button_Export.Cursor = Cursors.Hand;
             button_Export.Dock = DockStyle.Fill;
-            button_Export.Location = new Point(3, 547);
+            button_Export.Location = new Point(32, 770);
+            button_Export.Margin = new Padding(32, 3, 4, 3);
             button_Export.Name = "button_Export";
-            button_Export.Size = new Size(514, 66);
+            button_Export.Size = new Size(484, 65);
             button_Export.TabIndex = 5;
             button_Export.Text = "点击导出...";
             button_Export.UseVisualStyleBackColor = true;
@@ -174,7 +220,7 @@
             // 
             label2.Anchor = AnchorStyles.Left;
             label2.AutoSize = true;
-            label2.Location = new Point(32, 88);
+            label2.Location = new Point(32, 298);
             label2.Margin = new Padding(32, 0, 4, 0);
             label2.Name = "label2";
             label2.Size = new Size(131, 27);
@@ -186,33 +232,17 @@
             comboBox_SpineVersion.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_SpineVersion.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SpineVersion.FormattingEnabled = true;
-            comboBox_SpineVersion.Location = new Point(238, 84);
+            comboBox_SpineVersion.Location = new Point(238, 296);
             comboBox_SpineVersion.Name = "comboBox_SpineVersion";
             comboBox_SpineVersion.Size = new Size(279, 35);
             comboBox_SpineVersion.TabIndex = 34;
             comboBox_SpineVersion.SelectedValueChanged += comboBox_SpineVersion_SelectedValueChanged;
             // 
-            // button_SelectSkels
-            // 
-            button_SelectSkels.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            button_SelectSkels.AutoSize = true;
-            button_SelectSkels.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            tableLayoutPanel_ExporterOptions.SetColumnSpan(button_SelectSkels, 2);
-            button_SelectSkels.Cursor = Cursors.Hand;
-            button_SelectSkels.Location = new Point(32, 15);
-            button_SelectSkels.Margin = new Padding(32, 3, 3, 3);
-            button_SelectSkels.Name = "button_SelectSkels";
-            button_SelectSkels.Size = new Size(485, 37);
-            button_SelectSkels.TabIndex = 37;
-            button_SelectSkels.Text = "选择骨骼文件与动画...";
-            button_SelectSkels.UseVisualStyleBackColor = true;
-            button_SelectSkels.Click += button_SelectSkels_Click;
-            // 
             // label6
             // 
             label6.Anchor = AnchorStyles.Left;
             label6.AutoSize = true;
-            label6.Location = new Point(32, 156);
+            label6.Location = new Point(32, 368);
             label6.Margin = new Padding(32, 0, 4, 0);
             label6.Name = "label6";
             label6.Size = new Size(118, 27);
@@ -223,7 +253,7 @@
             // 
             checkBox_UsePMA.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             checkBox_UsePMA.AutoSize = true;
-            checkBox_UsePMA.Location = new Point(238, 159);
+            checkBox_UsePMA.Location = new Point(238, 371);
             checkBox_UsePMA.Name = "checkBox_UsePMA";
             checkBox_UsePMA.Size = new Size(279, 21);
             checkBox_UsePMA.TabIndex = 41;
@@ -234,7 +264,7 @@
             // 
             label4.Anchor = AnchorStyles.Left;
             label4.AutoSize = true;
-            label4.Location = new Point(32, 224);
+            label4.Location = new Point(32, 438);
             label4.Margin = new Padding(32, 0, 4, 0);
             label4.Name = "label4";
             label4.Size = new Size(132, 27);
@@ -244,8 +274,8 @@
             // numericUpDown_SizeX
             // 
             numericUpDown_SizeX.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            numericUpDown_SizeX.Location = new Point(238, 221);
-            numericUpDown_SizeX.Maximum = new decimal(new int[] { 4096, 0, 0, 0 });
+            numericUpDown_SizeX.Location = new Point(238, 435);
+            numericUpDown_SizeX.Maximum = new decimal(new int[] { 8192, 0, 0, 0 });
             numericUpDown_SizeX.Minimum = new decimal(new int[] { 100, 0, 0, 0 });
             numericUpDown_SizeX.Name = "numericUpDown_SizeX";
             numericUpDown_SizeX.Size = new Size(279, 33);
@@ -258,7 +288,7 @@
             // 
             label5.Anchor = AnchorStyles.Left;
             label5.AutoSize = true;
-            label5.Location = new Point(32, 292);
+            label5.Location = new Point(32, 508);
             label5.Margin = new Padding(32, 0, 4, 0);
             label5.Name = "label5";
             label5.Size = new Size(132, 27);
@@ -268,8 +298,8 @@
             // numericUpDown_SizeY
             // 
             numericUpDown_SizeY.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            numericUpDown_SizeY.Location = new Point(238, 289);
-            numericUpDown_SizeY.Maximum = new decimal(new int[] { 4096, 0, 0, 0 });
+            numericUpDown_SizeY.Location = new Point(238, 505);
+            numericUpDown_SizeY.Maximum = new decimal(new int[] { 8192, 0, 0, 0 });
             numericUpDown_SizeY.Minimum = new decimal(new int[] { 100, 0, 0, 0 });
             numericUpDown_SizeY.Name = "numericUpDown_SizeY";
             numericUpDown_SizeY.Size = new Size(279, 33);
@@ -282,7 +312,7 @@
             // 
             label7.Anchor = AnchorStyles.Left;
             label7.AutoSize = true;
-            label7.Location = new Point(32, 360);
+            label7.Location = new Point(32, 578);
             label7.Margin = new Padding(32, 0, 4, 0);
             label7.Name = "label7";
             label7.Size = new Size(112, 27);
@@ -292,7 +322,7 @@
             // numericUpDown_Fps
             // 
             numericUpDown_Fps.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            numericUpDown_Fps.Location = new Point(238, 357);
+            numericUpDown_Fps.Location = new Point(238, 575);
             numericUpDown_Fps.Maximum = new decimal(new int[] { 120, 0, 0, 0 });
             numericUpDown_Fps.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown_Fps.Name = "numericUpDown_Fps";
@@ -300,6 +330,577 @@
             numericUpDown_Fps.TabIndex = 39;
             numericUpDown_Fps.TextAlign = HorizontalAlignment.Right;
             numericUpDown_Fps.Value = new decimal(new int[] { 60, 0, 0, 0 });
+            // 
+            // panel1
+            // 
+            panel1.AutoScroll = true;
+            tableLayoutPanel_ExporterOptions.SetColumnSpan(panel1, 2);
+            panel1.Controls.Add(tableLayoutPanel1);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(0, 0);
+            panel1.Margin = new Padding(0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(520, 277);
+            panel1.TabIndex = 46;
+            // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.ColumnCount = 4;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 75.05981F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 24.9401913F));
+            tableLayoutPanel1.Controls.Add(comboBox_SelectAnime9, 3, 10);
+            tableLayoutPanel1.Controls.Add(button_SelectSkel9, 2, 10);
+            tableLayoutPanel1.Controls.Add(textBox_SkelPath9, 1, 10);
+            tableLayoutPanel1.Controls.Add(label17, 0, 10);
+            tableLayoutPanel1.Controls.Add(comboBox_SelectAnime8, 3, 9);
+            tableLayoutPanel1.Controls.Add(button_SelectSkel8, 2, 9);
+            tableLayoutPanel1.Controls.Add(textBox_SkelPath8, 1, 9);
+            tableLayoutPanel1.Controls.Add(label16, 0, 9);
+            tableLayoutPanel1.Controls.Add(comboBox_SelectAnime7, 3, 8);
+            tableLayoutPanel1.Controls.Add(button_SelectSkel7, 2, 8);
+            tableLayoutPanel1.Controls.Add(textBox_SkelPath7, 1, 8);
+            tableLayoutPanel1.Controls.Add(label15, 0, 8);
+            tableLayoutPanel1.Controls.Add(comboBox_SelectAnime6, 3, 7);
+            tableLayoutPanel1.Controls.Add(button_SelectSkel6, 2, 7);
+            tableLayoutPanel1.Controls.Add(textBox_SkelPath6, 1, 7);
+            tableLayoutPanel1.Controls.Add(label14, 0, 7);
+            tableLayoutPanel1.Controls.Add(comboBox_SelectAnime5, 3, 6);
+            tableLayoutPanel1.Controls.Add(button_SelectSkel5, 2, 6);
+            tableLayoutPanel1.Controls.Add(textBox_SkelPath5, 1, 6);
+            tableLayoutPanel1.Controls.Add(label13, 0, 6);
+            tableLayoutPanel1.Controls.Add(comboBox_SelectAnime4, 3, 5);
+            tableLayoutPanel1.Controls.Add(button_SelectSkel4, 2, 5);
+            tableLayoutPanel1.Controls.Add(textBox_SkelPath4, 1, 5);
+            tableLayoutPanel1.Controls.Add(label12, 0, 5);
+            tableLayoutPanel1.Controls.Add(comboBox_SelectAnime3, 3, 4);
+            tableLayoutPanel1.Controls.Add(button_SelectSkel3, 2, 4);
+            tableLayoutPanel1.Controls.Add(textBox_SkelPath3, 1, 4);
+            tableLayoutPanel1.Controls.Add(label11, 0, 4);
+            tableLayoutPanel1.Controls.Add(label10, 0, 0);
+            tableLayoutPanel1.Controls.Add(comboBox_SelectAnime2, 3, 3);
+            tableLayoutPanel1.Controls.Add(button_SelectSkel2, 2, 3);
+            tableLayoutPanel1.Controls.Add(textBox_SkelPath2, 1, 3);
+            tableLayoutPanel1.Controls.Add(label9, 0, 3);
+            tableLayoutPanel1.Controls.Add(comboBox_SelectAnime1, 3, 2);
+            tableLayoutPanel1.Controls.Add(button_SelectSkel1, 2, 2);
+            tableLayoutPanel1.Controls.Add(textBox_SkelPath1, 1, 2);
+            tableLayoutPanel1.Controls.Add(label8, 0, 2);
+            tableLayoutPanel1.Controls.Add(comboBox_SelectAnime0, 3, 1);
+            tableLayoutPanel1.Controls.Add(button_SelectSkel0, 2, 1);
+            tableLayoutPanel1.Controls.Add(textBox_SkelPath0, 1, 1);
+            tableLayoutPanel1.Controls.Add(label28, 0, 1);
+            tableLayoutPanel1.Dock = DockStyle.Top;
+            tableLayoutPanel1.Location = new Point(0, 0);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 11;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 9.090908F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 9.090908F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 9.090908F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 9.090908F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 9.090908F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 9.090908F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 9.090908F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 9.090908F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 9.090908F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 9.090908F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 9.090908F));
+            tableLayoutPanel1.Size = new Size(494, 431);
+            tableLayoutPanel1.TabIndex = 0;
+            // 
+            // comboBox_SelectAnime9
+            // 
+            comboBox_SelectAnime9.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            comboBox_SelectAnime9.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox_SelectAnime9.Enabled = false;
+            comboBox_SelectAnime9.FormattingEnabled = true;
+            comboBox_SelectAnime9.Location = new Point(392, 394);
+            comboBox_SelectAnime9.Name = "comboBox_SelectAnime9";
+            comboBox_SelectAnime9.Size = new Size(99, 35);
+            comboBox_SelectAnime9.TabIndex = 72;
+            comboBox_SelectAnime9.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            // 
+            // button_SelectSkel9
+            // 
+            button_SelectSkel9.Anchor = AnchorStyles.None;
+            button_SelectSkel9.AutoSize = true;
+            button_SelectSkel9.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            button_SelectSkel9.Location = new Point(348, 394);
+            button_SelectSkel9.Margin = new Padding(4);
+            button_SelectSkel9.Name = "button_SelectSkel9";
+            button_SelectSkel9.Size = new Size(37, 33);
+            button_SelectSkel9.TabIndex = 71;
+            button_SelectSkel9.Text = "...";
+            button_SelectSkel9.UseVisualStyleBackColor = true;
+            button_SelectSkel9.Click += button_SelectSkel_Click;
+            // 
+            // textBox_SkelPath9
+            // 
+            textBox_SkelPath9.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            textBox_SkelPath9.BackColor = SystemColors.Window;
+            textBox_SkelPath9.Location = new Point(36, 394);
+            textBox_SkelPath9.Margin = new Padding(4);
+            textBox_SkelPath9.Name = "textBox_SkelPath9";
+            textBox_SkelPath9.Size = new Size(304, 33);
+            textBox_SkelPath9.TabIndex = 70;
+            textBox_SkelPath9.TextChanged += textBox_SkelPath_TextChanged;
+            // 
+            // label17
+            // 
+            label17.Anchor = AnchorStyles.None;
+            label17.AutoSize = true;
+            label17.Location = new Point(4, 397);
+            label17.Margin = new Padding(4, 0, 4, 0);
+            label17.Name = "label17";
+            label17.Size = new Size(24, 27);
+            label17.TabIndex = 69;
+            label17.Text = "9";
+            // 
+            // comboBox_SelectAnime8
+            // 
+            comboBox_SelectAnime8.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            comboBox_SelectAnime8.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox_SelectAnime8.Enabled = false;
+            comboBox_SelectAnime8.FormattingEnabled = true;
+            comboBox_SelectAnime8.Location = new Point(392, 354);
+            comboBox_SelectAnime8.Name = "comboBox_SelectAnime8";
+            comboBox_SelectAnime8.Size = new Size(99, 35);
+            comboBox_SelectAnime8.TabIndex = 68;
+            comboBox_SelectAnime8.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            // 
+            // button_SelectSkel8
+            // 
+            button_SelectSkel8.Anchor = AnchorStyles.None;
+            button_SelectSkel8.AutoSize = true;
+            button_SelectSkel8.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            button_SelectSkel8.Location = new Point(348, 355);
+            button_SelectSkel8.Margin = new Padding(4);
+            button_SelectSkel8.Name = "button_SelectSkel8";
+            button_SelectSkel8.Size = new Size(37, 31);
+            button_SelectSkel8.TabIndex = 67;
+            button_SelectSkel8.Text = "...";
+            button_SelectSkel8.UseVisualStyleBackColor = true;
+            button_SelectSkel8.Click += button_SelectSkel_Click;
+            // 
+            // textBox_SkelPath8
+            // 
+            textBox_SkelPath8.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            textBox_SkelPath8.BackColor = SystemColors.Window;
+            textBox_SkelPath8.Location = new Point(36, 355);
+            textBox_SkelPath8.Margin = new Padding(4);
+            textBox_SkelPath8.Name = "textBox_SkelPath8";
+            textBox_SkelPath8.Size = new Size(304, 33);
+            textBox_SkelPath8.TabIndex = 66;
+            textBox_SkelPath8.TextChanged += textBox_SkelPath_TextChanged;
+            // 
+            // label16
+            // 
+            label16.Anchor = AnchorStyles.None;
+            label16.AutoSize = true;
+            label16.Location = new Point(4, 357);
+            label16.Margin = new Padding(4, 0, 4, 0);
+            label16.Name = "label16";
+            label16.Size = new Size(24, 27);
+            label16.TabIndex = 65;
+            label16.Text = "8";
+            // 
+            // comboBox_SelectAnime7
+            // 
+            comboBox_SelectAnime7.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            comboBox_SelectAnime7.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox_SelectAnime7.Enabled = false;
+            comboBox_SelectAnime7.FormattingEnabled = true;
+            comboBox_SelectAnime7.Location = new Point(392, 315);
+            comboBox_SelectAnime7.Name = "comboBox_SelectAnime7";
+            comboBox_SelectAnime7.Size = new Size(99, 35);
+            comboBox_SelectAnime7.TabIndex = 64;
+            comboBox_SelectAnime7.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            // 
+            // button_SelectSkel7
+            // 
+            button_SelectSkel7.Anchor = AnchorStyles.None;
+            button_SelectSkel7.AutoSize = true;
+            button_SelectSkel7.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            button_SelectSkel7.Location = new Point(348, 316);
+            button_SelectSkel7.Margin = new Padding(4);
+            button_SelectSkel7.Name = "button_SelectSkel7";
+            button_SelectSkel7.Size = new Size(37, 31);
+            button_SelectSkel7.TabIndex = 63;
+            button_SelectSkel7.Text = "...";
+            button_SelectSkel7.UseVisualStyleBackColor = true;
+            button_SelectSkel7.Click += button_SelectSkel_Click;
+            // 
+            // textBox_SkelPath7
+            // 
+            textBox_SkelPath7.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            textBox_SkelPath7.BackColor = SystemColors.Window;
+            textBox_SkelPath7.Location = new Point(36, 316);
+            textBox_SkelPath7.Margin = new Padding(4);
+            textBox_SkelPath7.Name = "textBox_SkelPath7";
+            textBox_SkelPath7.Size = new Size(304, 33);
+            textBox_SkelPath7.TabIndex = 62;
+            textBox_SkelPath7.TextChanged += textBox_SkelPath_TextChanged;
+            // 
+            // label15
+            // 
+            label15.Anchor = AnchorStyles.None;
+            label15.AutoSize = true;
+            label15.Location = new Point(4, 318);
+            label15.Margin = new Padding(4, 0, 4, 0);
+            label15.Name = "label15";
+            label15.Size = new Size(24, 27);
+            label15.TabIndex = 61;
+            label15.Text = "7";
+            // 
+            // comboBox_SelectAnime6
+            // 
+            comboBox_SelectAnime6.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            comboBox_SelectAnime6.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox_SelectAnime6.Enabled = false;
+            comboBox_SelectAnime6.FormattingEnabled = true;
+            comboBox_SelectAnime6.Location = new Point(392, 276);
+            comboBox_SelectAnime6.Name = "comboBox_SelectAnime6";
+            comboBox_SelectAnime6.Size = new Size(99, 35);
+            comboBox_SelectAnime6.TabIndex = 60;
+            comboBox_SelectAnime6.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            // 
+            // button_SelectSkel6
+            // 
+            button_SelectSkel6.Anchor = AnchorStyles.None;
+            button_SelectSkel6.AutoSize = true;
+            button_SelectSkel6.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            button_SelectSkel6.Location = new Point(348, 277);
+            button_SelectSkel6.Margin = new Padding(4);
+            button_SelectSkel6.Name = "button_SelectSkel6";
+            button_SelectSkel6.Size = new Size(37, 31);
+            button_SelectSkel6.TabIndex = 59;
+            button_SelectSkel6.Text = "...";
+            button_SelectSkel6.UseVisualStyleBackColor = true;
+            button_SelectSkel6.Click += button_SelectSkel_Click;
+            // 
+            // textBox_SkelPath6
+            // 
+            textBox_SkelPath6.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            textBox_SkelPath6.BackColor = SystemColors.Window;
+            textBox_SkelPath6.Location = new Point(36, 277);
+            textBox_SkelPath6.Margin = new Padding(4);
+            textBox_SkelPath6.Name = "textBox_SkelPath6";
+            textBox_SkelPath6.Size = new Size(304, 33);
+            textBox_SkelPath6.TabIndex = 58;
+            textBox_SkelPath6.TextChanged += textBox_SkelPath_TextChanged;
+            // 
+            // label14
+            // 
+            label14.Anchor = AnchorStyles.None;
+            label14.AutoSize = true;
+            label14.Location = new Point(4, 279);
+            label14.Margin = new Padding(4, 0, 4, 0);
+            label14.Name = "label14";
+            label14.Size = new Size(24, 27);
+            label14.TabIndex = 57;
+            label14.Text = "6";
+            // 
+            // comboBox_SelectAnime5
+            // 
+            comboBox_SelectAnime5.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            comboBox_SelectAnime5.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox_SelectAnime5.Enabled = false;
+            comboBox_SelectAnime5.FormattingEnabled = true;
+            comboBox_SelectAnime5.Location = new Point(392, 237);
+            comboBox_SelectAnime5.Name = "comboBox_SelectAnime5";
+            comboBox_SelectAnime5.Size = new Size(99, 35);
+            comboBox_SelectAnime5.TabIndex = 56;
+            comboBox_SelectAnime5.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            // 
+            // button_SelectSkel5
+            // 
+            button_SelectSkel5.Anchor = AnchorStyles.None;
+            button_SelectSkel5.AutoSize = true;
+            button_SelectSkel5.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            button_SelectSkel5.Location = new Point(348, 238);
+            button_SelectSkel5.Margin = new Padding(4);
+            button_SelectSkel5.Name = "button_SelectSkel5";
+            button_SelectSkel5.Size = new Size(37, 31);
+            button_SelectSkel5.TabIndex = 55;
+            button_SelectSkel5.Text = "...";
+            button_SelectSkel5.UseVisualStyleBackColor = true;
+            button_SelectSkel5.Click += button_SelectSkel_Click;
+            // 
+            // textBox_SkelPath5
+            // 
+            textBox_SkelPath5.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            textBox_SkelPath5.BackColor = SystemColors.Window;
+            textBox_SkelPath5.Location = new Point(36, 238);
+            textBox_SkelPath5.Margin = new Padding(4);
+            textBox_SkelPath5.Name = "textBox_SkelPath5";
+            textBox_SkelPath5.Size = new Size(304, 33);
+            textBox_SkelPath5.TabIndex = 54;
+            textBox_SkelPath5.TextChanged += textBox_SkelPath_TextChanged;
+            // 
+            // label13
+            // 
+            label13.Anchor = AnchorStyles.None;
+            label13.AutoSize = true;
+            label13.Location = new Point(4, 240);
+            label13.Margin = new Padding(4, 0, 4, 0);
+            label13.Name = "label13";
+            label13.Size = new Size(24, 27);
+            label13.TabIndex = 53;
+            label13.Text = "5";
+            // 
+            // comboBox_SelectAnime4
+            // 
+            comboBox_SelectAnime4.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            comboBox_SelectAnime4.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox_SelectAnime4.Enabled = false;
+            comboBox_SelectAnime4.FormattingEnabled = true;
+            comboBox_SelectAnime4.Location = new Point(392, 198);
+            comboBox_SelectAnime4.Name = "comboBox_SelectAnime4";
+            comboBox_SelectAnime4.Size = new Size(99, 35);
+            comboBox_SelectAnime4.TabIndex = 52;
+            comboBox_SelectAnime4.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            // 
+            // button_SelectSkel4
+            // 
+            button_SelectSkel4.Anchor = AnchorStyles.None;
+            button_SelectSkel4.AutoSize = true;
+            button_SelectSkel4.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            button_SelectSkel4.Location = new Point(348, 199);
+            button_SelectSkel4.Margin = new Padding(4);
+            button_SelectSkel4.Name = "button_SelectSkel4";
+            button_SelectSkel4.Size = new Size(37, 31);
+            button_SelectSkel4.TabIndex = 51;
+            button_SelectSkel4.Text = "...";
+            button_SelectSkel4.UseVisualStyleBackColor = true;
+            button_SelectSkel4.Click += button_SelectSkel_Click;
+            // 
+            // textBox_SkelPath4
+            // 
+            textBox_SkelPath4.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            textBox_SkelPath4.BackColor = SystemColors.Window;
+            textBox_SkelPath4.Location = new Point(36, 199);
+            textBox_SkelPath4.Margin = new Padding(4);
+            textBox_SkelPath4.Name = "textBox_SkelPath4";
+            textBox_SkelPath4.Size = new Size(304, 33);
+            textBox_SkelPath4.TabIndex = 50;
+            textBox_SkelPath4.TextChanged += textBox_SkelPath_TextChanged;
+            // 
+            // label12
+            // 
+            label12.Anchor = AnchorStyles.None;
+            label12.AutoSize = true;
+            label12.Location = new Point(4, 201);
+            label12.Margin = new Padding(4, 0, 4, 0);
+            label12.Name = "label12";
+            label12.Size = new Size(24, 27);
+            label12.TabIndex = 49;
+            label12.Text = "4";
+            // 
+            // comboBox_SelectAnime3
+            // 
+            comboBox_SelectAnime3.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            comboBox_SelectAnime3.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox_SelectAnime3.Enabled = false;
+            comboBox_SelectAnime3.FormattingEnabled = true;
+            comboBox_SelectAnime3.Location = new Point(392, 159);
+            comboBox_SelectAnime3.Name = "comboBox_SelectAnime3";
+            comboBox_SelectAnime3.Size = new Size(99, 35);
+            comboBox_SelectAnime3.TabIndex = 48;
+            comboBox_SelectAnime3.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            // 
+            // button_SelectSkel3
+            // 
+            button_SelectSkel3.Anchor = AnchorStyles.None;
+            button_SelectSkel3.AutoSize = true;
+            button_SelectSkel3.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            button_SelectSkel3.Location = new Point(348, 160);
+            button_SelectSkel3.Margin = new Padding(4);
+            button_SelectSkel3.Name = "button_SelectSkel3";
+            button_SelectSkel3.Size = new Size(37, 31);
+            button_SelectSkel3.TabIndex = 47;
+            button_SelectSkel3.Text = "...";
+            button_SelectSkel3.UseVisualStyleBackColor = true;
+            button_SelectSkel3.Click += button_SelectSkel_Click;
+            // 
+            // textBox_SkelPath3
+            // 
+            textBox_SkelPath3.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            textBox_SkelPath3.BackColor = SystemColors.Window;
+            textBox_SkelPath3.Location = new Point(36, 160);
+            textBox_SkelPath3.Margin = new Padding(4);
+            textBox_SkelPath3.Name = "textBox_SkelPath3";
+            textBox_SkelPath3.Size = new Size(304, 33);
+            textBox_SkelPath3.TabIndex = 46;
+            textBox_SkelPath3.TextChanged += textBox_SkelPath_TextChanged;
+            // 
+            // label11
+            // 
+            label11.Anchor = AnchorStyles.None;
+            label11.AutoSize = true;
+            label11.Location = new Point(4, 162);
+            label11.Margin = new Padding(4, 0, 4, 0);
+            label11.Name = "label11";
+            label11.Size = new Size(24, 27);
+            label11.TabIndex = 45;
+            label11.Text = "3";
+            // 
+            // label10
+            // 
+            label10.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            label10.AutoSize = true;
+            tableLayoutPanel1.SetColumnSpan(label10, 4);
+            label10.Location = new Point(3, 6);
+            label10.Margin = new Padding(3);
+            label10.Name = "label10";
+            label10.Size = new Size(488, 27);
+            label10.TabIndex = 44;
+            label10.Text = "加载骨骼动画";
+            label10.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // comboBox_SelectAnime2
+            // 
+            comboBox_SelectAnime2.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            comboBox_SelectAnime2.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox_SelectAnime2.Enabled = false;
+            comboBox_SelectAnime2.FormattingEnabled = true;
+            comboBox_SelectAnime2.Location = new Point(392, 120);
+            comboBox_SelectAnime2.Name = "comboBox_SelectAnime2";
+            comboBox_SelectAnime2.Size = new Size(99, 35);
+            comboBox_SelectAnime2.TabIndex = 43;
+            comboBox_SelectAnime2.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            // 
+            // button_SelectSkel2
+            // 
+            button_SelectSkel2.Anchor = AnchorStyles.None;
+            button_SelectSkel2.AutoSize = true;
+            button_SelectSkel2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            button_SelectSkel2.Location = new Point(348, 121);
+            button_SelectSkel2.Margin = new Padding(4);
+            button_SelectSkel2.Name = "button_SelectSkel2";
+            button_SelectSkel2.Size = new Size(37, 31);
+            button_SelectSkel2.TabIndex = 42;
+            button_SelectSkel2.Text = "...";
+            button_SelectSkel2.UseVisualStyleBackColor = true;
+            button_SelectSkel2.Click += button_SelectSkel_Click;
+            // 
+            // textBox_SkelPath2
+            // 
+            textBox_SkelPath2.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            textBox_SkelPath2.BackColor = SystemColors.Window;
+            textBox_SkelPath2.Location = new Point(36, 121);
+            textBox_SkelPath2.Margin = new Padding(4);
+            textBox_SkelPath2.Name = "textBox_SkelPath2";
+            textBox_SkelPath2.Size = new Size(304, 33);
+            textBox_SkelPath2.TabIndex = 41;
+            textBox_SkelPath2.TextChanged += textBox_SkelPath_TextChanged;
+            // 
+            // label9
+            // 
+            label9.Anchor = AnchorStyles.None;
+            label9.AutoSize = true;
+            label9.Location = new Point(4, 123);
+            label9.Margin = new Padding(4, 0, 4, 0);
+            label9.Name = "label9";
+            label9.Size = new Size(24, 27);
+            label9.TabIndex = 40;
+            label9.Text = "2";
+            // 
+            // comboBox_SelectAnime1
+            // 
+            comboBox_SelectAnime1.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            comboBox_SelectAnime1.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox_SelectAnime1.Enabled = false;
+            comboBox_SelectAnime1.FormattingEnabled = true;
+            comboBox_SelectAnime1.Location = new Point(392, 81);
+            comboBox_SelectAnime1.Name = "comboBox_SelectAnime1";
+            comboBox_SelectAnime1.Size = new Size(99, 35);
+            comboBox_SelectAnime1.TabIndex = 39;
+            comboBox_SelectAnime1.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            // 
+            // button_SelectSkel1
+            // 
+            button_SelectSkel1.Anchor = AnchorStyles.None;
+            button_SelectSkel1.AutoSize = true;
+            button_SelectSkel1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            button_SelectSkel1.Location = new Point(348, 82);
+            button_SelectSkel1.Margin = new Padding(4);
+            button_SelectSkel1.Name = "button_SelectSkel1";
+            button_SelectSkel1.Size = new Size(37, 31);
+            button_SelectSkel1.TabIndex = 38;
+            button_SelectSkel1.Text = "...";
+            button_SelectSkel1.UseVisualStyleBackColor = true;
+            button_SelectSkel1.Click += button_SelectSkel_Click;
+            // 
+            // textBox_SkelPath1
+            // 
+            textBox_SkelPath1.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            textBox_SkelPath1.BackColor = SystemColors.Window;
+            textBox_SkelPath1.Location = new Point(36, 82);
+            textBox_SkelPath1.Margin = new Padding(4);
+            textBox_SkelPath1.Name = "textBox_SkelPath1";
+            textBox_SkelPath1.Size = new Size(304, 33);
+            textBox_SkelPath1.TabIndex = 37;
+            textBox_SkelPath1.TextChanged += textBox_SkelPath_TextChanged;
+            // 
+            // label8
+            // 
+            label8.Anchor = AnchorStyles.None;
+            label8.AutoSize = true;
+            label8.Location = new Point(4, 84);
+            label8.Margin = new Padding(4, 0, 4, 0);
+            label8.Name = "label8";
+            label8.Size = new Size(24, 27);
+            label8.TabIndex = 36;
+            label8.Text = "1";
+            // 
+            // comboBox_SelectAnime0
+            // 
+            comboBox_SelectAnime0.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            comboBox_SelectAnime0.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox_SelectAnime0.Enabled = false;
+            comboBox_SelectAnime0.FormattingEnabled = true;
+            comboBox_SelectAnime0.Location = new Point(392, 42);
+            comboBox_SelectAnime0.Name = "comboBox_SelectAnime0";
+            comboBox_SelectAnime0.Size = new Size(99, 35);
+            comboBox_SelectAnime0.TabIndex = 35;
+            comboBox_SelectAnime0.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            // 
+            // button_SelectSkel0
+            // 
+            button_SelectSkel0.Anchor = AnchorStyles.None;
+            button_SelectSkel0.AutoSize = true;
+            button_SelectSkel0.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            button_SelectSkel0.Location = new Point(348, 43);
+            button_SelectSkel0.Margin = new Padding(4);
+            button_SelectSkel0.Name = "button_SelectSkel0";
+            button_SelectSkel0.Size = new Size(37, 31);
+            button_SelectSkel0.TabIndex = 31;
+            button_SelectSkel0.Text = "...";
+            button_SelectSkel0.UseVisualStyleBackColor = true;
+            button_SelectSkel0.Click += button_SelectSkel_Click;
+            // 
+            // textBox_SkelPath0
+            // 
+            textBox_SkelPath0.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            textBox_SkelPath0.BackColor = SystemColors.Window;
+            textBox_SkelPath0.Location = new Point(36, 43);
+            textBox_SkelPath0.Margin = new Padding(4);
+            textBox_SkelPath0.Name = "textBox_SkelPath0";
+            textBox_SkelPath0.Size = new Size(304, 33);
+            textBox_SkelPath0.TabIndex = 30;
+            textBox_SkelPath0.TextChanged += textBox_SkelPath_TextChanged;
+            // 
+            // label28
+            // 
+            label28.Anchor = AnchorStyles.None;
+            label28.AutoSize = true;
+            label28.Location = new Point(4, 45);
+            label28.Margin = new Padding(4, 0, 4, 0);
+            label28.Name = "label28";
+            label28.Size = new Size(24, 27);
+            label28.TabIndex = 29;
+            label28.Text = "0";
             // 
             // tableLayoutPanel_View
             // 
@@ -356,7 +957,7 @@
             button_ResetTimeline.AutoSize = true;
             button_ResetTimeline.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             button_ResetTimeline.Cursor = Cursors.Hand;
-            button_ResetTimeline.Location = new Point(659, 3);
+            button_ResetTimeline.Location = new Point(645, 3);
             button_ResetTimeline.Name = "button_ResetTimeline";
             button_ResetTimeline.Size = new Size(182, 37);
             button_ResetTimeline.TabIndex = 5;
@@ -370,15 +971,15 @@
             label3.AutoSize = true;
             label3.Location = new Point(242, 8);
             label3.Name = "label3";
-            label3.Size = new Size(132, 27);
+            label3.Size = new Size(104, 27);
             label3.TabIndex = 2;
-            label3.Text = "缩放百分比：";
+            label3.Text = "缩放(%)：";
             // 
             // numericUpDown_PreviewScale
             // 
             numericUpDown_PreviewScale.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             numericUpDown_PreviewScale.DecimalPlaces = 2;
-            numericUpDown_PreviewScale.Location = new Point(380, 5);
+            numericUpDown_PreviewScale.Location = new Point(352, 5);
             numericUpDown_PreviewScale.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             numericUpDown_PreviewScale.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown_PreviewScale.Name = "numericUpDown_PreviewScale";
@@ -485,6 +1086,13 @@
             label1.TabIndex = 1;
             label1.Text = "处理进度：";
             // 
+            // openFileDialog_SelectSkel
+            // 
+            openFileDialog_SelectSkel.AddExtension = false;
+            openFileDialog_SelectSkel.AddToRecent = false;
+            openFileDialog_SelectSkel.Filter = "Skel 文件 (*.skel; *.json)|*.skel;*.json";
+            openFileDialog_SelectSkel.RestoreDirectory = true;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(12F, 27F);
@@ -507,6 +1115,9 @@
             ((System.ComponentModel.ISupportInitialize)numericUpDown_SizeX).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_SizeY).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_Fps).EndInit();
+            panel1.ResumeLayout(false);
+            tableLayoutPanel1.ResumeLayout(false);
+            tableLayoutPanel1.PerformLayout();
             tableLayoutPanel_View.ResumeLayout(false);
             tableLayoutPanel_View.PerformLayout();
             tableLayoutPanel_ViewSet.ResumeLayout(false);
@@ -539,7 +1150,6 @@
         private TableLayoutPanel tableLayoutPanel_ExporterOptions;
         private Label label2;
         private ComboBox comboBox_SpineVersion;
-        private Button button_SelectSkels;
         private Label label7;
         private Button button_Export;
         private NumericUpDown numericUpDown_Fps;
@@ -552,5 +1162,49 @@
         private Label label5;
         private Label label_PreviewSize;
         private Panel panel_Preview;
+        private Panel panel1;
+        private TableLayoutPanel tableLayoutPanel1;
+        private Label label28;
+        private TextBox textBox_SkelPath0;
+        private Button button_SelectSkel0;
+        private Label label10;
+        private ComboBox comboBox_SelectAnime2;
+        private Button button_SelectSkel2;
+        private TextBox textBox_SkelPath2;
+        private Label label9;
+        private ComboBox comboBox_SelectAnime1;
+        private Button button_SelectSkel1;
+        private TextBox textBox_SkelPath1;
+        private Label label8;
+        private ComboBox comboBox_SelectAnime0;
+        private Button button_SelectSkel4;
+        private TextBox textBox_SkelPath4;
+        private Label label12;
+        private ComboBox comboBox_SelectAnime3;
+        private Button button_SelectSkel3;
+        private TextBox textBox_SkelPath3;
+        private Label label11;
+        private ComboBox comboBox_SelectAnime4;
+        private ComboBox comboBox_SelectAnime9;
+        private Button button_SelectSkel9;
+        private TextBox textBox_SkelPath9;
+        private Label label17;
+        private ComboBox comboBox_SelectAnime8;
+        private Button button_SelectSkel8;
+        private TextBox textBox_SkelPath8;
+        private Label label16;
+        private ComboBox comboBox_SelectAnime7;
+        private Button button_SelectSkel7;
+        private TextBox textBox_SkelPath7;
+        private Label label15;
+        private ComboBox comboBox_SelectAnime6;
+        private Button button_SelectSkel6;
+        private TextBox textBox_SkelPath6;
+        private Label label14;
+        private ComboBox comboBox_SelectAnime5;
+        private Button button_SelectSkel5;
+        private TextBox textBox_SkelPath5;
+        private Label label13;
+        private OpenFileDialog openFileDialog_SelectSkel;
     }
 }
