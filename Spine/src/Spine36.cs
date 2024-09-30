@@ -170,30 +170,14 @@ namespace Spine
 
         private SFML.Graphics.BlendMode GetSFMLBlendMode(BlendMode spineBlendMode)
         {
-            SFML.Graphics.BlendMode blendMode;
-            if (!UsePremultipliedAlpha)
+            return spineBlendMode switch
             {
-                blendMode = spineBlendMode switch
-                {
-                    BlendMode.Normal => SFMLBlendMode.Normal,
-                    BlendMode.Additive => SFMLBlendMode.Additive,
-                    BlendMode.Multiply => SFMLBlendMode.Multiply,
-                    BlendMode.Screen => SFMLBlendMode.Screen,
-                    _ => throw new NotImplementedException($"{spineBlendMode}"),
-                };
-            }
-            else
-            {
-                blendMode = spineBlendMode switch
-                {
-                    BlendMode.Normal => SFMLBlendMode.NormalPma,
-                    BlendMode.Additive => SFMLBlendMode.AdditivePma,
-                    BlendMode.Multiply => SFMLBlendMode.MultiplyPma,
-                    BlendMode.Screen => SFMLBlendMode.ScreenPma,
-                    _ => throw new NotImplementedException($"{spineBlendMode}"),
-                };
-            }
-            return blendMode;
+                BlendMode.Normal => SFMLBlendMode.Normal,
+                BlendMode.Additive => SFMLBlendMode.Additive,
+                BlendMode.Multiply => SFMLBlendMode.Multiply,
+                BlendMode.Screen => SFMLBlendMode.Screen,
+                _ => throw new NotImplementedException($"{spineBlendMode}"),
+            };
         }
 
         public override void Draw(SFML.Graphics.RenderTarget target, SFML.Graphics.RenderStates states)
@@ -270,6 +254,10 @@ namespace Spine
                 {
                     if (vertexArray.VertexCount > 0)
                     {
+                        if (UsePremultipliedAlpha && (states.BlendMode == SFMLBlendMode.Normal || states.BlendMode == SFMLBlendMode.Additive))
+                            states.Shader = premultipliedAlphaFragmentShader;
+                        else
+                            states.Shader = null;
                         target.Draw(vertexArray, states);
                         vertexArray.Clear();
                     }
@@ -311,6 +299,10 @@ namespace Spine
                 clipping.ClipEnd(slot);
             }
 
+            if (UsePremultipliedAlpha && (states.BlendMode == SFMLBlendMode.Normal || states.BlendMode == SFMLBlendMode.Additive))
+                states.Shader = premultipliedAlphaFragmentShader;
+            else
+                states.Shader = null;
             target.Draw(vertexArray, states);
             clipping.ClipEnd();
         }

@@ -16,71 +16,48 @@ namespace Spine
     /// </summary>
     internal static class SFMLBlendMode
     {
-        // Alpha Blend
-        // res.rgb = src.rgb * src.a + dst.rgb * (1 - src.a)
-        // res.a   = src.a   * 1     + dst.a   * (1 - src.a)
-        public static SFML.Graphics.BlendMode Normal = new(
-            SFML.Graphics.BlendMode.Factor.SrcAlpha,
-            SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha,
-            SFML.Graphics.BlendMode.Equation.Add,
-            SFML.Graphics.BlendMode.Factor.One,
-            SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha,
-            SFML.Graphics.BlendMode.Equation.Add
-        );
-        public static SFML.Graphics.BlendMode NormalPma = new(
-            SFML.Graphics.BlendMode.Factor.One,
-            SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha,
-            SFML.Graphics.BlendMode.Equation.Add,
-            SFML.Graphics.BlendMode.Factor.One,
-            SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha,
-            SFML.Graphics.BlendMode.Equation.Add
-        );
+        /// <summary>
+        /// Alpha Blend
+        /// <code>
+        /// res.rgb = src.rgb * src.a + dst.rgb * (1 - src.a)
+        /// res.a   = src.a   * 1     + dst.a   * (1 - src.a)
+        /// </code>
+        /// </summary>
+        public static SFML.Graphics.BlendMode Normal = SFML.Graphics.BlendMode.Alpha;
 
-        // Additive Blend
-        // res.rgb = src.rgb * src.a + dst.rgb * 1
-        // res.a   = src.a   * 0     + dst.a   * 1
-        public static SFML.Graphics.BlendMode Additive = new(
-            SFML.Graphics.BlendMode.Factor.SrcAlpha,
-            SFML.Graphics.BlendMode.Factor.One,
-            SFML.Graphics.BlendMode.Equation.Add,
-            SFML.Graphics.BlendMode.Factor.Zero,
-            SFML.Graphics.BlendMode.Factor.One,
-            SFML.Graphics.BlendMode.Equation.Add
-        );
-        public static SFML.Graphics.BlendMode AdditivePma = new(
-            SFML.Graphics.BlendMode.Factor.One,
-            SFML.Graphics.BlendMode.Factor.One,
-            SFML.Graphics.BlendMode.Equation.Add,
-            SFML.Graphics.BlendMode.Factor.Zero,
-            SFML.Graphics.BlendMode.Factor.One,
-            SFML.Graphics.BlendMode.Equation.Add
-        );
+        /// <summary>
+        /// Additive Blend
+        /// <code>
+        /// res.rgb = src.rgb * src.a + dst.rgb * 1
+        /// res.a   = src.a   * 1     + dst.a   * 1
+        /// </code>
+        /// </summary>
+        public static SFML.Graphics.BlendMode Additive = SFML.Graphics.BlendMode.Add;
 
-        // Multiply Blend
-        // res.rgb = src.rgb * src.a * dst.rgb * 1
-        // res.a   = src.a   * 1     * dst.a   * 1
-        public static SFML.Graphics.BlendMode Multiply = MultiplyPma;
-        public static SFML.Graphics.BlendMode MultiplyPma = new(
+        /// <summary>
+        /// Multiply Blend (PremultipliedAlpha Only)
+        /// <code>
+        /// res.rgb = src.rgb * dst.rgb + dst.rgb * (1 - src.a)
+        /// res.a   = src.a   * dst.a   + dst.a   * (1 - src.a)
+        /// </code>
+        /// </summary>
+        public static SFML.Graphics.BlendMode Multiply = new(
             SFML.Graphics.BlendMode.Factor.DstColor,
-            SFML.Graphics.BlendMode.Factor.Zero,
+            SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha,
             SFML.Graphics.BlendMode.Equation.Add,
             SFML.Graphics.BlendMode.Factor.DstAlpha,
-            SFML.Graphics.BlendMode.Factor.Zero,
-            SFML.Graphics.BlendMode.Equation.Add
-        );
-
-        // Screen Blend
-        // res.rgb = src.rgb * src.a + dst.rgb * (1 - src.rgb * src.a) = 1 - [(1 - src.rgb * src.a)(1 - dst.rgb)]
-        // res.a   = src.a   * 1     + dst.a   * (1 - src.a)           = 1 - [(1 - src.a)(1 - dst.a)]
-        public static SFML.Graphics.BlendMode Screen = new(
-            SFML.Graphics.BlendMode.Factor.SrcAlpha,
-            SFML.Graphics.BlendMode.Factor.OneMinusSrcColor,
-            SFML.Graphics.BlendMode.Equation.Add,
-            SFML.Graphics.BlendMode.Factor.One,
             SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha,
             SFML.Graphics.BlendMode.Equation.Add
         );
-        public static SFML.Graphics.BlendMode ScreenPma = new(
+
+        /// <summary>
+        /// Screen Blend (PremultipliedAlpha Only)
+        /// <code>
+        /// res.rgb = src.rgb * 1 + dst.rgb * (1 - src.rgb) = 1 - [(1 - src.rgb)(1 - dst.rgb)]
+        /// res.a   = src.a   * 1 + dst.a   * (1 - src.a)   = 1 - [(1 - src.a)(1 - dst.a)]
+        /// </code>
+        /// </summary>
+        public static SFML.Graphics.BlendMode Screen = new(
             SFML.Graphics.BlendMode.Factor.One,
             SFML.Graphics.BlendMode.Factor.OneMinusSrcColor,
             SFML.Graphics.BlendMode.Equation.Add,
