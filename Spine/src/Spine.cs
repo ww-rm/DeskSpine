@@ -19,8 +19,8 @@ namespace Spine
         /// <summary>
         /// Alpha Blend
         /// <code>
-        /// res.rgb = src.rgb * src.a + dst.rgb * (1 - src.a)
-        /// res.a   = src.a   * 1     + dst.a   * (1 - src.a)
+        /// res.c = src.c * src.a + dst.c * (1 - src.a)
+        /// res.a = src.a * 1     + dst.a * (1 - src.a)
         /// </code>
         /// </summary>
         public static SFML.Graphics.BlendMode Normal = SFML.Graphics.BlendMode.Alpha;
@@ -28,8 +28,8 @@ namespace Spine
         /// <summary>
         /// Additive Blend
         /// <code>
-        /// res.rgb = src.rgb * src.a + dst.rgb * 1
-        /// res.a   = src.a   * 1     + dst.a   * 1
+        /// res.c = src.c * src.a + dst.c * 1
+        /// res.a = src.a * 1     + dst.a * 1
         /// </code>
         /// </summary>
         public static SFML.Graphics.BlendMode Additive = SFML.Graphics.BlendMode.Add;
@@ -37,15 +37,15 @@ namespace Spine
         /// <summary>
         /// Multiply Blend (PremultipliedAlpha Only)
         /// <code>
-        /// res.rgb = src.rgb * dst.rgb + dst.rgb * (1 - src.a)
-        /// res.a   = src.a   * dst.a   + dst.a   * (1 - src.a)
+        /// res.c = src.c * dst.c + dst.c * (1 - src.a)
+        /// res.a = src.a * 1     + dst.a * (1 - src.a)
         /// </code>
         /// </summary>
         public static SFML.Graphics.BlendMode Multiply = new(
             SFML.Graphics.BlendMode.Factor.DstColor,
             SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha,
             SFML.Graphics.BlendMode.Equation.Add,
-            SFML.Graphics.BlendMode.Factor.DstAlpha,
+            SFML.Graphics.BlendMode.Factor.One,
             SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha,
             SFML.Graphics.BlendMode.Equation.Add
         );
@@ -53,8 +53,8 @@ namespace Spine
         /// <summary>
         /// Screen Blend (PremultipliedAlpha Only)
         /// <code>
-        /// res.rgb = src.rgb * 1 + dst.rgb * (1 - src.rgb) = 1 - [(1 - src.rgb)(1 - dst.rgb)]
-        /// res.a   = src.a   * 1 + dst.a   * (1 - src.a)   = 1 - [(1 - src.a)(1 - dst.a)]
+        /// res.c = src.c * 1 + dst.c * (1 - src.c) = 1 - [(1 - src.c)(1 - dst.c)]
+        /// res.a = src.a * 1 + dst.a * (1 - src.a)
         /// </code>
         /// </summary>
         public static SFML.Graphics.BlendMode Screen = new(
