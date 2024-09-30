@@ -16,46 +16,100 @@ namespace Spine
     /// </summary>
     internal static class SFMLBlendMode
     {
+        // Alpha Blend
+        // res.rgb = src.rgb * src.a + dst.rgb * (1 - src.a)
+        // res.a   = src.a   * 1     + dst.a   * (1 - src.a)
         public static SFML.Graphics.BlendMode Normal = new(
-            SFML.Graphics.BlendMode.Factor.SrcAlpha, 
-            SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha
-        );
-        public static SFML.Graphics.BlendMode Additive = new(
             SFML.Graphics.BlendMode.Factor.SrcAlpha,
-            SFML.Graphics.BlendMode.Factor.One
-        );
-        public static SFML.Graphics.BlendMode Multiply = new(
-            SFML.Graphics.BlendMode.Factor.DstColor,
-            SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha
-        );
-        public static SFML.Graphics.BlendMode Screen = new(
+            SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha,
+            SFML.Graphics.BlendMode.Equation.Add,
             SFML.Graphics.BlendMode.Factor.One,
-            SFML.Graphics.BlendMode.Factor.OneMinusSrcColor
+            SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha,
+            SFML.Graphics.BlendMode.Equation.Add
         );
-
         public static SFML.Graphics.BlendMode NormalPma = new(
             SFML.Graphics.BlendMode.Factor.One,
-            SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha
+            SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha,
+            SFML.Graphics.BlendMode.Equation.Add,
+            SFML.Graphics.BlendMode.Factor.One,
+            SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha,
+            SFML.Graphics.BlendMode.Equation.Add
+        );
+
+        // Additive Blend
+        // res.rgb = src.rgb * src.a + dst.rgb * 1
+        // res.a   = src.a   * 0     + dst.a   * 1
+        public static SFML.Graphics.BlendMode Additive = new(
+            SFML.Graphics.BlendMode.Factor.SrcAlpha,
+            SFML.Graphics.BlendMode.Factor.One,
+            SFML.Graphics.BlendMode.Equation.Add,
+            SFML.Graphics.BlendMode.Factor.Zero,
+            SFML.Graphics.BlendMode.Factor.One,
+            SFML.Graphics.BlendMode.Equation.Add
         );
         public static SFML.Graphics.BlendMode AdditivePma = new(
             SFML.Graphics.BlendMode.Factor.One,
-            SFML.Graphics.BlendMode.Factor.One
+            SFML.Graphics.BlendMode.Factor.One,
+            SFML.Graphics.BlendMode.Equation.Add,
+            SFML.Graphics.BlendMode.Factor.Zero,
+            SFML.Graphics.BlendMode.Factor.One,
+            SFML.Graphics.BlendMode.Equation.Add
         );
+
+        // Multiply Blend
+        // res.rgb = src.rgb * src.a * dst.rgb * 1
+        // res.a   = src.a   * 1     * dst.a   * 1
+        public static SFML.Graphics.BlendMode Multiply = MultiplyPma;
         public static SFML.Graphics.BlendMode MultiplyPma = new(
             SFML.Graphics.BlendMode.Factor.DstColor,
-            SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha
+            SFML.Graphics.BlendMode.Factor.Zero,
+            SFML.Graphics.BlendMode.Equation.Add,
+            SFML.Graphics.BlendMode.Factor.DstAlpha,
+            SFML.Graphics.BlendMode.Factor.Zero,
+            SFML.Graphics.BlendMode.Equation.Add
+        );
+
+        // Screen Blend
+        // res.rgb = src.rgb * src.a + dst.rgb * (1 - src.rgb * src.a) = 1 - [(1 - src.rgb * src.a)(1 - dst.rgb)]
+        // res.a   = src.a   * 1     + dst.a   * (1 - src.a)           = 1 - [(1 - src.a)(1 - dst.a)]
+        public static SFML.Graphics.BlendMode Screen = new(
+            SFML.Graphics.BlendMode.Factor.SrcAlpha,
+            SFML.Graphics.BlendMode.Factor.OneMinusSrcColor,
+            SFML.Graphics.BlendMode.Equation.Add,
+            SFML.Graphics.BlendMode.Factor.One,
+            SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha,
+            SFML.Graphics.BlendMode.Equation.Add
         );
         public static SFML.Graphics.BlendMode ScreenPma = new(
             SFML.Graphics.BlendMode.Factor.One,
-            SFML.Graphics.BlendMode.Factor.OneMinusSrcColor
+            SFML.Graphics.BlendMode.Factor.OneMinusSrcColor,
+            SFML.Graphics.BlendMode.Equation.Add,
+            SFML.Graphics.BlendMode.Factor.One,
+            SFML.Graphics.BlendMode.Factor.OneMinusSrcAlpha,
+            SFML.Graphics.BlendMode.Equation.Add
         );
     }
 
     /// <summary>
     /// Spine 基类, 使用静态方法 New 来创建具体版本对象
     /// </summary>
-    public abstract class Spine: SFML.Graphics.Drawable
+    public abstract class Spine : SFML.Graphics.Drawable
     {
+        /// <summary>
+        /// 用于解决 PMA 和渐变动画问题的片段着色器
+        /// </summary>
+        protected const string PremultipliedAlphaFragmentShaderString = (
+            "uniform sampler2D t;" +
+            "void main() { vec4 p = texture2D(t, gl_TexCoord[0].xy);" +
+            "if (p.a > 0) p.rgb /= max(max(max(p.r, p.g), p.b), p.a);" +
+            "gl_FragColor = gl_Color * p; }"
+        );
+
+        /// <summary>
+        /// 用于解决 PMA 和渐变动画问题的片段着色器
+        /// </summary>
+        protected static SFML.Graphics.Shader premultipliedAlphaFragmentShader = SFML.Graphics.Shader.FromString(null, null, PremultipliedAlphaFragmentShaderString);
+
         /// <summary>
         /// 缩放最小值
         /// </summary>
@@ -69,7 +123,7 @@ namespace Spine
         /// <summary>
         /// 创建特定版本的 Spine
         /// </summary>
-        public static Spine New(string version, string skelPath, string? atlasPath = null, float defaultMix = 0) 
+        public static Spine New(string version, string skelPath, string? atlasPath = null, float defaultMix = 0)
         {
             if (version.StartsWith("3.6")) return new Spine36(skelPath, atlasPath, defaultMix);
             if (version.StartsWith("3.8")) return new Spine38(skelPath, atlasPath, defaultMix);
@@ -125,9 +179,9 @@ namespace Spine
                             if (c.A <= 0) continue;
                             c.A = 0;
                             var k = c.ToInteger();
-                            if (colors.ContainsKey(k)) 
+                            if (colors.ContainsKey(k))
                                 colors[k] += 1;
-                            else 
+                            else
                                 colors[k] = 1;
                         }
                     }
