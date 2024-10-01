@@ -215,10 +215,10 @@
             button_Export.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             tableLayoutPanel_ExporterOptions.SetColumnSpan(button_Export, 2);
             button_Export.Dock = DockStyle.Fill;
-            button_Export.Location = new Point(32, 762);
-            button_Export.Margin = new Padding(32, 3, 4, 3);
+            button_Export.Location = new Point(10, 762);
+            button_Export.Margin = new Padding(10, 3, 4, 3);
             button_Export.Name = "button_Export";
-            button_Export.Size = new Size(484, 70);
+            button_Export.Size = new Size(506, 70);
             button_Export.TabIndex = 5;
             button_Export.Text = "点击导出...";
             button_Export.UseVisualStyleBackColor = true;
@@ -240,7 +240,7 @@
             comboBox_SpineVersion.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_SpineVersion.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SpineVersion.FormattingEnabled = true;
-            comboBox_SpineVersion.Location = new Point(269, 294);
+            comboBox_SpineVersion.Location = new Point(269, 293);
             comboBox_SpineVersion.Name = "comboBox_SpineVersion";
             comboBox_SpineVersion.Size = new Size(248, 35);
             comboBox_SpineVersion.TabIndex = 34;
@@ -404,7 +404,7 @@
             comboBox_SelectAnime9.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime9.Enabled = false;
             comboBox_SelectAnime9.FormattingEnabled = true;
-            comboBox_SelectAnime9.Location = new Point(392, 451);
+            comboBox_SelectAnime9.Location = new Point(392, 450);
             comboBox_SelectAnime9.Name = "comboBox_SelectAnime9";
             comboBox_SelectAnime9.Size = new Size(99, 35);
             comboBox_SelectAnime9.TabIndex = 72;
@@ -453,7 +453,7 @@
             comboBox_SelectAnime8.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime8.Enabled = false;
             comboBox_SelectAnime8.FormattingEnabled = true;
-            comboBox_SelectAnime8.Location = new Point(392, 402);
+            comboBox_SelectAnime8.Location = new Point(392, 400);
             comboBox_SelectAnime8.Name = "comboBox_SelectAnime8";
             comboBox_SelectAnime8.Size = new Size(99, 35);
             comboBox_SelectAnime8.TabIndex = 68;
@@ -502,7 +502,7 @@
             comboBox_SelectAnime7.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime7.Enabled = false;
             comboBox_SelectAnime7.FormattingEnabled = true;
-            comboBox_SelectAnime7.Location = new Point(392, 358);
+            comboBox_SelectAnime7.Location = new Point(392, 356);
             comboBox_SelectAnime7.Name = "comboBox_SelectAnime7";
             comboBox_SelectAnime7.Size = new Size(99, 35);
             comboBox_SelectAnime7.TabIndex = 64;
@@ -551,7 +551,7 @@
             comboBox_SelectAnime6.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime6.Enabled = false;
             comboBox_SelectAnime6.FormattingEnabled = true;
-            comboBox_SelectAnime6.Location = new Point(392, 314);
+            comboBox_SelectAnime6.Location = new Point(392, 312);
             comboBox_SelectAnime6.Name = "comboBox_SelectAnime6";
             comboBox_SelectAnime6.Size = new Size(99, 35);
             comboBox_SelectAnime6.TabIndex = 60;
@@ -600,7 +600,7 @@
             comboBox_SelectAnime5.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime5.Enabled = false;
             comboBox_SelectAnime5.FormattingEnabled = true;
-            comboBox_SelectAnime5.Location = new Point(392, 270);
+            comboBox_SelectAnime5.Location = new Point(392, 268);
             comboBox_SelectAnime5.Name = "comboBox_SelectAnime5";
             comboBox_SelectAnime5.Size = new Size(99, 35);
             comboBox_SelectAnime5.TabIndex = 56;
@@ -649,7 +649,7 @@
             comboBox_SelectAnime4.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime4.Enabled = false;
             comboBox_SelectAnime4.FormattingEnabled = true;
-            comboBox_SelectAnime4.Location = new Point(392, 226);
+            comboBox_SelectAnime4.Location = new Point(392, 224);
             comboBox_SelectAnime4.Name = "comboBox_SelectAnime4";
             comboBox_SelectAnime4.Size = new Size(99, 35);
             comboBox_SelectAnime4.TabIndex = 52;
@@ -698,7 +698,7 @@
             comboBox_SelectAnime3.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime3.Enabled = false;
             comboBox_SelectAnime3.FormattingEnabled = true;
-            comboBox_SelectAnime3.Location = new Point(392, 182);
+            comboBox_SelectAnime3.Location = new Point(392, 180);
             comboBox_SelectAnime3.Name = "comboBox_SelectAnime3";
             comboBox_SelectAnime3.Size = new Size(99, 35);
             comboBox_SelectAnime3.TabIndex = 48;
@@ -760,7 +760,7 @@
             comboBox_SelectAnime2.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime2.Enabled = false;
             comboBox_SelectAnime2.FormattingEnabled = true;
-            comboBox_SelectAnime2.Location = new Point(392, 138);
+            comboBox_SelectAnime2.Location = new Point(392, 136);
             comboBox_SelectAnime2.Name = "comboBox_SelectAnime2";
             comboBox_SelectAnime2.Size = new Size(99, 35);
             comboBox_SelectAnime2.TabIndex = 43;
@@ -809,7 +809,7 @@
             comboBox_SelectAnime1.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime1.Enabled = false;
             comboBox_SelectAnime1.FormattingEnabled = true;
-            comboBox_SelectAnime1.Location = new Point(392, 94);
+            comboBox_SelectAnime1.Location = new Point(392, 92);
             comboBox_SelectAnime1.Name = "comboBox_SelectAnime1";
             comboBox_SelectAnime1.Size = new Size(99, 35);
             comboBox_SelectAnime1.TabIndex = 39;
@@ -858,7 +858,7 @@
             comboBox_SelectAnime0.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime0.Enabled = false;
             comboBox_SelectAnime0.FormattingEnabled = true;
-            comboBox_SelectAnime0.Location = new Point(392, 50);
+            comboBox_SelectAnime0.Location = new Point(392, 48);
             comboBox_SelectAnime0.Name = "comboBox_SelectAnime0";
             comboBox_SelectAnime0.Size = new Size(99, 35);
             comboBox_SelectAnime0.TabIndex = 35;
@@ -973,6 +973,7 @@
             tableLayoutPanel_ViewSet.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             tableLayoutPanel_ViewSet.AutoSize = true;
             tableLayoutPanel_ViewSet.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            tableLayoutPanel_ViewSet.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
             tableLayoutPanel_ViewSet.ColumnCount = 4;
             tableLayoutPanel_ViewSet.ColumnStyles.Add(new ColumnStyle());
             tableLayoutPanel_ViewSet.ColumnStyles.Add(new ColumnStyle());
@@ -982,19 +983,19 @@
             tableLayoutPanel_ViewSet.Controls.Add(button_ResetTimeline, 3, 0);
             tableLayoutPanel_ViewSet.Controls.Add(label3, 1, 0);
             tableLayoutPanel_ViewSet.Controls.Add(numericUpDown_PreviewScale, 2, 0);
-            tableLayoutPanel_ViewSet.Location = new Point(1, 791);
+            tableLayoutPanel_ViewSet.Location = new Point(1, 789);
             tableLayoutPanel_ViewSet.Margin = new Padding(0);
             tableLayoutPanel_ViewSet.Name = "tableLayoutPanel_ViewSet";
             tableLayoutPanel_ViewSet.RowCount = 1;
             tableLayoutPanel_ViewSet.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel_ViewSet.Size = new Size(1008, 43);
+            tableLayoutPanel_ViewSet.Size = new Size(1008, 45);
             tableLayoutPanel_ViewSet.TabIndex = 0;
             // 
             // label_PreviewSize
             // 
             label_PreviewSize.Anchor = AnchorStyles.None;
             label_PreviewSize.AutoSize = true;
-            label_PreviewSize.Location = new Point(3, 8);
+            label_PreviewSize.Location = new Point(4, 9);
             label_PreviewSize.Name = "label_PreviewSize";
             label_PreviewSize.Size = new Size(233, 27);
             label_PreviewSize.TabIndex = 6;
@@ -1006,7 +1007,7 @@
             button_ResetTimeline.Anchor = AnchorStyles.None;
             button_ResetTimeline.AutoSize = true;
             button_ResetTimeline.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            button_ResetTimeline.Location = new Point(645, 3);
+            button_ResetTimeline.Location = new Point(646, 4);
             button_ResetTimeline.Name = "button_ResetTimeline";
             button_ResetTimeline.Size = new Size(182, 37);
             button_ResetTimeline.TabIndex = 5;
@@ -1018,7 +1019,7 @@
             // 
             label3.Anchor = AnchorStyles.None;
             label3.AutoSize = true;
-            label3.Location = new Point(242, 8);
+            label3.Location = new Point(244, 9);
             label3.Name = "label3";
             label3.Size = new Size(104, 27);
             label3.TabIndex = 2;
@@ -1028,7 +1029,7 @@
             // 
             numericUpDown_PreviewScale.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             numericUpDown_PreviewScale.DecimalPlaces = 2;
-            numericUpDown_PreviewScale.Location = new Point(352, 5);
+            numericUpDown_PreviewScale.Location = new Point(355, 6);
             numericUpDown_PreviewScale.Maximum = new decimal(new int[] { 5000, 0, 0, 0 });
             numericUpDown_PreviewScale.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown_PreviewScale.Name = "numericUpDown_PreviewScale";
@@ -1045,7 +1046,7 @@
             panel_PreviewContainer.Dock = DockStyle.Fill;
             panel_PreviewContainer.Location = new Point(4, 4);
             panel_PreviewContainer.Name = "panel_PreviewContainer";
-            panel_PreviewContainer.Size = new Size(1002, 783);
+            panel_PreviewContainer.Size = new Size(1002, 781);
             panel_PreviewContainer.TabIndex = 1;
             panel_PreviewContainer.SizeChanged += panel_PreviewContainer_SizeChanged;
             // 
@@ -1053,10 +1054,11 @@
             // 
             panel_Preview.Anchor = AnchorStyles.None;
             panel_Preview.BackColor = Color.White;
-            panel_Preview.Location = new Point(253, 150);
+            panel_Preview.Location = new Point(253, 149);
             panel_Preview.Name = "panel_Preview";
             panel_Preview.Size = new Size(512, 512);
             panel_Preview.TabIndex = 0;
+            toolTip1.SetToolTip(panel_Preview, "使用左键来拖动画面\r\n使用滚轮来缩放画面");
             panel_Preview.MouseDown += panel_Preview_MouseDown;
             panel_Preview.MouseMove += panel_Preview_MouseMove;
             panel_Preview.MouseUp += panel_Preview_MouseUp;
