@@ -1,5 +1,4 @@
 using Microsoft.Win32;
-using SpineWindow;
 using System.Runtime.InteropServices;
 
 namespace DeskSpine
