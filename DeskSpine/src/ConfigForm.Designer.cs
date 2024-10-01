@@ -2108,8 +2108,8 @@
             // ConfigForm
             // 
             AcceptButton = button_Ok;
-            AutoScaleDimensions = new SizeF(144F, 144F);
-            AutoScaleMode = AutoScaleMode.Dpi;
+            AutoScaleDimensions = new SizeF(12F, 27F);
+            AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1578, 844);
             Controls.Add(tableLayoutPanel_Window);
             Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 134);
