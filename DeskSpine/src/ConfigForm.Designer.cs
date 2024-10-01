@@ -2112,7 +2112,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1578, 844);
             Controls.Add(tableLayoutPanel_Window);
-            Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 134);
+            Font = new Font("Microsoft YaHei UI", 10F);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(4);
             MinimumSize = new Size(1600, 0);
