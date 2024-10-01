@@ -156,8 +156,7 @@ namespace SpineTool
                 expoterMutex.WaitOne();
                 for (int i = 0; i < exporterSpines.Length; i++)
                 {
-                    if (exporterSpines[i] is null)
-                        continue;
+                    if (exporterSpines[i] is null) continue;
 
                     Spine.Spine newSpine = null;
                     var skelPath = exporterSpines[i].SkelPath;
@@ -172,7 +171,11 @@ namespace SpineTool
                         comboBox_SpineVersion.Enabled = true;
                         MessageBox.Show($"{skelPath} 加载失败，版本未修改\n\n{ex}", "Spine 资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    if (newSpine is not null) exporterSpines[i] = newSpine;
+                    if (newSpine is not null)
+                    {
+                        exporterSpines[i] = newSpine;
+                        exporterSpines[i].UsePremultipliedAlpha = checkBox_UsePMA.Checked;
+                    }
                 }
                 expoterMutex.ReleaseMutex();
             }
@@ -181,12 +184,10 @@ namespace SpineTool
         private void checkBox_UsePMA_CheckedChanged(object sender, EventArgs e)
         {
             expoterMutex.WaitOne();
-            for (int i = 0; i < exporterSpines.Length; i++)
+            foreach (var sp in exporterSpines)
             {
-                if (exporterSpines[i] is null)
-                    continue;
-
-                exporterSpines[i].UsePremultipliedAlpha = checkBox_UsePMA.Checked;
+                if (sp is null) continue;
+                sp.UsePremultipliedAlpha = checkBox_UsePMA.Checked;
             }
             expoterMutex.ReleaseMutex();
         }
@@ -196,7 +197,15 @@ namespace SpineTool
 
         private void label_ExportDuration_Click(object sender, EventArgs e)
         {
-            numericUpDown_ExportDuration.Value = 1;
+            var duration = 0f;
+            expoterMutex.WaitOne();
+            foreach (var sp in exporterSpines)
+            {
+                if (sp is null) continue;
+                duration = Math.Max(sp.GetAnimationDuration(sp.CurrentAnimation), duration);
+            }
+            expoterMutex.ReleaseMutex();
+            numericUpDown_ExportDuration.Value = (decimal)duration;
         }
 
         private void button_Export_Click(object sender, EventArgs e)
@@ -274,13 +283,11 @@ namespace SpineTool
         private void button_ResetTimeline_Click(object sender, EventArgs e)
         {
             expoterMutex.WaitOne();
-            for (int i = 0; i < exporterSpines.Length; i++)
-            {
-                if (exporterSpines[i] is null)
-                    continue;
-
-                exporterSpines[i].CurrentAnimation = exporterSpines[i].CurrentAnimation;
-                exporterSpines[i].Update(0);
+            foreach (var sp in exporterSpines)
+            { 
+                if (sp is null) continue;
+                sp.CurrentAnimation = sp.CurrentAnimation;
+                sp.Update(0);
             }
             expoterMutex.ReleaseMutex();
         }
@@ -350,13 +357,13 @@ namespace SpineTool
 
                 exporterPreviewer.Clear(new SFML.Graphics.Color(0, 255, 0, 0));
                 expoterMutex.WaitOne();
+                
                 for (int i = exporterSpines.Length - 1; i >= 0; i--)
                 {
-                    if (exporterSpines[i] is null)
-                        continue;
-
-                    exporterSpines[i].Update(delta);
-                    exporterPreviewer.Draw(exporterSpines[i]);
+                    var sp = exporterSpines[i];
+                    if (sp is null) continue;
+                    sp.Update(delta);
+                    exporterPreviewer.Draw(sp);
                 }
                 expoterMutex.ReleaseMutex();
                 exporterPreviewer.Display();
@@ -392,10 +399,10 @@ namespace SpineTool
         {
             string spineName = null;
             expoterMutex.WaitOne();
-            for (int i = 0; i < exporterSpines.Length; i++)
+            foreach (var sp in exporterSpines)
             {
-                if (exporterSpines[i] is null) continue;
-                spineName = Path.GetFileNameWithoutExtension(exporterSpines[i].SkelPath);
+                if (sp is null) continue;
+                spineName = Path.GetFileNameWithoutExtension(sp.SkelPath);
                 break;
             }
             expoterMutex.ReleaseMutex();
@@ -430,10 +437,10 @@ namespace SpineTool
                     expoterMutex.WaitOne();
                     for (int i = exporterSpines.Length - 1; i >= 0; i--)
                     {
-                        if (exporterSpines[i] is null)
-                            continue;
-                        tex.Draw(exporterSpines[i]);
-                        exporterSpines[i].Update(delta);
+                        var sp = exporterSpines[i];
+                        if (sp is null) continue;
+                        tex.Draw(sp);
+                        sp.Update(delta);
                     }
                     expoterMutex.ReleaseMutex();
 
