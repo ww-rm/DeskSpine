@@ -60,6 +60,8 @@ namespace SpineTool
         private void tabPage_Exporter_Enter(object sender, EventArgs e) { StartPreview(); }
         private void tabPage_Exporter_Leave(object sender, EventArgs e) { StopPreview(); }
 
+        #region 导出设置项
+
         private void textBox_SkelPath_MouseHover(object sender, EventArgs e)
         {
             var textBox = sender as TextBox;
@@ -132,7 +134,7 @@ namespace SpineTool
             }
         }
 
-        private void ComboBox_SelectAnime_SelectedValueChanged(object sender, EventArgs e)
+        private void comboBox_SelectAnime_SelectedValueChanged(object sender, EventArgs e)
         {
             var comboBox = sender as ComboBox;
             if (!comboBox.Enabled)
@@ -159,12 +161,12 @@ namespace SpineTool
 
                     Spine.Spine newSpine = null;
                     var skelPath = exporterSpines[i].SkelPath;
-                    try 
-                    { 
-                        newSpine = Spine.Spine.New(ver, skelPath); 
+                    try
+                    {
+                        newSpine = Spine.Spine.New(ver, skelPath);
                     }
-                    catch (Exception ex) 
-                    { 
+                    catch (Exception ex)
+                    {
                         comboBox_SpineVersion.Enabled = false;
                         comboBox_SpineVersion.SelectedValue = exporterSpines[i].Version;
                         comboBox_SpineVersion.Enabled = true;
@@ -191,21 +193,24 @@ namespace SpineTool
 
         private void numericUpDown_SizeX_ValueChanged(object sender, EventArgs e) { FixPreviewPosition(true); }
         private void numericUpDown_SizeY_ValueChanged(object sender, EventArgs e) { FixPreviewPosition(true); }
-        private void panel_PreviewContainer_SizeChanged(object sender, EventArgs e) { FixPreviewPosition(false); }
 
-        private void button_ResetTimeline_Click(object sender, EventArgs e)
+        private void label_ExportDuration_Click(object sender, EventArgs e)
         {
-            expoterMutex.WaitOne();
-            for (int i = 0; i < exporterSpines.Length; i++)
-            {
-                if (exporterSpines[i] is null)
-                    continue;
-
-                exporterSpines[i].CurrentAnimation = exporterSpines[i].CurrentAnimation;
-                exporterSpines[i].Update(0);
-            }
-            expoterMutex.ReleaseMutex();
+            numericUpDown_ExportDuration.Value = 1;
         }
+
+        private void button_Export_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialog_Export.ShowDialog() != DialogResult.OK)
+                return;
+            StartExportSpine(folderBrowserDialog_Export.SelectedPath);
+        }
+
+        #endregion
+
+        #region 导出预览界面
+
+        private void panel_PreviewContainer_SizeChanged(object sender, EventArgs e) { FixPreviewPosition(false); }
 
         private void panel_Preview_MouseDown(object sender, MouseEventArgs e)
         {
@@ -237,7 +242,7 @@ namespace SpineTool
             }
         }
 
-        private void Panel_Preview_MouseWheel(object sender, MouseEventArgs e)
+        private void panel_Preview_MouseWheel(object sender, MouseEventArgs e)
         {
             var view = exporterPreviewer.GetView();
             view.Zoom(e.Delta < 0 ? 1.1f : 0.9f);
@@ -266,12 +271,21 @@ namespace SpineTool
             label_PreviewSize.Text = $"视窗大小：[{view.Size.X:f0}, {-view.Size.Y:f0}]";
         }
 
-        private void button_Export_Click(object sender, EventArgs e)
+        private void button_ResetTimeline_Click(object sender, EventArgs e)
         {
-            if (folderBrowserDialog_Export.ShowDialog() != DialogResult.OK)
-                return;
-            StartExportSpine(folderBrowserDialog_Export.SelectedPath);
+            expoterMutex.WaitOne();
+            for (int i = 0; i < exporterSpines.Length; i++)
+            {
+                if (exporterSpines[i] is null)
+                    continue;
+
+                exporterSpines[i].CurrentAnimation = exporterSpines[i].CurrentAnimation;
+                exporterSpines[i].Update(0);
+            }
+            expoterMutex.ReleaseMutex();
         }
+
+        #endregion
 
         private void FixPreviewPosition(bool resetViewSize = false)
         {
@@ -314,7 +328,6 @@ namespace SpineTool
             exporterPreviewTaskCancelTokenSrc = new();
             exporterPreviewTask = Task.Run(() => ExporterPreviewTask(this));
         }
-
         private void StopPreview()
         {
             if (exporterPreviewTask is null)
@@ -362,7 +375,6 @@ namespace SpineTool
             exportSpineTaskCancelTokenSrc = new();
             exportSpineTask = Task.Run(() => ExportSpine(this, exportFolder));
         }
-
         private void StopExportSpine(object? sender, EventArgs e) { StopExportSpine(); }
         private void StopExportSpine()
         {
@@ -389,7 +401,7 @@ namespace SpineTool
             expoterMutex.ReleaseMutex();
 
             if (!string.IsNullOrEmpty(spineName))
-            { 
+            {
                 Debug.WriteLine(exportFolder);
                 Directory.CreateDirectory(exportFolder);
 
@@ -403,13 +415,14 @@ namespace SpineTool
                 button_ResetTimeline_Click(this, EventArgs.Empty);
                 var tex = new SFML.Graphics.RenderTexture((uint)numericUpDown_SizeX.Value, (uint)numericUpDown_SizeY.Value);
                 tex.SetView(exporterPreviewer.GetView());
+                var duration = (float)numericUpDown_ExportDuration.Value;
                 var fps = (int)numericUpDown_Fps.Value;
                 var delta = 1f / fps;
-                var duration = 2f; // TODO: 获取所有动画中最长的时长
-                var frameCount = (int)(duration / delta);
-                var barStep = Math.Max(progressBar_SpineTool.Maximum / frameCount, 1);
+                var frameCount = 1 + (int)(duration / delta); // 零帧开始导出
 
+                progressBar_SpineTool.BeginInvoke(() => progressBar_SpineTool.Maximum = frameCount);
                 progressBar_SpineTool.BeginInvoke(() => progressBar_SpineTool.Value = 0);
+                label_ExportDuration.BeginInvoke(() => label_ProgressBar.Text = $"已导出 {0}/{frameCount} 帧：");
                 for (int frameIndex = 0; frameIndex < frameCount; frameIndex++)
                 {
                     tex.Clear(SFML.Graphics.Color.Transparent);
@@ -428,10 +441,10 @@ namespace SpineTool
                     var img = tex.Texture.CopyToImage();
                     img.SaveToFile(Path.Combine(exportFolder, $"{spineName}_{fps}_{frameIndex:d6}.png"));
                     img.Dispose();
-                    progressBar_SpineTool.BeginInvoke(() => progressBar_SpineTool.Value += barStep);
 
-                    if (frameIndex >= frameCount - 1)
-                        progressBar_SpineTool.BeginInvoke(() => progressBar_SpineTool.Value = progressBar_SpineTool.Maximum);
+                    progressBar_SpineTool.BeginInvoke(progressBar_SpineTool.PerformStep);
+                    var count = frameIndex + 1;
+                    label_ExportDuration.BeginInvoke(() => label_ProgressBar.Text = $"已导出 {count}/{frameCount} 帧：");
 
                     if (exportSpineTaskCancelTokenSrc.Token.IsCancellationRequested)
                         break;
@@ -449,6 +462,5 @@ namespace SpineTool
         }
 
         #endregion
-
     }
 }

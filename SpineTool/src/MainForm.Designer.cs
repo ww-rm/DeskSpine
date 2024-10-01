@@ -42,8 +42,6 @@
             numericUpDown_SizeX = new NumericUpDown();
             label5 = new Label();
             numericUpDown_SizeY = new NumericUpDown();
-            label7 = new Label();
-            numericUpDown_Fps = new NumericUpDown();
             panel1 = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
             comboBox_SelectAnime9 = new ComboBox();
@@ -87,6 +85,10 @@
             button_SelectSkel0 = new Button();
             textBox_SkelPath0 = new TextBox();
             label28 = new Label();
+            label_ExportDuration = new Label();
+            numericUpDown_ExportDuration = new NumericUpDown();
+            label7 = new Label();
+            numericUpDown_Fps = new NumericUpDown();
             tableLayoutPanel_View = new TableLayoutPanel();
             tableLayoutPanel_ViewSet = new TableLayoutPanel();
             label_PreviewSize = new Label();
@@ -114,9 +116,10 @@
             tableLayoutPanel_ExporterOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_SizeX).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_SizeY).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown_Fps).BeginInit();
             panel1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown_ExportDuration).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown_Fps).BeginInit();
             tableLayoutPanel_View.SuspendLayout();
             tableLayoutPanel_ViewSet.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_PreviewScale).BeginInit();
@@ -174,8 +177,8 @@
             // tableLayoutPanel_ExporterOptions
             // 
             tableLayoutPanel_ExporterOptions.ColumnCount = 2;
-            tableLayoutPanel_ExporterOptions.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45.2290077F));
-            tableLayoutPanel_ExporterOptions.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 54.7709923F));
+            tableLayoutPanel_ExporterOptions.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 51.1538467F));
+            tableLayoutPanel_ExporterOptions.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 48.8461533F));
             tableLayoutPanel_ExporterOptions.Controls.Add(button_Export, 0, 8);
             tableLayoutPanel_ExporterOptions.Controls.Add(label2, 0, 1);
             tableLayoutPanel_ExporterOptions.Controls.Add(comboBox_SpineVersion, 1, 1);
@@ -185,9 +188,11 @@
             tableLayoutPanel_ExporterOptions.Controls.Add(numericUpDown_SizeX, 1, 3);
             tableLayoutPanel_ExporterOptions.Controls.Add(label5, 0, 4);
             tableLayoutPanel_ExporterOptions.Controls.Add(numericUpDown_SizeY, 1, 4);
-            tableLayoutPanel_ExporterOptions.Controls.Add(label7, 0, 5);
-            tableLayoutPanel_ExporterOptions.Controls.Add(numericUpDown_Fps, 1, 5);
             tableLayoutPanel_ExporterOptions.Controls.Add(panel1, 0, 0);
+            tableLayoutPanel_ExporterOptions.Controls.Add(label_ExportDuration, 0, 5);
+            tableLayoutPanel_ExporterOptions.Controls.Add(numericUpDown_ExportDuration, 1, 5);
+            tableLayoutPanel_ExporterOptions.Controls.Add(label7, 0, 6);
+            tableLayoutPanel_ExporterOptions.Controls.Add(numericUpDown_Fps, 1, 6);
             tableLayoutPanel_ExporterOptions.Dock = DockStyle.Fill;
             tableLayoutPanel_ExporterOptions.Location = new Point(0, 0);
             tableLayoutPanel_ExporterOptions.Name = "tableLayoutPanel_ExporterOptions";
@@ -209,7 +214,6 @@
             button_Export.AutoSize = true;
             button_Export.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             tableLayoutPanel_ExporterOptions.SetColumnSpan(button_Export, 2);
-            button_Export.Cursor = Cursors.Hand;
             button_Export.Dock = DockStyle.Fill;
             button_Export.Location = new Point(32, 762);
             button_Export.Margin = new Padding(32, 3, 4, 3);
@@ -224,8 +228,8 @@
             // 
             label2.Anchor = AnchorStyles.Left;
             label2.AutoSize = true;
-            label2.Location = new Point(32, 297);
-            label2.Margin = new Padding(32, 0, 4, 0);
+            label2.Location = new Point(20, 297);
+            label2.Margin = new Padding(20, 0, 4, 0);
             label2.Name = "label2";
             label2.Size = new Size(131, 27);
             label2.TabIndex = 2;
@@ -236,9 +240,9 @@
             comboBox_SpineVersion.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_SpineVersion.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SpineVersion.FormattingEnabled = true;
-            comboBox_SpineVersion.Location = new Point(238, 294);
+            comboBox_SpineVersion.Location = new Point(269, 294);
             comboBox_SpineVersion.Name = "comboBox_SpineVersion";
-            comboBox_SpineVersion.Size = new Size(279, 35);
+            comboBox_SpineVersion.Size = new Size(248, 35);
             comboBox_SpineVersion.TabIndex = 34;
             comboBox_SpineVersion.SelectedValueChanged += comboBox_SpineVersion_SelectedValueChanged;
             // 
@@ -246,8 +250,8 @@
             // 
             label6.Anchor = AnchorStyles.Left;
             label6.AutoSize = true;
-            label6.Location = new Point(32, 366);
-            label6.Margin = new Padding(32, 0, 4, 0);
+            label6.Location = new Point(20, 366);
+            label6.Margin = new Padding(20, 0, 4, 0);
             label6.Name = "label6";
             label6.Size = new Size(118, 27);
             label6.TabIndex = 40;
@@ -257,10 +261,11 @@
             // 
             checkBox_UsePMA.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             checkBox_UsePMA.AutoSize = true;
-            checkBox_UsePMA.Location = new Point(238, 369);
+            checkBox_UsePMA.Location = new Point(269, 369);
             checkBox_UsePMA.Name = "checkBox_UsePMA";
-            checkBox_UsePMA.Size = new Size(279, 21);
+            checkBox_UsePMA.Size = new Size(248, 21);
             checkBox_UsePMA.TabIndex = 41;
+            toolTip1.SetToolTip(checkBox_UsePMA, "渲染有问题时尝试切换此设置");
             checkBox_UsePMA.UseVisualStyleBackColor = true;
             checkBox_UsePMA.CheckedChanged += checkBox_UsePMA_CheckedChanged;
             // 
@@ -268,8 +273,8 @@
             // 
             label4.Anchor = AnchorStyles.Left;
             label4.AutoSize = true;
-            label4.Location = new Point(32, 435);
-            label4.Margin = new Padding(32, 0, 4, 0);
+            label4.Location = new Point(20, 435);
+            label4.Margin = new Padding(20, 0, 4, 0);
             label4.Name = "label4";
             label4.Size = new Size(132, 27);
             label4.TabIndex = 42;
@@ -278,13 +283,14 @@
             // numericUpDown_SizeX
             // 
             numericUpDown_SizeX.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            numericUpDown_SizeX.Location = new Point(238, 432);
+            numericUpDown_SizeX.Location = new Point(269, 432);
             numericUpDown_SizeX.Maximum = new decimal(new int[] { 8192, 0, 0, 0 });
             numericUpDown_SizeX.Minimum = new decimal(new int[] { 100, 0, 0, 0 });
             numericUpDown_SizeX.Name = "numericUpDown_SizeX";
-            numericUpDown_SizeX.Size = new Size(279, 33);
+            numericUpDown_SizeX.Size = new Size(248, 33);
             numericUpDown_SizeX.TabIndex = 44;
             numericUpDown_SizeX.TextAlign = HorizontalAlignment.Right;
+            toolTip1.SetToolTip(numericUpDown_SizeX, "导出帧的宽度");
             numericUpDown_SizeX.Value = new decimal(new int[] { 1024, 0, 0, 0 });
             numericUpDown_SizeX.ValueChanged += numericUpDown_SizeX_ValueChanged;
             // 
@@ -292,8 +298,8 @@
             // 
             label5.Anchor = AnchorStyles.Left;
             label5.AutoSize = true;
-            label5.Location = new Point(32, 504);
-            label5.Margin = new Padding(32, 0, 4, 0);
+            label5.Location = new Point(20, 504);
+            label5.Margin = new Padding(20, 0, 4, 0);
             label5.Name = "label5";
             label5.Size = new Size(132, 27);
             label5.TabIndex = 43;
@@ -302,38 +308,16 @@
             // numericUpDown_SizeY
             // 
             numericUpDown_SizeY.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            numericUpDown_SizeY.Location = new Point(238, 501);
+            numericUpDown_SizeY.Location = new Point(269, 501);
             numericUpDown_SizeY.Maximum = new decimal(new int[] { 8192, 0, 0, 0 });
             numericUpDown_SizeY.Minimum = new decimal(new int[] { 100, 0, 0, 0 });
             numericUpDown_SizeY.Name = "numericUpDown_SizeY";
-            numericUpDown_SizeY.Size = new Size(279, 33);
+            numericUpDown_SizeY.Size = new Size(248, 33);
             numericUpDown_SizeY.TabIndex = 45;
             numericUpDown_SizeY.TextAlign = HorizontalAlignment.Right;
+            toolTip1.SetToolTip(numericUpDown_SizeY, "导出帧的高度");
             numericUpDown_SizeY.Value = new decimal(new int[] { 1024, 0, 0, 0 });
             numericUpDown_SizeY.ValueChanged += numericUpDown_SizeY_ValueChanged;
-            // 
-            // label7
-            // 
-            label7.Anchor = AnchorStyles.Left;
-            label7.AutoSize = true;
-            label7.Location = new Point(32, 573);
-            label7.Margin = new Padding(32, 0, 4, 0);
-            label7.Name = "label7";
-            label7.Size = new Size(112, 27);
-            label7.TabIndex = 38;
-            label7.Text = "导出帧率：";
-            // 
-            // numericUpDown_Fps
-            // 
-            numericUpDown_Fps.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            numericUpDown_Fps.Location = new Point(238, 570);
-            numericUpDown_Fps.Maximum = new decimal(new int[] { 120, 0, 0, 0 });
-            numericUpDown_Fps.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            numericUpDown_Fps.Name = "numericUpDown_Fps";
-            numericUpDown_Fps.Size = new Size(279, 33);
-            numericUpDown_Fps.TabIndex = 39;
-            numericUpDown_Fps.TextAlign = HorizontalAlignment.Right;
-            numericUpDown_Fps.Value = new decimal(new int[] { 60, 0, 0, 0 });
             // 
             // panel1
             // 
@@ -424,7 +408,7 @@
             comboBox_SelectAnime9.Name = "comboBox_SelectAnime9";
             comboBox_SelectAnime9.Size = new Size(99, 35);
             comboBox_SelectAnime9.TabIndex = 72;
-            comboBox_SelectAnime9.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            comboBox_SelectAnime9.SelectedValueChanged += comboBox_SelectAnime_SelectedValueChanged;
             // 
             // button_SelectSkel9
             // 
@@ -473,7 +457,7 @@
             comboBox_SelectAnime8.Name = "comboBox_SelectAnime8";
             comboBox_SelectAnime8.Size = new Size(99, 35);
             comboBox_SelectAnime8.TabIndex = 68;
-            comboBox_SelectAnime8.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            comboBox_SelectAnime8.SelectedValueChanged += comboBox_SelectAnime_SelectedValueChanged;
             // 
             // button_SelectSkel8
             // 
@@ -522,7 +506,7 @@
             comboBox_SelectAnime7.Name = "comboBox_SelectAnime7";
             comboBox_SelectAnime7.Size = new Size(99, 35);
             comboBox_SelectAnime7.TabIndex = 64;
-            comboBox_SelectAnime7.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            comboBox_SelectAnime7.SelectedValueChanged += comboBox_SelectAnime_SelectedValueChanged;
             // 
             // button_SelectSkel7
             // 
@@ -571,7 +555,7 @@
             comboBox_SelectAnime6.Name = "comboBox_SelectAnime6";
             comboBox_SelectAnime6.Size = new Size(99, 35);
             comboBox_SelectAnime6.TabIndex = 60;
-            comboBox_SelectAnime6.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            comboBox_SelectAnime6.SelectedValueChanged += comboBox_SelectAnime_SelectedValueChanged;
             // 
             // button_SelectSkel6
             // 
@@ -620,7 +604,7 @@
             comboBox_SelectAnime5.Name = "comboBox_SelectAnime5";
             comboBox_SelectAnime5.Size = new Size(99, 35);
             comboBox_SelectAnime5.TabIndex = 56;
-            comboBox_SelectAnime5.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            comboBox_SelectAnime5.SelectedValueChanged += comboBox_SelectAnime_SelectedValueChanged;
             // 
             // button_SelectSkel5
             // 
@@ -669,7 +653,7 @@
             comboBox_SelectAnime4.Name = "comboBox_SelectAnime4";
             comboBox_SelectAnime4.Size = new Size(99, 35);
             comboBox_SelectAnime4.TabIndex = 52;
-            comboBox_SelectAnime4.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            comboBox_SelectAnime4.SelectedValueChanged += comboBox_SelectAnime_SelectedValueChanged;
             // 
             // button_SelectSkel4
             // 
@@ -718,7 +702,7 @@
             comboBox_SelectAnime3.Name = "comboBox_SelectAnime3";
             comboBox_SelectAnime3.Size = new Size(99, 35);
             comboBox_SelectAnime3.TabIndex = 48;
-            comboBox_SelectAnime3.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            comboBox_SelectAnime3.SelectedValueChanged += comboBox_SelectAnime_SelectedValueChanged;
             // 
             // button_SelectSkel3
             // 
@@ -780,7 +764,7 @@
             comboBox_SelectAnime2.Name = "comboBox_SelectAnime2";
             comboBox_SelectAnime2.Size = new Size(99, 35);
             comboBox_SelectAnime2.TabIndex = 43;
-            comboBox_SelectAnime2.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            comboBox_SelectAnime2.SelectedValueChanged += comboBox_SelectAnime_SelectedValueChanged;
             // 
             // button_SelectSkel2
             // 
@@ -829,7 +813,7 @@
             comboBox_SelectAnime1.Name = "comboBox_SelectAnime1";
             comboBox_SelectAnime1.Size = new Size(99, 35);
             comboBox_SelectAnime1.TabIndex = 39;
-            comboBox_SelectAnime1.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            comboBox_SelectAnime1.SelectedValueChanged += comboBox_SelectAnime_SelectedValueChanged;
             // 
             // button_SelectSkel1
             // 
@@ -878,7 +862,7 @@
             comboBox_SelectAnime0.Name = "comboBox_SelectAnime0";
             comboBox_SelectAnime0.Size = new Size(99, 35);
             comboBox_SelectAnime0.TabIndex = 35;
-            comboBox_SelectAnime0.SelectedValueChanged += ComboBox_SelectAnime_SelectedValueChanged;
+            comboBox_SelectAnime0.SelectedValueChanged += comboBox_SelectAnime_SelectedValueChanged;
             // 
             // button_SelectSkel0
             // 
@@ -916,6 +900,56 @@
             label28.Size = new Size(24, 27);
             label28.TabIndex = 29;
             label28.Text = "0";
+            // 
+            // label_ExportDuration
+            // 
+            label_ExportDuration.Anchor = AnchorStyles.Left;
+            label_ExportDuration.AutoSize = true;
+            label_ExportDuration.Cursor = Cursors.Hand;
+            label_ExportDuration.Location = new Point(20, 573);
+            label_ExportDuration.Margin = new Padding(20, 0, 4, 0);
+            label_ExportDuration.Name = "label_ExportDuration";
+            label_ExportDuration.Size = new Size(172, 27);
+            label_ExportDuration.TabIndex = 47;
+            label_ExportDuration.Text = "导出时长（秒）：";
+            toolTip1.SetToolTip(label_ExportDuration, "点击获取当前动画时长");
+            label_ExportDuration.Click += label_ExportDuration_Click;
+            // 
+            // numericUpDown_ExportDuration
+            // 
+            numericUpDown_ExportDuration.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            numericUpDown_ExportDuration.DecimalPlaces = 3;
+            numericUpDown_ExportDuration.Location = new Point(269, 570);
+            numericUpDown_ExportDuration.Maximum = new decimal(new int[] { 300, 0, 0, 0 });
+            numericUpDown_ExportDuration.Name = "numericUpDown_ExportDuration";
+            numericUpDown_ExportDuration.Size = new Size(248, 33);
+            numericUpDown_ExportDuration.TabIndex = 48;
+            numericUpDown_ExportDuration.TextAlign = HorizontalAlignment.Right;
+            toolTip1.SetToolTip(numericUpDown_ExportDuration, "导出时长，点击左侧标签可以获取当前动画时长");
+            numericUpDown_ExportDuration.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // label7
+            // 
+            label7.Anchor = AnchorStyles.Left;
+            label7.AutoSize = true;
+            label7.Location = new Point(20, 642);
+            label7.Margin = new Padding(20, 0, 4, 0);
+            label7.Name = "label7";
+            label7.Size = new Size(112, 27);
+            label7.TabIndex = 38;
+            label7.Text = "导出帧率：";
+            // 
+            // numericUpDown_Fps
+            // 
+            numericUpDown_Fps.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            numericUpDown_Fps.Location = new Point(269, 639);
+            numericUpDown_Fps.Maximum = new decimal(new int[] { 120, 0, 0, 0 });
+            numericUpDown_Fps.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numericUpDown_Fps.Name = "numericUpDown_Fps";
+            numericUpDown_Fps.Size = new Size(248, 33);
+            numericUpDown_Fps.TabIndex = 39;
+            numericUpDown_Fps.TextAlign = HorizontalAlignment.Right;
+            numericUpDown_Fps.Value = new decimal(new int[] { 60, 0, 0, 0 });
             // 
             // tableLayoutPanel_View
             // 
@@ -965,13 +999,13 @@
             label_PreviewSize.Size = new Size(233, 27);
             label_PreviewSize.TabIndex = 6;
             label_PreviewSize.Text = "视窗大小：[1920, 1080]";
+            toolTip1.SetToolTip(label_PreviewSize, "画面实际显示需要大小");
             // 
             // button_ResetTimeline
             // 
             button_ResetTimeline.Anchor = AnchorStyles.None;
             button_ResetTimeline.AutoSize = true;
             button_ResetTimeline.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            button_ResetTimeline.Cursor = Cursors.Hand;
             button_ResetTimeline.Location = new Point(645, 3);
             button_ResetTimeline.Name = "button_ResetTimeline";
             button_ResetTimeline.Size = new Size(182, 37);
@@ -1001,6 +1035,7 @@
             numericUpDown_PreviewScale.Size = new Size(109, 33);
             numericUpDown_PreviewScale.TabIndex = 3;
             numericUpDown_PreviewScale.TextAlign = HorizontalAlignment.Right;
+            toolTip1.SetToolTip(numericUpDown_PreviewScale, "导出大小除以视窗大小");
             numericUpDown_PreviewScale.Value = new decimal(new int[] { 100, 0, 0, 0 });
             numericUpDown_PreviewScale.ValueChanged += numericUpDown_PreviewScale_ValueChanged;
             // 
@@ -1025,7 +1060,7 @@
             panel_Preview.MouseDown += panel_Preview_MouseDown;
             panel_Preview.MouseMove += panel_Preview_MouseMove;
             panel_Preview.MouseUp += panel_Preview_MouseUp;
-            panel_Preview.MouseWheel += Panel_Preview_MouseWheel;
+            panel_Preview.MouseWheel += panel_Preview_MouseWheel;
             // 
             // tabPage_FixEdge
             // 
@@ -1089,7 +1124,6 @@
             button_CancelTask.Anchor = AnchorStyles.None;
             button_CancelTask.AutoSize = true;
             button_CancelTask.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            button_CancelTask.Cursor = Cursors.Hand;
             button_CancelTask.Enabled = false;
             button_CancelTask.Location = new Point(1441, 3);
             button_CancelTask.Name = "button_CancelTask";
@@ -1102,9 +1136,9 @@
             // 
             progressBar_SpineTool.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             progressBar_SpineTool.Location = new Point(121, 4);
-            progressBar_SpineTool.Maximum = 10000;
             progressBar_SpineTool.Name = "progressBar_SpineTool";
             progressBar_SpineTool.Size = new Size(1314, 34);
+            progressBar_SpineTool.Step = 1;
             progressBar_SpineTool.Style = ProgressBarStyle.Continuous;
             progressBar_SpineTool.TabIndex = 0;
             // 
@@ -1146,11 +1180,12 @@
             tableLayoutPanel_ExporterOptions.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_SizeX).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_SizeY).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown_Fps).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown_ExportDuration).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown_Fps).EndInit();
             tableLayoutPanel_View.ResumeLayout(false);
             tableLayoutPanel_View.PerformLayout();
             tableLayoutPanel_ViewSet.ResumeLayout(false);
@@ -1242,5 +1277,7 @@
         private FolderBrowserDialog folderBrowserDialog_Export;
         private ToolTip toolTip1;
         private Button button_CancelTask;
+        private Label label_ExportDuration;
+        private NumericUpDown numericUpDown_ExportDuration;
     }
 }
