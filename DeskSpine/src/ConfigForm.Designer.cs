@@ -570,10 +570,10 @@
             tabPage_BasicConfig.AutoScroll = true;
             tabPage_BasicConfig.BackColor = SystemColors.Control;
             tabPage_BasicConfig.Controls.Add(tableLayoutPanel_BasicConfig);
-            tabPage_BasicConfig.Location = new Point(4, 36);
+            tabPage_BasicConfig.Location = new Point(4, 33);
             tabPage_BasicConfig.Margin = new Padding(0);
             tabPage_BasicConfig.Name = "tabPage_BasicConfig";
-            tabPage_BasicConfig.Size = new Size(1570, 752);
+            tabPage_BasicConfig.Size = new Size(1570, 755);
             tabPage_BasicConfig.TabIndex = 1;
             tabPage_BasicConfig.Text = "基础设置";
             // 
@@ -2072,7 +2072,6 @@
             // 
             // tableLayoutPanel_Buttons
             // 
-            tableLayoutPanel_Buttons.AutoSize = true;
             tableLayoutPanel_Buttons.ColumnCount = 6;
             tableLayoutPanel_Buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
             tableLayoutPanel_Buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
@@ -2109,8 +2108,8 @@
             // ConfigForm
             // 
             AcceptButton = button_Ok;
-            AutoScaleDimensions = new SizeF(12F, 27F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleDimensions = new SizeF(144F, 144F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(1578, 844);
             Controls.Add(tableLayoutPanel_Window);
             Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 134);
@@ -2126,7 +2125,6 @@
             VisibleChanged += ConfigForm_VisibleChanged;
             contextMenuStrip.ResumeLayout(false);
             tableLayoutPanel_Window.ResumeLayout(false);
-            tableLayoutPanel_Window.PerformLayout();
             tabControl_Config.ResumeLayout(false);
             tabPage_SystemConfig.ResumeLayout(false);
             tableLayoutPanel_SystemConfig.ResumeLayout(false);
