@@ -33,7 +33,7 @@
         "DisplayName" = "8:Debug"
         "IsDebugOnly" = "11:TRUE"
         "IsReleaseOnly" = "11:FALSE"
-        "OutputFilename" = "8:Debug\\Setup.msi"
+        "OutputFilename" = "8:Debug\\DeskSpineSetup.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -179,7 +179,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:DeskSpine"
         "ProductCode" = "8:{4A1A79F1-B875-4408-B626-56DEE5885955}"
-        "PackageCode" = "8:{448C43B4-FFC1-45E4-9ED4-FB7130313EF1}"
+        "PackageCode" = "8:{5C592245-5FDF-4EB6-B3B6-8D9E2190E273}"
         "UpgradeCode" = "8:{D495CA29-E442-45FF-8D47-FE99695CFA23}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
@@ -728,7 +728,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1E69BCB1C367451BA63C044F1A4277D4"
             {
-            "SourcePath" = "8:..\\SpineTool\\obj\\x64\\Release\\net8.0-windows\\win-x64\\apphost.exe"
+            "SourcePath" = "8:..\\SpineTool\\obj\\x64\\Debug\\net8.0-windows\\win-x64\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6673A475F6F64BFF8735B7929FB2FD0E"
@@ -756,7 +756,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F78B85B9BF9C418EBB9F1B3813D4EC4D"
             {
-            "SourcePath" = "8:..\\DeskSpine\\obj\\x64\\Release\\net8.0-windows\\win-x64\\apphost.exe"
+            "SourcePath" = "8:..\\DeskSpine\\obj\\x64\\Debug\\net8.0-windows\\win-x64\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6673A475F6F64BFF8735B7929FB2FD0E"
