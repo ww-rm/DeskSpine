@@ -222,6 +222,11 @@ namespace Spine
         protected List<string> animationNames = [];
 
         /// <summary>
+        /// 获取动画时长, 如果动画不存在则返回 0
+        /// </summary>
+        public abstract float GetAnimationDuration(string name);
+
+        /// <summary>
         /// 默认动画名称
         /// </summary>
         public string DefaultAnimationName { get => animationNames.Last(); }

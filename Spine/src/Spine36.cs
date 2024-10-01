@@ -148,6 +148,8 @@ namespace Spine
 
         public override float Y { get => skeleton.Y; set => skeleton.Y = value; }
 
+        public override float GetAnimationDuration(string name) { return skeletonData.FindAnimation(name)?.Duration ?? 0f; }
+
         public override string CurrentAnimation
         {
             get => animationState.GetCurrent(0)?.Animation.Name ?? DefaultAnimationName;

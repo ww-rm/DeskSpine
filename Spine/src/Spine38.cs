@@ -157,6 +157,8 @@ namespace Spine
 
         public override float Y { get => skeleton.Y; set => skeleton.Y = value; }
 
+        public override float GetAnimationDuration(string name) { return skeletonData.FindAnimation(name)?.Duration ?? 0f; }
+
         public override string CurrentAnimation
         {
             get => animationState.GetCurrent(0)?.Animation.Name ?? DefaultAnimationName;
@@ -263,6 +265,7 @@ namespace Spine
                 {
                     if (vertexArray.VertexCount > 0)
                     {
+                        // XXX: 实测不用设置 sampler2D 的值也正确
                         if (UsePremultipliedAlpha && (states.BlendMode == SFMLBlendMode.Normal || states.BlendMode == SFMLBlendMode.Additive))
                             states.Shader = premultipliedAlphaFragmentShader;
                         else
