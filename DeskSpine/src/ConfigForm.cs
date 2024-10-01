@@ -78,7 +78,7 @@ namespace DeskSpine
                 // 系统设置
                 v.SystemConfig.AutuRun = checkBox_AutoRun.Checked;
                 v.SystemConfig.Visible = checkBox_Visible.Checked;
-                v.SystemConfig.BalloonIconPath = textBox_BalloonIconPath.Text;
+                v.SystemConfig.BalloonIconPath = string.IsNullOrEmpty(textBox_BalloonIconPath.Text) ? null : textBox_BalloonIconPath.Text;
                 v.SystemConfig.TimeAlarm = checkBox_TimeAlarm.Checked;
 
                 // 基础设置
