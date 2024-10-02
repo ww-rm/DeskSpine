@@ -296,7 +296,7 @@ namespace PerfMonitor
         private void UpdateTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
             CollectPerfData();
-            if (Visible) if (InvokeRequired) Invoke(Invalidate); else Invalidate();
+            if (Visible) if (InvokeRequired) BeginInvoke(Invalidate); else Invalidate();
         }
 
         /// <summary>
