@@ -8,7 +8,7 @@
         <Nullable>enable</Nullable>
         <UseWindowsForms>true</UseWindowsForms>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Version>0.10.4</Version>
+        <Version>0.10.5</Version>
         <BaseOutputPath>$(SolutionDir)out</BaseOutputPath>
     </PropertyGroup>
 
