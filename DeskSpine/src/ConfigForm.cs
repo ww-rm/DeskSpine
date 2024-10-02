@@ -235,7 +235,7 @@ namespace DeskSpine
         private void button_OpenDataFolder_Click(object sender, EventArgs e)
         {
             try { Process.Start("explorer.exe", Program.ProgramDataDirectory); }
-            catch (Exception ex) { MessageBox.Show($"无法打开文件夹: {ex.Message}", Program.ProgramName); }
+            catch (Exception ex) { MessageBox.Show($"无法打开文件夹: {ex.Message}", Program.ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
         private void button_Ok_Click(object sender, EventArgs e)
@@ -377,6 +377,20 @@ namespace DeskSpine
         private void commandResetSpine_Click(object sender, EventArgs e)
         {
             Program.WindowSpine.ResetPositionAndSize();
+        }
+
+
+        private void commandSpineTool_Click(object sender, EventArgs e)
+        {
+            var spineToolPath = Path.Combine(Program.ProgramDirectory, "SpineTool.exe");
+            try
+            {
+                Process.Start(spineToolPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"SpineTool 启动失败\n\n{ex}", Program.ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void commandConfig_Click(object sender, EventArgs e)

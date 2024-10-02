@@ -178,6 +178,8 @@
             openFileDialog_SelectSkel = new OpenFileDialog();
             openFileDialog_BalloonIconPath = new OpenFileDialog();
             toolTip1 = new ToolTip(components);
+            toolStripSeparator3 = new ToolStripSeparator();
+            commandSpineTool = new ToolStripMenuItem();
             contextMenuStrip.SuspendLayout();
             tableLayoutPanel_Window.SuspendLayout();
             tabControl_Config.SuspendLayout();
@@ -224,75 +226,76 @@
             // 
             // contextMenuStrip
             // 
+            contextMenuStrip.Font = new Font("Microsoft YaHei UI", 10F);
             contextMenuStrip.ImageScalingSize = new Size(24, 24);
-            contextMenuStrip.Items.AddRange(new ToolStripItem[] { commandShowSpine, commandWallpaperMode, commandMouseClickThrough, toolStripSeparator2, commandSetFullScreen, commandResetSpine, toolStripSeparator1, commandConfig, commandAbout, commandExit });
+            contextMenuStrip.Items.AddRange(new ToolStripItem[] { commandShowSpine, commandWallpaperMode, commandMouseClickThrough, toolStripSeparator2, commandSetFullScreen, commandResetSpine, toolStripSeparator1, commandSpineTool, toolStripSeparator3, commandConfig, commandAbout, commandExit });
             contextMenuStrip.Name = "contextMenuStrip";
-            contextMenuStrip.Size = new Size(153, 256);
+            contextMenuStrip.Size = new Size(241, 361);
             contextMenuStrip.Opening += contextMenuStrip_Opening;
             // 
             // commandShowSpine
             // 
             commandShowSpine.Name = "commandShowSpine";
-            commandShowSpine.Size = new Size(152, 30);
+            commandShowSpine.Size = new Size(240, 34);
             commandShowSpine.Text = "显示精灵";
             commandShowSpine.Click += commandShowSpine_Click;
             // 
             // commandWallpaperMode
             // 
             commandWallpaperMode.Name = "commandWallpaperMode";
-            commandWallpaperMode.Size = new Size(152, 30);
+            commandWallpaperMode.Size = new Size(240, 34);
             commandWallpaperMode.Text = "壁纸模式";
             commandWallpaperMode.Click += commandWallpaperMode_Click;
             // 
             // commandMouseClickThrough
             // 
             commandMouseClickThrough.Name = "commandMouseClickThrough";
-            commandMouseClickThrough.Size = new Size(152, 30);
+            commandMouseClickThrough.Size = new Size(240, 34);
             commandMouseClickThrough.Text = "鼠标穿透";
             commandMouseClickThrough.Click += commandMouseClickThrough_Click;
             // 
             // toolStripSeparator2
             // 
             toolStripSeparator2.Name = "toolStripSeparator2";
-            toolStripSeparator2.Size = new Size(149, 6);
+            toolStripSeparator2.Size = new Size(237, 6);
             // 
             // commandSetFullScreen
             // 
             commandSetFullScreen.Name = "commandSetFullScreen";
-            commandSetFullScreen.Size = new Size(152, 30);
+            commandSetFullScreen.Size = new Size(240, 34);
             commandSetFullScreen.Text = "一键全屏";
             commandSetFullScreen.Click += commandSetFullScreen_Click;
             // 
             // commandResetSpine
             // 
             commandResetSpine.Name = "commandResetSpine";
-            commandResetSpine.Size = new Size(152, 30);
+            commandResetSpine.Size = new Size(240, 34);
             commandResetSpine.Text = "窗口复位";
             commandResetSpine.Click += commandResetSpine_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(149, 6);
+            toolStripSeparator1.Size = new Size(237, 6);
             // 
             // commandConfig
             // 
             commandConfig.Name = "commandConfig";
-            commandConfig.Size = new Size(152, 30);
+            commandConfig.Size = new Size(240, 34);
             commandConfig.Text = "设置(&S)";
             commandConfig.Click += commandConfig_Click;
             // 
             // commandAbout
             // 
             commandAbout.Name = "commandAbout";
-            commandAbout.Size = new Size(152, 30);
+            commandAbout.Size = new Size(240, 34);
             commandAbout.Text = "关于(&A)";
             commandAbout.Click += commandAbout_Click;
             // 
             // commandExit
             // 
             commandExit.Name = "commandExit";
-            commandExit.Size = new Size(152, 30);
+            commandExit.Size = new Size(240, 34);
             commandExit.Text = "退出(&X)";
             commandExit.Click += commandExit_Click;
             // 
@@ -1162,7 +1165,7 @@
             comboBox_AutoBackgroudColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_AutoBackgroudColor.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_AutoBackgroudColor.FormattingEnabled = true;
-            comboBox_AutoBackgroudColor.Location = new Point(0, 16);
+            comboBox_AutoBackgroudColor.Location = new Point(0, 14);
             comboBox_AutoBackgroudColor.Margin = new Padding(0, 0, 4, 0);
             comboBox_AutoBackgroudColor.Name = "comboBox_AutoBackgroudColor";
             comboBox_AutoBackgroudColor.Size = new Size(137, 35);
@@ -1403,10 +1406,10 @@
             tabPage_SpineConfig.AutoScroll = true;
             tabPage_SpineConfig.BackColor = SystemColors.Control;
             tabPage_SpineConfig.Controls.Add(tableLayoutPanel_SpineConfigParts);
-            tabPage_SpineConfig.Location = new Point(4, 36);
+            tabPage_SpineConfig.Location = new Point(4, 33);
             tabPage_SpineConfig.Margin = new Padding(0);
             tabPage_SpineConfig.Name = "tabPage_SpineConfig";
-            tabPage_SpineConfig.Size = new Size(1570, 752);
+            tabPage_SpineConfig.Size = new Size(1570, 755);
             tabPage_SpineConfig.TabIndex = 2;
             tabPage_SpineConfig.Text = "Spine 设置";
             // 
@@ -2020,7 +2023,7 @@
             comboBox_WindowType.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_WindowType.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_WindowType.FormattingEnabled = true;
-            comboBox_WindowType.Location = new Point(234, 78);
+            comboBox_WindowType.Location = new Point(234, 77);
             comboBox_WindowType.Margin = new Padding(0);
             comboBox_WindowType.Name = "comboBox_WindowType";
             comboBox_WindowType.Size = new Size(642, 35);
@@ -2053,7 +2056,7 @@
             comboBox_SpineVersion.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_SpineVersion.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SpineVersion.FormattingEnabled = true;
-            comboBox_SpineVersion.Location = new Point(234, 15);
+            comboBox_SpineVersion.Location = new Point(234, 14);
             comboBox_SpineVersion.Margin = new Padding(0);
             comboBox_SpineVersion.Name = "comboBox_SpineVersion";
             comboBox_SpineVersion.Size = new Size(642, 35);
@@ -2104,6 +2107,18 @@
             openFileDialog_BalloonIconPath.AddToRecent = false;
             openFileDialog_BalloonIconPath.Filter = "图像文件 (*.jpg; *.jpeg; *.png; *.bmp; *.ico)|*.jpg;*.jpeg;*.png;*.bmp;*.ico|所有文件 (*.*)|*.*";
             openFileDialog_BalloonIconPath.RestoreDirectory = true;
+            // 
+            // toolStripSeparator3
+            // 
+            toolStripSeparator3.Name = "toolStripSeparator3";
+            toolStripSeparator3.Size = new Size(237, 6);
+            // 
+            // commandSpineTool
+            // 
+            commandSpineTool.Name = "commandSpineTool";
+            commandSpineTool.Size = new Size(240, 34);
+            commandSpineTool.Text = "启动 SpineTool...";
+            commandSpineTool.Click += commandSpineTool_Click;
             // 
             // ConfigForm
             // 
@@ -2320,5 +2335,7 @@
         private Label label52;
         private OpenFileDialog openFileDialog_BalloonIconPath;
         private ToolTip toolTip1;
+        private ToolStripMenuItem commandSpineTool;
+        private ToolStripSeparator toolStripSeparator3;
     }
 }
