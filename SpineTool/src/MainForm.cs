@@ -28,9 +28,6 @@ namespace SpineTool
             comboBox_SpineVersion.DisplayMember = "Key";
             comboBox_SpineVersion.ValueMember = "Value";
             comboBox_SpineVersion.SelectedValue = "3.8.x";
-
-            exporterSpines[0] = Spine.Spine.New("3.8.x", @"D:\ACGN\AzurLane_Export\AzurLane_Dynamic\aerhangeersike_3\aerhangeersike_3.skel");
-            exporterSpines[0].CurrentAnimation = "normal";
         }
 
         #region 动画导出工具页面
