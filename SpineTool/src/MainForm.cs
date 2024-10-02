@@ -134,6 +134,19 @@ namespace SpineTool
             }
         }
 
+        private void comboBox_SelectAnime_MouseHover(object sender, EventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+            var text = comboBox.Text;
+            Size textSize = TextRenderer.MeasureText(text, comboBox.Font);
+
+            // 如果内容超出文本框宽度，设置 Tooltip
+            if (textSize.Width > comboBox.ClientSize.Width)
+                toolTip1.SetToolTip(comboBox, text);
+            else
+                toolTip1.SetToolTip(comboBox, null);
+        }
+
         private void comboBox_SelectAnime_SelectedValueChanged(object sender, EventArgs e)
         {
             var comboBox = sender as ComboBox;
@@ -284,7 +297,7 @@ namespace SpineTool
         {
             expoterMutex.WaitOne();
             foreach (var sp in exporterSpines)
-            { 
+            {
                 if (sp is null) continue;
                 sp.CurrentAnimation = sp.CurrentAnimation;
                 sp.Update(0);
@@ -355,9 +368,9 @@ namespace SpineTool
                 var delta = expoterPreviewClock.ElapsedTime.AsSeconds();
                 expoterPreviewClock.Restart();
 
-                exporterPreviewer.Clear(new SFML.Graphics.Color(0, 255, 0, 0));
+                exporterPreviewer.Clear(SFML.Graphics.Color.Green);
                 expoterMutex.WaitOne();
-                
+
                 for (int i = exporterSpines.Length - 1; i >= 0; i--)
                 {
                     var sp = exporterSpines[i];
@@ -414,6 +427,7 @@ namespace SpineTool
 
                 // 停止动画预览并禁用面板
                 StopPreview();
+                exporterPreviewer.SetActive(true);
                 tabControl_Tools.BeginInvoke(() => tabControl_Tools.Enabled = false);
                 button_CancelTask.Click += StopExportSpine;
                 button_CancelTask.BeginInvoke(() => button_CancelTask.Enabled = true);
@@ -432,6 +446,7 @@ namespace SpineTool
                 label_ExportDuration.BeginInvoke(() => label_ProgressBar.Text = $"已导出 {0}/{frameCount} 帧：");
                 for (int frameIndex = 0; frameIndex < frameCount; frameIndex++)
                 {
+                    exporterPreviewer.Clear(SFML.Graphics.Color.Blue);
                     tex.Clear(SFML.Graphics.Color.Transparent);
 
                     expoterMutex.WaitOne();
@@ -439,19 +454,20 @@ namespace SpineTool
                     {
                         var sp = exporterSpines[i];
                         if (sp is null) continue;
+                        exporterPreviewer.Draw(sp);
                         tex.Draw(sp);
                         sp.Update(delta);
                     }
                     expoterMutex.ReleaseMutex();
 
+                    exporterPreviewer.Display();
                     tex.Display();
                     var img = tex.Texture.CopyToImage();
                     img.SaveToFile(Path.Combine(exportFolder, $"{spineName}_{fps}_{frameIndex:d6}.png"));
                     img.Dispose();
 
                     progressBar_SpineTool.BeginInvoke(progressBar_SpineTool.PerformStep);
-                    var count = frameIndex + 1;
-                    label_ExportDuration.BeginInvoke(() => label_ProgressBar.Text = $"已导出 {count}/{frameCount} 帧：");
+                    label_ExportDuration.BeginInvoke((int val) => label_ProgressBar.Text = $"已导出 {val}/{frameCount} 帧：", [frameIndex + 1]);
 
                     if (exportSpineTaskCancelTokenSrc.Token.IsCancellationRequested)
                         break;
@@ -461,6 +477,7 @@ namespace SpineTool
                 button_CancelTask.BeginInvoke(() => button_CancelTask.Enabled = false);
                 button_CancelTask.Click -= StopExportSpine;
                 tabControl_Tools.BeginInvoke(() => tabControl_Tools.Enabled = true);
+                exporterPreviewer.SetActive(false);
                 StartPreview();
             }
 
@@ -469,5 +486,10 @@ namespace SpineTool
         }
 
         #endregion
+
+        #region 边缘修复工具页面
+
+        #endregion
+
     }
 }
