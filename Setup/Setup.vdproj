@@ -178,15 +178,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:DeskSpine"
-        "ProductCode" = "8:{46ED1CDB-EEAB-400D-AE05-E82CE9688883}"
-        "PackageCode" = "8:{CB403FBA-980F-49E3-BF4F-2E3FBF0AA427}"
+        "ProductCode" = "8:{0D2AD69B-2392-4BF9-969B-0B898E6C4C9D}"
+        "PackageCode" = "8:{5D68ABB9-C76C-4E04-ABD1-B24A81AD335C}"
         "UpgradeCode" = "8:{D495CA29-E442-45FF-8D47-FE99695CFA23}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.10.5"
+        "ProductVersion" = "8:0.10.6"
         "Manufacturer" = "8:ww-rm studio"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/ww-rm/DeskSpine"
@@ -728,7 +728,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1E69BCB1C367451BA63C044F1A4277D4"
             {
-            "SourcePath" = "8:..\\SpineTool\\obj\\x64\\Debug\\net8.0-windows\\win-x64\\apphost.exe"
+            "SourcePath" = "8:..\\SpineTool\\obj\\x64\\Release\\net8.0-windows\\win-x64\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6673A475F6F64BFF8735B7929FB2FD0E"
@@ -756,7 +756,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F78B85B9BF9C418EBB9F1B3813D4EC4D"
             {
-            "SourcePath" = "8:..\\DeskSpine\\obj\\x64\\Debug\\net8.0-windows\\win-x64\\apphost.exe"
+            "SourcePath" = "8:..\\DeskSpine\\obj\\x64\\Release\\net8.0-windows\\win-x64\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6673A475F6F64BFF8735B7929FB2FD0E"
