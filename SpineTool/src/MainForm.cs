@@ -643,7 +643,7 @@ namespace SpineTool
                         edgeProcessorProcessedRegion.SetPixel(x, y, fixedRegionPixel);
                         processedCount++;
 
-                        if (processedCount % 100000 == 0 || processedCount >= pixelTotalCount)
+                        if (processedCount % 250000 == 0 || processedCount >= pixelTotalCount)
                         {
                             BeginInvoke((int v1, float v2) =>
                             {

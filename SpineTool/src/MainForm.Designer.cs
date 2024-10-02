@@ -264,7 +264,7 @@
             comboBox_SpineVersion.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_SpineVersion.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SpineVersion.FormattingEnabled = true;
-            comboBox_SpineVersion.Location = new Point(280, 284);
+            comboBox_SpineVersion.Location = new Point(280, 283);
             comboBox_SpineVersion.Name = "comboBox_SpineVersion";
             comboBox_SpineVersion.Size = new Size(259, 35);
             comboBox_SpineVersion.TabIndex = 34;
@@ -428,7 +428,7 @@
             comboBox_SelectAnime9.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime9.Enabled = false;
             comboBox_SelectAnime9.FormattingEnabled = true;
-            comboBox_SelectAnime9.Location = new Point(343, 451);
+            comboBox_SelectAnime9.Location = new Point(343, 450);
             comboBox_SelectAnime9.Name = "comboBox_SelectAnime9";
             comboBox_SelectAnime9.Size = new Size(170, 35);
             comboBox_SelectAnime9.TabIndex = 72;
@@ -478,7 +478,7 @@
             comboBox_SelectAnime8.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime8.Enabled = false;
             comboBox_SelectAnime8.FormattingEnabled = true;
-            comboBox_SelectAnime8.Location = new Point(343, 402);
+            comboBox_SelectAnime8.Location = new Point(343, 400);
             comboBox_SelectAnime8.Name = "comboBox_SelectAnime8";
             comboBox_SelectAnime8.Size = new Size(170, 35);
             comboBox_SelectAnime8.TabIndex = 68;
@@ -528,7 +528,7 @@
             comboBox_SelectAnime7.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime7.Enabled = false;
             comboBox_SelectAnime7.FormattingEnabled = true;
-            comboBox_SelectAnime7.Location = new Point(343, 358);
+            comboBox_SelectAnime7.Location = new Point(343, 356);
             comboBox_SelectAnime7.Name = "comboBox_SelectAnime7";
             comboBox_SelectAnime7.Size = new Size(170, 35);
             comboBox_SelectAnime7.TabIndex = 64;
@@ -578,7 +578,7 @@
             comboBox_SelectAnime6.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime6.Enabled = false;
             comboBox_SelectAnime6.FormattingEnabled = true;
-            comboBox_SelectAnime6.Location = new Point(343, 314);
+            comboBox_SelectAnime6.Location = new Point(343, 312);
             comboBox_SelectAnime6.Name = "comboBox_SelectAnime6";
             comboBox_SelectAnime6.Size = new Size(170, 35);
             comboBox_SelectAnime6.TabIndex = 60;
@@ -628,7 +628,7 @@
             comboBox_SelectAnime5.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime5.Enabled = false;
             comboBox_SelectAnime5.FormattingEnabled = true;
-            comboBox_SelectAnime5.Location = new Point(343, 270);
+            comboBox_SelectAnime5.Location = new Point(343, 268);
             comboBox_SelectAnime5.Name = "comboBox_SelectAnime5";
             comboBox_SelectAnime5.Size = new Size(170, 35);
             comboBox_SelectAnime5.TabIndex = 56;
@@ -678,7 +678,7 @@
             comboBox_SelectAnime4.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime4.Enabled = false;
             comboBox_SelectAnime4.FormattingEnabled = true;
-            comboBox_SelectAnime4.Location = new Point(343, 226);
+            comboBox_SelectAnime4.Location = new Point(343, 224);
             comboBox_SelectAnime4.Name = "comboBox_SelectAnime4";
             comboBox_SelectAnime4.Size = new Size(170, 35);
             comboBox_SelectAnime4.TabIndex = 52;
@@ -728,7 +728,7 @@
             comboBox_SelectAnime3.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime3.Enabled = false;
             comboBox_SelectAnime3.FormattingEnabled = true;
-            comboBox_SelectAnime3.Location = new Point(343, 182);
+            comboBox_SelectAnime3.Location = new Point(343, 180);
             comboBox_SelectAnime3.Name = "comboBox_SelectAnime3";
             comboBox_SelectAnime3.Size = new Size(170, 35);
             comboBox_SelectAnime3.TabIndex = 48;
@@ -791,7 +791,7 @@
             comboBox_SelectAnime2.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime2.Enabled = false;
             comboBox_SelectAnime2.FormattingEnabled = true;
-            comboBox_SelectAnime2.Location = new Point(343, 138);
+            comboBox_SelectAnime2.Location = new Point(343, 136);
             comboBox_SelectAnime2.Name = "comboBox_SelectAnime2";
             comboBox_SelectAnime2.Size = new Size(170, 35);
             comboBox_SelectAnime2.TabIndex = 43;
@@ -841,7 +841,7 @@
             comboBox_SelectAnime1.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime1.Enabled = false;
             comboBox_SelectAnime1.FormattingEnabled = true;
-            comboBox_SelectAnime1.Location = new Point(343, 94);
+            comboBox_SelectAnime1.Location = new Point(343, 92);
             comboBox_SelectAnime1.Name = "comboBox_SelectAnime1";
             comboBox_SelectAnime1.Size = new Size(170, 35);
             comboBox_SelectAnime1.TabIndex = 39;
@@ -891,7 +891,7 @@
             comboBox_SelectAnime0.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime0.Enabled = false;
             comboBox_SelectAnime0.FormattingEnabled = true;
-            comboBox_SelectAnime0.Location = new Point(343, 50);
+            comboBox_SelectAnime0.Location = new Point(343, 48);
             comboBox_SelectAnime0.Name = "comboBox_SelectAnime0";
             comboBox_SelectAnime0.Size = new Size(170, 35);
             comboBox_SelectAnime0.TabIndex = 35;
