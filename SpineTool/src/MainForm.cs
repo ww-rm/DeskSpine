@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
@@ -393,7 +394,7 @@ namespace SpineTool
             }
 
             exportSpineTaskCancelTokenSrc = new();
-            exportSpineTask = Task.Run(() => ExportSpine(this, exportFolder));
+            exportSpineTask = Task.Run(() => ExportSpineTask(this, exportFolder));
         }
         private void StopExportSpine(object? sender, EventArgs e) { StopExportSpine(); }
         private void StopExportSpine()
@@ -407,8 +408,8 @@ namespace SpineTool
             exportSpineTask = null;
         }
 
-        private static void ExportSpine(MainForm self, string exportFolder) { self.ExportSpine(exportFolder); }
-        private void ExportSpine(string exportFolder)
+        private static void ExportSpineTask(MainForm self, string exportFolder) { self.ExportSpineTask(exportFolder); }
+        private void ExportSpineTask(string exportFolder)
         {
             string spineName = null;
             expoterMutex.WaitOne();
@@ -422,18 +423,10 @@ namespace SpineTool
 
             if (!string.IsNullOrEmpty(spineName))
             {
-                Debug.WriteLine(exportFolder);
+                Debug.WriteLine($"Export {spineName} to: {exportFolder}");
                 Directory.CreateDirectory(exportFolder);
 
-                // 停止动画预览并禁用面板
-                StopPreview();
-                exporterPreviewer.SetActive(true);
-                tabControl_Tools.BeginInvoke(() => tabControl_Tools.Enabled = false);
-                button_CancelTask.Click += StopExportSpine;
-                button_CancelTask.BeginInvoke(() => button_CancelTask.Enabled = true);
-
                 // 初始化导出需要的内容
-                button_ResetTimeline_Click(this, EventArgs.Empty);
                 var tex = new SFML.Graphics.RenderTexture((uint)numericUpDown_SizeX.Value, (uint)numericUpDown_SizeY.Value);
                 tex.SetView(exporterPreviewer.GetView());
                 var duration = (float)numericUpDown_ExportDuration.Value;
@@ -441,9 +434,22 @@ namespace SpineTool
                 var delta = 1f / fps;
                 var frameCount = 1 + (int)(duration / delta); // 零帧开始导出
 
-                progressBar_SpineTool.BeginInvoke(() => progressBar_SpineTool.Maximum = frameCount);
-                progressBar_SpineTool.BeginInvoke(() => progressBar_SpineTool.Value = 0);
-                label_ExportDuration.BeginInvoke(() => label_ProgressBar.Text = $"已导出 {0}/{frameCount} 帧：");
+                // 停止动画预览
+                StopPreview();
+                exporterPreviewer.SetActive(true);
+                button_ResetTimeline_Click(this, EventArgs.Empty);
+
+                // 禁用面板初始化 UI 显示
+                BeginInvoke(() =>
+                {
+                    tabControl_Tools.Enabled = false;
+                    button_CancelTask.Click += StopExportSpine;
+                    button_CancelTask.Enabled = true;
+                    progressBar_SpineTool.Maximum = frameCount;
+                    progressBar_SpineTool.Value = 0;
+                    label_ProgressBar.Text = $"已导出 {0}/{frameCount} 帧：";
+                });
+
                 for (int frameIndex = 0; frameIndex < frameCount; frameIndex++)
                 {
                     exporterPreviewer.Clear(SFML.Graphics.Color.Blue);
@@ -462,21 +468,27 @@ namespace SpineTool
 
                     exporterPreviewer.Display();
                     tex.Display();
-                    var img = tex.Texture.CopyToImage();
-                    img.SaveToFile(Path.Combine(exportFolder, $"{spineName}_{fps}_{frameIndex:d6}.png"));
-                    img.Dispose();
+                    using (var img = tex.Texture.CopyToImage())
+                    { img.SaveToFile(Path.Combine(exportFolder, $"{spineName}_{fps}_{frameIndex:d6}.png")); }
 
-                    progressBar_SpineTool.BeginInvoke(progressBar_SpineTool.PerformStep);
-                    label_ExportDuration.BeginInvoke((int val) => label_ProgressBar.Text = $"已导出 {val}/{frameCount} 帧：", [frameIndex + 1]);
+                    BeginInvoke((int v1) =>
+                    {
+                        progressBar_SpineTool.PerformStep();
+                        label_ProgressBar.Text = $"已导出 {v1}/{frameCount} 帧：";
+                    }, [frameIndex + 1]);
 
                     if (exportSpineTaskCancelTokenSrc.Token.IsCancellationRequested)
                         break;
                 }
 
                 // 恢复面板功能和动画预览
-                button_CancelTask.BeginInvoke(() => button_CancelTask.Enabled = false);
-                button_CancelTask.Click -= StopExportSpine;
-                tabControl_Tools.BeginInvoke(() => tabControl_Tools.Enabled = true);
+                BeginInvoke(() =>
+                {
+                    button_CancelTask.Enabled = false;
+                    button_CancelTask.Click -= StopExportSpine;
+                    tabControl_Tools.Enabled = true;
+                });
+
                 exporterPreviewer.SetActive(false);
                 StartPreview();
             }
@@ -487,23 +499,178 @@ namespace SpineTool
 
         #endregion
 
-        #region 边缘修复工具页面
+        #region 边缘处理工具页面
 
-        private SFML.Graphics.Image fixEdgeOriginalImage;
-        private SFML.Graphics.Image fixEdgeFixedImage;
-        private SFML.Graphics.Image fixEdgeFixedRegion;
+        private Bitmap edgeProcessorOriginalImage;
+        private Bitmap edgeProcessorProcessedImage;
+        private Bitmap edgeProcessorProcessedRegion;
 
-        private void button_FixEdgeLoadPng_Click(object sender, EventArgs e)
+        private Task edgeProcessorTask;
+        private CancellationTokenSource edgeProcessorTaskCancelTokenSrc;
+
+        private void button_EdgeProcessorLoadPng_Click(object sender, EventArgs e)
         {
-            //if (openFileDialog_SelectPng.ShowDialog() == DialogResult.OK)
-            //{
-            //    var selectedPng = openFileDialog_SelectPng.FileName;
-            //    try
-            //    {
-            //        fixEdgeOriginalImage = new(selectedPng);
-                    
-            //    }
-            //}
+            if (openFileDialog_LoadPng.ShowDialog() == DialogResult.OK)
+            {
+                var pngPath = openFileDialog_LoadPng.FileName;
+                try
+                {
+                    using var img = Image.FromFile(pngPath);
+                    edgeProcessorOriginalImage = new(img);
+                    edgeProcessorProcessedImage = new(img);
+                    edgeProcessorProcessedRegion = new(img);
+                    pictureBox_EdgeProcessorViewer.Image = edgeProcessorOriginalImage;
+                    label_EdgeProcessorPngSize.Text = $"图像大小：[{edgeProcessorOriginalImage.Size.Width}, {edgeProcessorOriginalImage.Size.Height}]";
+                }
+                catch (Exception ex)
+                {
+                    edgeProcessorOriginalImage = edgeProcessorProcessedImage = edgeProcessorProcessedRegion = null;
+                    pictureBox_EdgeProcessorViewer.Image = null;
+                    label_EdgeProcessorPngSize.Text = "图像大小：";
+                    MessageBox.Show($"{pngPath} 加载失败\n\n{ex}", "图像资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                checkBox_EdgeProcessorSwitchPng.Enabled = false;
+                checkBox_EdgeProcessorSwitchPng.Checked = false;
+                checkBox_EdgeProcessorSwitchPng.Enabled = true;
+            }
+        }
+
+        private void button_EdgeProcessorDoFix_Click(object sender, EventArgs e)
+        {
+            if (edgeProcessorProcessedImage is null)
+            {
+                MessageBox.Show("尚未加载任何图像资源", "提示信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            StartProcessEdge();
+        }
+
+        private void button_EdgeProcessorSavePng_Click(object sender, EventArgs e)
+        {
+            if (edgeProcessorProcessedImage is null)
+            {
+                MessageBox.Show("尚未加载任何图像资源", "提示信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (saveFileDialog_SavePng.ShowDialog() == DialogResult.OK)
+            {
+                var pngPath = saveFileDialog_SavePng.FileName;
+                edgeProcessorProcessedImage.Save(pngPath, ImageFormat.Png);
+            }
+        }
+
+        private void checkBox_EdgeProcessorSwitchPng_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!checkBox_EdgeProcessorSwitchPng.Enabled)
+                return;
+
+            if (checkBox_EdgeProcessorSwitchPng.Checked)
+                pictureBox_EdgeProcessorViewer.Image = edgeProcessorProcessedImage;
+            else
+                pictureBox_EdgeProcessorViewer.Image = edgeProcessorOriginalImage;
+        }
+
+        private void button_EdgeProcessorShowProcessedRegion_MouseDown(object sender, MouseEventArgs e)
+        {
+            pictureBox_EdgeProcessorViewer.Image = edgeProcessorProcessedRegion;
+        }
+        private void button_EdgeProcessorShowProcessedRegion_MouseUp(object sender, MouseEventArgs e)
+        {
+            pictureBox_EdgeProcessorViewer.Image = checkBox_EdgeProcessorSwitchPng.Checked ? edgeProcessorProcessedImage : edgeProcessorOriginalImage;
+        }
+
+        private void StartProcessEdge()
+        {
+            if (edgeProcessorTask is not null)
+            {
+                MessageBox.Show("正在处理中");
+                return;
+            }
+
+            edgeProcessorTaskCancelTokenSrc = new();
+            edgeProcessorTask = Task.Run(() => ProcessEdgeTask(this));
+        }
+        private void StopProcessEdge(object? sender, EventArgs e) { StopProcessEdge(); }
+        private void StopProcessEdge()
+        {
+            if (edgeProcessorTask is null)
+                return;
+
+            edgeProcessorTaskCancelTokenSrc?.Cancel();
+            edgeProcessorTask?.Wait();
+            edgeProcessorTaskCancelTokenSrc = null;
+            edgeProcessorTask = null;
+        }
+
+        private static void ProcessEdgeTask(MainForm self) { self.ProcessEdgeTask(); }
+        private void ProcessEdgeTask()
+        {
+            if (edgeProcessorOriginalImage is not null && edgeProcessorProcessedImage is not null && edgeProcessorProcessedRegion is not null)
+            {
+                // 初始化导出需要的内容
+                var fixEdgeAlpha = (byte)numericUpDown_FixEdgeAlpha.Value;
+                var imgSize = edgeProcessorOriginalImage.Size;
+                var pixelTotalCount = imgSize.Width * imgSize.Height;
+                var processedCount = 0;
+
+                // 禁用面板初始化 UI 内容
+                BeginInvoke(() =>
+                {
+                    tabControl_Tools.Enabled = false;
+                    button_CancelTask.Click += StopProcessEdge;
+                    button_CancelTask.Enabled = true;
+                    progressBar_SpineTool.Maximum = imgSize.Width * imgSize.Height;
+                    progressBar_SpineTool.Value = 0;
+                    label_ProgressBar.Text = $"已处理 {0:p2}：";
+                });
+
+                pictureBox_EdgeProcessorViewer.Image = null;
+                for (int x = 0; x < imgSize.Width; x++)
+                {
+                    for (int y = 0; y < imgSize.Height; y++)
+                    {
+                        // 修复图片
+                        var fixedPixel = edgeProcessorOriginalImage.GetPixel(x, y);
+                        var fixedRegionPixel = Color.Black;
+                        if (fixedPixel.A > 0 && fixedPixel.A < fixEdgeAlpha)
+                        {
+                            fixedPixel = Color.Transparent;
+                            fixedRegionPixel = Color.White;
+                        }
+                        edgeProcessorProcessedImage.SetPixel(x, y, fixedPixel);
+                        edgeProcessorProcessedRegion.SetPixel(x, y, fixedRegionPixel);
+                        processedCount++;
+
+                        if (processedCount % 100000 == 0 || processedCount >= pixelTotalCount)
+                        {
+                            BeginInvoke((int v1, float v2) =>
+                            {
+                                progressBar_SpineTool.Value = v1;
+                                label_ProgressBar.Text = $"已处理 {v2:p2}：";
+                            }, [processedCount, (float)(x + 1) / imgSize.Width]);
+                        }
+                        if (edgeProcessorTaskCancelTokenSrc.Token.IsCancellationRequested) break;
+                    }
+                    if (edgeProcessorTaskCancelTokenSrc.Token.IsCancellationRequested) break;
+                }
+                pictureBox_EdgeProcessorViewer.Image = edgeProcessorOriginalImage;
+
+                // 恢复面板功能
+                BeginInvoke(() =>
+                {
+                    checkBox_EdgeProcessorSwitchPng.Enabled = false;
+                    checkBox_EdgeProcessorSwitchPng.Checked = false;
+                    checkBox_EdgeProcessorSwitchPng.Enabled = true;
+                    button_CancelTask.Enabled = false;
+                    button_CancelTask.Click -= StopProcessEdge;
+                    tabControl_Tools.Enabled = true;
+                });
+            }
+
+            edgeProcessorTaskCancelTokenSrc = null;
+            edgeProcessorTask = null;
         }
 
         #endregion

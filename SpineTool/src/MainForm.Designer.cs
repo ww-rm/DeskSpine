@@ -98,21 +98,20 @@
             numericUpDown_PreviewScale = new NumericUpDown();
             panel_PreviewContainer = new Panel();
             panel_Preview = new Panel();
-            tabPage_FixEdge = new TabPage();
-            splitContainer_FixEdge = new SplitContainer();
+            tabPage_EdgeProcessor = new TabPage();
+            splitContainer_EdgeProcessor = new SplitContainer();
             tableLayoutPanel_FixEdgeOptions = new TableLayoutPanel();
             button_FixEdgeSavePng = new Button();
-            button_FixEdgeDoFix = new Button();
+            button_EdgeProcessorBegin = new Button();
             button_FixEdgeLoadPng = new Button();
             numericUpDown_FixEdgeAlpha = new NumericUpDown();
             label1 = new Label();
             tableLayoutPanel2 = new TableLayoutPanel();
             tableLayoutPanel3 = new TableLayoutPanel();
-            button_ShowFixedRegion = new Button();
-            label_FixEdgePngSize = new Label();
-            checkBox_SwitchPng = new CheckBox();
-            panel_FixEdgePreviewContainer = new Panel();
-            panel_FixEdgePreview = new Panel();
+            button_ShowProcessedRegion = new Button();
+            label_EdgeProcessorPngSize = new Label();
+            checkBox_EdgeProcessorSwitchPng = new CheckBox();
+            pictureBox_EdgeProcessorViewer = new PictureBox();
             tableLayoutPanel_SpineTool = new TableLayoutPanel();
             tableLayoutPanel_Progress = new TableLayoutPanel();
             button_CancelTask = new Button();
@@ -121,7 +120,8 @@
             openFileDialog_SelectSkel = new OpenFileDialog();
             folderBrowserDialog_Export = new FolderBrowserDialog();
             toolTip1 = new ToolTip(components);
-            openFileDialog_SelectPng = new OpenFileDialog();
+            openFileDialog_LoadPng = new OpenFileDialog();
+            saveFileDialog_SavePng = new SaveFileDialog();
             tabControl_Tools.SuspendLayout();
             tabPage_Exporter.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer_Exporter).BeginInit();
@@ -139,16 +139,16 @@
             tableLayoutPanel_ViewSet.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_PreviewScale).BeginInit();
             panel_PreviewContainer.SuspendLayout();
-            tabPage_FixEdge.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)splitContainer_FixEdge).BeginInit();
-            splitContainer_FixEdge.Panel1.SuspendLayout();
-            splitContainer_FixEdge.Panel2.SuspendLayout();
-            splitContainer_FixEdge.SuspendLayout();
+            tabPage_EdgeProcessor.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer_EdgeProcessor).BeginInit();
+            splitContainer_EdgeProcessor.Panel1.SuspendLayout();
+            splitContainer_EdgeProcessor.Panel2.SuspendLayout();
+            splitContainer_EdgeProcessor.SuspendLayout();
             tableLayoutPanel_FixEdgeOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_FixEdgeAlpha).BeginInit();
             tableLayoutPanel2.SuspendLayout();
             tableLayoutPanel3.SuspendLayout();
-            panel_FixEdgePreviewContainer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox_EdgeProcessorViewer).BeginInit();
             tableLayoutPanel_SpineTool.SuspendLayout();
             tableLayoutPanel_Progress.SuspendLayout();
             SuspendLayout();
@@ -156,7 +156,7 @@
             // tabControl_Tools
             // 
             tabControl_Tools.Controls.Add(tabPage_Exporter);
-            tabControl_Tools.Controls.Add(tabPage_FixEdge);
+            tabControl_Tools.Controls.Add(tabPage_EdgeProcessor);
             tabControl_Tools.Dock = DockStyle.Fill;
             tabControl_Tools.Location = new Point(1, 1);
             tabControl_Tools.Margin = new Padding(0);
@@ -264,7 +264,7 @@
             comboBox_SpineVersion.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_SpineVersion.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SpineVersion.FormattingEnabled = true;
-            comboBox_SpineVersion.Location = new Point(280, 283);
+            comboBox_SpineVersion.Location = new Point(280, 284);
             comboBox_SpineVersion.Name = "comboBox_SpineVersion";
             comboBox_SpineVersion.Size = new Size(259, 35);
             comboBox_SpineVersion.TabIndex = 34;
@@ -428,7 +428,7 @@
             comboBox_SelectAnime9.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime9.Enabled = false;
             comboBox_SelectAnime9.FormattingEnabled = true;
-            comboBox_SelectAnime9.Location = new Point(343, 450);
+            comboBox_SelectAnime9.Location = new Point(343, 451);
             comboBox_SelectAnime9.Name = "comboBox_SelectAnime9";
             comboBox_SelectAnime9.Size = new Size(170, 35);
             comboBox_SelectAnime9.TabIndex = 72;
@@ -478,7 +478,7 @@
             comboBox_SelectAnime8.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime8.Enabled = false;
             comboBox_SelectAnime8.FormattingEnabled = true;
-            comboBox_SelectAnime8.Location = new Point(343, 400);
+            comboBox_SelectAnime8.Location = new Point(343, 402);
             comboBox_SelectAnime8.Name = "comboBox_SelectAnime8";
             comboBox_SelectAnime8.Size = new Size(170, 35);
             comboBox_SelectAnime8.TabIndex = 68;
@@ -528,7 +528,7 @@
             comboBox_SelectAnime7.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime7.Enabled = false;
             comboBox_SelectAnime7.FormattingEnabled = true;
-            comboBox_SelectAnime7.Location = new Point(343, 356);
+            comboBox_SelectAnime7.Location = new Point(343, 358);
             comboBox_SelectAnime7.Name = "comboBox_SelectAnime7";
             comboBox_SelectAnime7.Size = new Size(170, 35);
             comboBox_SelectAnime7.TabIndex = 64;
@@ -578,7 +578,7 @@
             comboBox_SelectAnime6.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime6.Enabled = false;
             comboBox_SelectAnime6.FormattingEnabled = true;
-            comboBox_SelectAnime6.Location = new Point(343, 312);
+            comboBox_SelectAnime6.Location = new Point(343, 314);
             comboBox_SelectAnime6.Name = "comboBox_SelectAnime6";
             comboBox_SelectAnime6.Size = new Size(170, 35);
             comboBox_SelectAnime6.TabIndex = 60;
@@ -628,7 +628,7 @@
             comboBox_SelectAnime5.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime5.Enabled = false;
             comboBox_SelectAnime5.FormattingEnabled = true;
-            comboBox_SelectAnime5.Location = new Point(343, 268);
+            comboBox_SelectAnime5.Location = new Point(343, 270);
             comboBox_SelectAnime5.Name = "comboBox_SelectAnime5";
             comboBox_SelectAnime5.Size = new Size(170, 35);
             comboBox_SelectAnime5.TabIndex = 56;
@@ -678,7 +678,7 @@
             comboBox_SelectAnime4.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime4.Enabled = false;
             comboBox_SelectAnime4.FormattingEnabled = true;
-            comboBox_SelectAnime4.Location = new Point(343, 224);
+            comboBox_SelectAnime4.Location = new Point(343, 226);
             comboBox_SelectAnime4.Name = "comboBox_SelectAnime4";
             comboBox_SelectAnime4.Size = new Size(170, 35);
             comboBox_SelectAnime4.TabIndex = 52;
@@ -728,7 +728,7 @@
             comboBox_SelectAnime3.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime3.Enabled = false;
             comboBox_SelectAnime3.FormattingEnabled = true;
-            comboBox_SelectAnime3.Location = new Point(343, 180);
+            comboBox_SelectAnime3.Location = new Point(343, 182);
             comboBox_SelectAnime3.Name = "comboBox_SelectAnime3";
             comboBox_SelectAnime3.Size = new Size(170, 35);
             comboBox_SelectAnime3.TabIndex = 48;
@@ -791,7 +791,7 @@
             comboBox_SelectAnime2.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime2.Enabled = false;
             comboBox_SelectAnime2.FormattingEnabled = true;
-            comboBox_SelectAnime2.Location = new Point(343, 136);
+            comboBox_SelectAnime2.Location = new Point(343, 138);
             comboBox_SelectAnime2.Name = "comboBox_SelectAnime2";
             comboBox_SelectAnime2.Size = new Size(170, 35);
             comboBox_SelectAnime2.TabIndex = 43;
@@ -841,7 +841,7 @@
             comboBox_SelectAnime1.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime1.Enabled = false;
             comboBox_SelectAnime1.FormattingEnabled = true;
-            comboBox_SelectAnime1.Location = new Point(343, 92);
+            comboBox_SelectAnime1.Location = new Point(343, 94);
             comboBox_SelectAnime1.Name = "comboBox_SelectAnime1";
             comboBox_SelectAnime1.Size = new Size(170, 35);
             comboBox_SelectAnime1.TabIndex = 39;
@@ -891,7 +891,7 @@
             comboBox_SelectAnime0.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SelectAnime0.Enabled = false;
             comboBox_SelectAnime0.FormattingEnabled = true;
-            comboBox_SelectAnime0.Location = new Point(343, 48);
+            comboBox_SelectAnime0.Location = new Point(343, 50);
             comboBox_SelectAnime0.Name = "comboBox_SelectAnime0";
             comboBox_SelectAnime0.Size = new Size(170, 35);
             comboBox_SelectAnime0.TabIndex = 35;
@@ -1031,9 +1031,9 @@
             label_PreviewSize.AutoSize = true;
             label_PreviewSize.Location = new Point(4, 9);
             label_PreviewSize.Name = "label_PreviewSize";
-            label_PreviewSize.Size = new Size(233, 27);
+            label_PreviewSize.Size = new Size(112, 27);
             label_PreviewSize.TabIndex = 6;
-            label_PreviewSize.Text = "视窗大小：[1920, 1080]";
+            label_PreviewSize.Text = "视窗大小：";
             toolTip1.SetToolTip(label_PreviewSize, "画面实际显示需要大小");
             // 
             // button_ResetTimeline
@@ -1041,7 +1041,7 @@
             button_ResetTimeline.Anchor = AnchorStyles.None;
             button_ResetTimeline.AutoSize = true;
             button_ResetTimeline.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            button_ResetTimeline.Location = new Point(669, 4);
+            button_ResetTimeline.Location = new Point(608, 4);
             button_ResetTimeline.Name = "button_ResetTimeline";
             button_ResetTimeline.Size = new Size(182, 37);
             button_ResetTimeline.TabIndex = 5;
@@ -1053,7 +1053,7 @@
             // 
             label3.Anchor = AnchorStyles.None;
             label3.AutoSize = true;
-            label3.Location = new Point(244, 9);
+            label3.Location = new Point(123, 9);
             label3.Name = "label3";
             label3.Size = new Size(104, 27);
             label3.TabIndex = 2;
@@ -1063,7 +1063,7 @@
             // 
             numericUpDown_PreviewScale.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             numericUpDown_PreviewScale.DecimalPlaces = 2;
-            numericUpDown_PreviewScale.Location = new Point(355, 6);
+            numericUpDown_PreviewScale.Location = new Point(234, 6);
             numericUpDown_PreviewScale.Maximum = new decimal(new int[] { 5000, 0, 0, 0 });
             numericUpDown_PreviewScale.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown_PreviewScale.Name = "numericUpDown_PreviewScale";
@@ -1098,34 +1098,35 @@
             panel_Preview.MouseUp += panel_Preview_MouseUp;
             panel_Preview.MouseWheel += panel_Preview_MouseWheel;
             // 
-            // tabPage_FixEdge
+            // tabPage_EdgeProcessor
             // 
-            tabPage_FixEdge.BackColor = SystemColors.Control;
-            tabPage_FixEdge.Controls.Add(splitContainer_FixEdge);
-            tabPage_FixEdge.Location = new Point(4, 36);
-            tabPage_FixEdge.Margin = new Padding(0);
-            tabPage_FixEdge.Name = "tabPage_FixEdge";
-            tabPage_FixEdge.Size = new Size(1605, 811);
-            tabPage_FixEdge.TabIndex = 1;
-            tabPage_FixEdge.Text = "边缘修复工具";
+            tabPage_EdgeProcessor.BackColor = SystemColors.Control;
+            tabPage_EdgeProcessor.Controls.Add(splitContainer_EdgeProcessor);
+            tabPage_EdgeProcessor.Location = new Point(4, 36);
+            tabPage_EdgeProcessor.Margin = new Padding(0);
+            tabPage_EdgeProcessor.Name = "tabPage_EdgeProcessor";
+            tabPage_EdgeProcessor.Size = new Size(1605, 811);
+            tabPage_EdgeProcessor.TabIndex = 1;
+            tabPage_EdgeProcessor.Text = "边缘处理工具";
             // 
-            // splitContainer_FixEdge
+            // splitContainer_EdgeProcessor
             // 
-            splitContainer_FixEdge.Dock = DockStyle.Fill;
-            splitContainer_FixEdge.Location = new Point(0, 0);
-            splitContainer_FixEdge.Margin = new Padding(0);
-            splitContainer_FixEdge.Name = "splitContainer_FixEdge";
+            splitContainer_EdgeProcessor.BorderStyle = BorderStyle.FixedSingle;
+            splitContainer_EdgeProcessor.Dock = DockStyle.Fill;
+            splitContainer_EdgeProcessor.Location = new Point(0, 0);
+            splitContainer_EdgeProcessor.Margin = new Padding(0);
+            splitContainer_EdgeProcessor.Name = "splitContainer_EdgeProcessor";
             // 
-            // splitContainer_FixEdge.Panel1
+            // splitContainer_EdgeProcessor.Panel1
             // 
-            splitContainer_FixEdge.Panel1.Controls.Add(tableLayoutPanel_FixEdgeOptions);
+            splitContainer_EdgeProcessor.Panel1.Controls.Add(tableLayoutPanel_FixEdgeOptions);
             // 
-            // splitContainer_FixEdge.Panel2
+            // splitContainer_EdgeProcessor.Panel2
             // 
-            splitContainer_FixEdge.Panel2.Controls.Add(tableLayoutPanel2);
-            splitContainer_FixEdge.Size = new Size(1605, 811);
-            splitContainer_FixEdge.SplitterDistance = 535;
-            splitContainer_FixEdge.TabIndex = 0;
+            splitContainer_EdgeProcessor.Panel2.Controls.Add(tableLayoutPanel2);
+            splitContainer_EdgeProcessor.Size = new Size(1605, 811);
+            splitContainer_EdgeProcessor.SplitterDistance = 535;
+            splitContainer_EdgeProcessor.TabIndex = 0;
             // 
             // tableLayoutPanel_FixEdgeOptions
             // 
@@ -1133,7 +1134,7 @@
             tableLayoutPanel_FixEdgeOptions.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel_FixEdgeOptions.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel_FixEdgeOptions.Controls.Add(button_FixEdgeSavePng, 0, 4);
-            tableLayoutPanel_FixEdgeOptions.Controls.Add(button_FixEdgeDoFix, 0, 3);
+            tableLayoutPanel_FixEdgeOptions.Controls.Add(button_EdgeProcessorBegin, 0, 3);
             tableLayoutPanel_FixEdgeOptions.Controls.Add(button_FixEdgeLoadPng, 0, 2);
             tableLayoutPanel_FixEdgeOptions.Controls.Add(numericUpDown_FixEdgeAlpha, 1, 0);
             tableLayoutPanel_FixEdgeOptions.Controls.Add(label1, 0, 0);
@@ -1152,7 +1153,7 @@
             tableLayoutPanel_FixEdgeOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
             tableLayoutPanel_FixEdgeOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
             tableLayoutPanel_FixEdgeOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            tableLayoutPanel_FixEdgeOptions.Size = new Size(535, 811);
+            tableLayoutPanel_FixEdgeOptions.Size = new Size(533, 809);
             tableLayoutPanel_FixEdgeOptions.TabIndex = 0;
             // 
             // button_FixEdgeSavePng
@@ -1161,27 +1162,29 @@
             button_FixEdgeSavePng.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             tableLayoutPanel_FixEdgeOptions.SetColumnSpan(button_FixEdgeSavePng, 2);
             button_FixEdgeSavePng.Dock = DockStyle.Fill;
-            button_FixEdgeSavePng.Location = new Point(10, 327);
+            button_FixEdgeSavePng.Location = new Point(10, 323);
             button_FixEdgeSavePng.Margin = new Padding(10, 3, 4, 3);
             button_FixEdgeSavePng.Name = "button_FixEdgeSavePng";
-            button_FixEdgeSavePng.Size = new Size(521, 75);
+            button_FixEdgeSavePng.Size = new Size(519, 74);
             button_FixEdgeSavePng.TabIndex = 43;
             button_FixEdgeSavePng.Text = "保存 png...";
             button_FixEdgeSavePng.UseVisualStyleBackColor = true;
+            button_FixEdgeSavePng.Click += button_EdgeProcessorSavePng_Click;
             // 
-            // button_FixEdgeDoFix
+            // button_EdgeProcessorBegin
             // 
-            button_FixEdgeDoFix.AutoSize = true;
-            button_FixEdgeDoFix.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            tableLayoutPanel_FixEdgeOptions.SetColumnSpan(button_FixEdgeDoFix, 2);
-            button_FixEdgeDoFix.Dock = DockStyle.Fill;
-            button_FixEdgeDoFix.Location = new Point(10, 246);
-            button_FixEdgeDoFix.Margin = new Padding(10, 3, 4, 3);
-            button_FixEdgeDoFix.Name = "button_FixEdgeDoFix";
-            button_FixEdgeDoFix.Size = new Size(521, 75);
-            button_FixEdgeDoFix.TabIndex = 42;
-            button_FixEdgeDoFix.Text = "开始修复";
-            button_FixEdgeDoFix.UseVisualStyleBackColor = true;
+            button_EdgeProcessorBegin.AutoSize = true;
+            button_EdgeProcessorBegin.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            tableLayoutPanel_FixEdgeOptions.SetColumnSpan(button_EdgeProcessorBegin, 2);
+            button_EdgeProcessorBegin.Dock = DockStyle.Fill;
+            button_EdgeProcessorBegin.Location = new Point(10, 243);
+            button_EdgeProcessorBegin.Margin = new Padding(10, 3, 4, 3);
+            button_EdgeProcessorBegin.Name = "button_EdgeProcessorBegin";
+            button_EdgeProcessorBegin.Size = new Size(519, 74);
+            button_EdgeProcessorBegin.TabIndex = 42;
+            button_EdgeProcessorBegin.Text = "开始处理";
+            button_EdgeProcessorBegin.UseVisualStyleBackColor = true;
+            button_EdgeProcessorBegin.Click += button_EdgeProcessorDoFix_Click;
             // 
             // button_FixEdgeLoadPng
             // 
@@ -1189,22 +1192,22 @@
             button_FixEdgeLoadPng.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             tableLayoutPanel_FixEdgeOptions.SetColumnSpan(button_FixEdgeLoadPng, 2);
             button_FixEdgeLoadPng.Dock = DockStyle.Fill;
-            button_FixEdgeLoadPng.Location = new Point(10, 165);
+            button_FixEdgeLoadPng.Location = new Point(10, 163);
             button_FixEdgeLoadPng.Margin = new Padding(10, 3, 4, 3);
             button_FixEdgeLoadPng.Name = "button_FixEdgeLoadPng";
-            button_FixEdgeLoadPng.Size = new Size(521, 75);
+            button_FixEdgeLoadPng.Size = new Size(519, 74);
             button_FixEdgeLoadPng.TabIndex = 41;
             button_FixEdgeLoadPng.Text = "加载 png...";
             button_FixEdgeLoadPng.UseVisualStyleBackColor = true;
-            button_FixEdgeLoadPng.Click += button_FixEdgeLoadPng_Click;
+            button_FixEdgeLoadPng.Click += button_EdgeProcessorLoadPng_Click;
             // 
             // numericUpDown_FixEdgeAlpha
             // 
             numericUpDown_FixEdgeAlpha.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            numericUpDown_FixEdgeAlpha.Location = new Point(270, 24);
+            numericUpDown_FixEdgeAlpha.Location = new Point(269, 23);
             numericUpDown_FixEdgeAlpha.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
             numericUpDown_FixEdgeAlpha.Name = "numericUpDown_FixEdgeAlpha";
-            numericUpDown_FixEdgeAlpha.Size = new Size(262, 33);
+            numericUpDown_FixEdgeAlpha.Size = new Size(261, 33);
             numericUpDown_FixEdgeAlpha.TabIndex = 40;
             numericUpDown_FixEdgeAlpha.TextAlign = HorizontalAlignment.Right;
             toolTip1.SetToolTip(numericUpDown_FixEdgeAlpha, "Alpha 通道小于该值的像素点会被设置为全透明像素点 (0, 0, 0, 0)");
@@ -1214,7 +1217,7 @@
             // 
             label1.Anchor = AnchorStyles.Left;
             label1.AutoSize = true;
-            label1.Location = new Point(20, 27);
+            label1.Location = new Point(20, 26);
             label1.Margin = new Padding(20, 0, 4, 0);
             label1.Name = "label1";
             label1.Size = new Size(173, 27);
@@ -1228,7 +1231,7 @@
             tableLayoutPanel2.ColumnCount = 1;
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel2.Controls.Add(tableLayoutPanel3, 0, 1);
-            tableLayoutPanel2.Controls.Add(panel_FixEdgePreviewContainer, 0, 0);
+            tableLayoutPanel2.Controls.Add(pictureBox_EdgeProcessorViewer, 0, 0);
             tableLayoutPanel2.Dock = DockStyle.Fill;
             tableLayoutPanel2.Location = new Point(0, 0);
             tableLayoutPanel2.Margin = new Padding(0);
@@ -1236,7 +1239,7 @@
             tableLayoutPanel2.RowCount = 2;
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel2.RowStyles.Add(new RowStyle());
-            tableLayoutPanel2.Size = new Size(1066, 811);
+            tableLayoutPanel2.Size = new Size(1064, 809);
             tableLayoutPanel2.TabIndex = 1;
             // 
             // tableLayoutPanel3
@@ -1250,68 +1253,64 @@
             tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
             tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
             tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
-            tableLayoutPanel3.Controls.Add(button_ShowFixedRegion, 2, 0);
-            tableLayoutPanel3.Controls.Add(label_FixEdgePngSize, 0, 0);
-            tableLayoutPanel3.Controls.Add(checkBox_SwitchPng, 1, 0);
-            tableLayoutPanel3.Location = new Point(1, 765);
+            tableLayoutPanel3.Controls.Add(button_ShowProcessedRegion, 2, 0);
+            tableLayoutPanel3.Controls.Add(label_EdgeProcessorPngSize, 0, 0);
+            tableLayoutPanel3.Controls.Add(checkBox_EdgeProcessorSwitchPng, 1, 0);
+            tableLayoutPanel3.Location = new Point(1, 763);
             tableLayoutPanel3.Margin = new Padding(0);
             tableLayoutPanel3.Name = "tableLayoutPanel3";
             tableLayoutPanel3.RowCount = 1;
             tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel3.Size = new Size(1064, 45);
+            tableLayoutPanel3.Size = new Size(1062, 45);
             tableLayoutPanel3.TabIndex = 0;
             // 
-            // button_ShowFixedRegion
+            // button_ShowProcessedRegion
             // 
-            button_ShowFixedRegion.Anchor = AnchorStyles.None;
-            button_ShowFixedRegion.AutoSize = true;
-            button_ShowFixedRegion.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            button_ShowFixedRegion.Location = new Point(580, 4);
-            button_ShowFixedRegion.Name = "button_ShowFixedRegion";
-            button_ShowFixedRegion.Size = new Size(142, 37);
-            button_ShowFixedRegion.TabIndex = 8;
-            button_ShowFixedRegion.Text = "查看修改区域";
-            toolTip1.SetToolTip(button_ShowFixedRegion, "按下查看松开取消");
-            button_ShowFixedRegion.UseVisualStyleBackColor = true;
+            button_ShowProcessedRegion.Anchor = AnchorStyles.None;
+            button_ShowProcessedRegion.AutoSize = true;
+            button_ShowProcessedRegion.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            button_ShowProcessedRegion.Location = new Point(518, 4);
+            button_ShowProcessedRegion.Name = "button_ShowProcessedRegion";
+            button_ShowProcessedRegion.Size = new Size(142, 37);
+            button_ShowProcessedRegion.TabIndex = 8;
+            button_ShowProcessedRegion.Text = "查看处理区域";
+            toolTip1.SetToolTip(button_ShowProcessedRegion, "按下查看松开取消");
+            button_ShowProcessedRegion.UseVisualStyleBackColor = true;
+            button_ShowProcessedRegion.MouseDown += button_EdgeProcessorShowProcessedRegion_MouseDown;
+            button_ShowProcessedRegion.MouseUp += button_EdgeProcessorShowProcessedRegion_MouseUp;
             // 
-            // label_FixEdgePngSize
+            // label_EdgeProcessorPngSize
             // 
-            label_FixEdgePngSize.Anchor = AnchorStyles.None;
-            label_FixEdgePngSize.AutoSize = true;
-            label_FixEdgePngSize.Location = new Point(4, 9);
-            label_FixEdgePngSize.Name = "label_FixEdgePngSize";
-            label_FixEdgePngSize.Size = new Size(233, 27);
-            label_FixEdgePngSize.TabIndex = 6;
-            label_FixEdgePngSize.Text = "图像大小：[1024, 1024]";
+            label_EdgeProcessorPngSize.Anchor = AnchorStyles.None;
+            label_EdgeProcessorPngSize.AutoSize = true;
+            label_EdgeProcessorPngSize.Location = new Point(4, 9);
+            label_EdgeProcessorPngSize.Name = "label_EdgeProcessorPngSize";
+            label_EdgeProcessorPngSize.Size = new Size(112, 27);
+            label_EdgeProcessorPngSize.TabIndex = 6;
+            label_EdgeProcessorPngSize.Text = "图像大小：";
             // 
-            // checkBox_SwitchPng
+            // checkBox_EdgeProcessorSwitchPng
             // 
-            checkBox_SwitchPng.Anchor = AnchorStyles.None;
-            checkBox_SwitchPng.AutoSize = true;
-            checkBox_SwitchPng.Location = new Point(308, 7);
-            checkBox_SwitchPng.Name = "checkBox_SwitchPng";
-            checkBox_SwitchPng.Size = new Size(138, 31);
-            checkBox_SwitchPng.TabIndex = 9;
-            checkBox_SwitchPng.Text = "查看修复后";
-            checkBox_SwitchPng.UseVisualStyleBackColor = true;
+            checkBox_EdgeProcessorSwitchPng.Anchor = AnchorStyles.None;
+            checkBox_EdgeProcessorSwitchPng.AutoSize = true;
+            checkBox_EdgeProcessorSwitchPng.Location = new Point(207, 7);
+            checkBox_EdgeProcessorSwitchPng.Name = "checkBox_EdgeProcessorSwitchPng";
+            checkBox_EdgeProcessorSwitchPng.Size = new Size(138, 31);
+            checkBox_EdgeProcessorSwitchPng.TabIndex = 9;
+            checkBox_EdgeProcessorSwitchPng.Text = "显示处理后";
+            checkBox_EdgeProcessorSwitchPng.UseVisualStyleBackColor = true;
+            checkBox_EdgeProcessorSwitchPng.CheckedChanged += checkBox_EdgeProcessorSwitchPng_CheckedChanged;
             // 
-            // panel_FixEdgePreviewContainer
+            // pictureBox_EdgeProcessorViewer
             // 
-            panel_FixEdgePreviewContainer.Controls.Add(panel_FixEdgePreview);
-            panel_FixEdgePreviewContainer.Dock = DockStyle.Fill;
-            panel_FixEdgePreviewContainer.Location = new Point(4, 4);
-            panel_FixEdgePreviewContainer.Name = "panel_FixEdgePreviewContainer";
-            panel_FixEdgePreviewContainer.Size = new Size(1058, 757);
-            panel_FixEdgePreviewContainer.TabIndex = 1;
-            // 
-            // panel_FixEdgePreview
-            // 
-            panel_FixEdgePreview.Anchor = AnchorStyles.None;
-            panel_FixEdgePreview.BackColor = Color.Black;
-            panel_FixEdgePreview.Location = new Point(273, 137);
-            panel_FixEdgePreview.Name = "panel_FixEdgePreview";
-            panel_FixEdgePreview.Size = new Size(512, 512);
-            panel_FixEdgePreview.TabIndex = 0;
+            pictureBox_EdgeProcessorViewer.BackColor = Color.Gray;
+            pictureBox_EdgeProcessorViewer.Dock = DockStyle.Fill;
+            pictureBox_EdgeProcessorViewer.Location = new Point(4, 4);
+            pictureBox_EdgeProcessorViewer.Name = "pictureBox_EdgeProcessorViewer";
+            pictureBox_EdgeProcessorViewer.Size = new Size(1056, 755);
+            pictureBox_EdgeProcessorViewer.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox_EdgeProcessorViewer.TabIndex = 1;
+            pictureBox_EdgeProcessorViewer.TabStop = false;
             // 
             // tableLayoutPanel_SpineTool
             // 
@@ -1390,12 +1389,17 @@
             openFileDialog_SelectSkel.Filter = "Skel 文件 (*.skel; *.json)|*.skel;*.json";
             openFileDialog_SelectSkel.RestoreDirectory = true;
             // 
-            // openFileDialog_SelectPng
+            // openFileDialog_LoadPng
             // 
-            openFileDialog_SelectPng.AddExtension = false;
-            openFileDialog_SelectPng.AddToRecent = false;
-            openFileDialog_SelectPng.Filter = "Png 文件 (*.png)|*.png";
-            openFileDialog_SelectPng.RestoreDirectory = true;
+            openFileDialog_LoadPng.AddExtension = false;
+            openFileDialog_LoadPng.AddToRecent = false;
+            openFileDialog_LoadPng.Filter = "Png 文件 (*.png)|*.png";
+            openFileDialog_LoadPng.RestoreDirectory = true;
+            // 
+            // saveFileDialog_SavePng
+            // 
+            saveFileDialog_SavePng.DefaultExt = "png";
+            saveFileDialog_SavePng.Filter = "Png 文件 (*.png)|*.png";
             // 
             // MainForm
             // 
@@ -1432,11 +1436,11 @@
             tableLayoutPanel_ViewSet.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_PreviewScale).EndInit();
             panel_PreviewContainer.ResumeLayout(false);
-            tabPage_FixEdge.ResumeLayout(false);
-            splitContainer_FixEdge.Panel1.ResumeLayout(false);
-            splitContainer_FixEdge.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)splitContainer_FixEdge).EndInit();
-            splitContainer_FixEdge.ResumeLayout(false);
+            tabPage_EdgeProcessor.ResumeLayout(false);
+            splitContainer_EdgeProcessor.Panel1.ResumeLayout(false);
+            splitContainer_EdgeProcessor.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer_EdgeProcessor).EndInit();
+            splitContainer_EdgeProcessor.ResumeLayout(false);
             tableLayoutPanel_FixEdgeOptions.ResumeLayout(false);
             tableLayoutPanel_FixEdgeOptions.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_FixEdgeAlpha).EndInit();
@@ -1444,7 +1448,7 @@
             tableLayoutPanel2.PerformLayout();
             tableLayoutPanel3.ResumeLayout(false);
             tableLayoutPanel3.PerformLayout();
-            panel_FixEdgePreviewContainer.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox_EdgeProcessorViewer).EndInit();
             tableLayoutPanel_SpineTool.ResumeLayout(false);
             tableLayoutPanel_SpineTool.PerformLayout();
             tableLayoutPanel_Progress.ResumeLayout(false);
@@ -1456,7 +1460,7 @@
 
         private TabControl tabControl_Tools;
         private TabPage tabPage_Exporter;
-        private TabPage tabPage_FixEdge;
+        private TabPage tabPage_EdgeProcessor;
         private SplitContainer splitContainer_Exporter;
         private TableLayoutPanel tableLayoutPanel_SpineTool;
         private TableLayoutPanel tableLayoutPanel_Progress;
@@ -1531,20 +1535,20 @@
         private Button button_CancelTask;
         private Label label_ExportDuration;
         private NumericUpDown numericUpDown_ExportDuration;
-        private SplitContainer splitContainer_FixEdge;
+        private SplitContainer splitContainer_EdgeProcessor;
         private TableLayoutPanel tableLayoutPanel_FixEdgeOptions;
         private NumericUpDown numericUpDown_FixEdgeAlpha;
         private Label label1;
         private Button button_FixEdgeLoadPng;
-        private OpenFileDialog openFileDialog_SelectPng;
-        private Button button_FixEdgeDoFix;
+        private OpenFileDialog openFileDialog_LoadPng;
+        private Button button_EdgeProcessorBegin;
         private Button button_FixEdgeSavePng;
         private TableLayoutPanel tableLayoutPanel2;
         private TableLayoutPanel tableLayoutPanel3;
-        private Label label_FixEdgePngSize;
-        private Panel panel_FixEdgePreviewContainer;
-        private Panel panel_FixEdgePreview;
-        private Button button_ShowFixedRegion;
-        private CheckBox checkBox_SwitchPng;
+        private Label label_EdgeProcessorPngSize;
+        private Button button_ShowProcessedRegion;
+        private CheckBox checkBox_EdgeProcessorSwitchPng;
+        private PictureBox pictureBox_EdgeProcessorViewer;
+        private SaveFileDialog saveFileDialog_SavePng;
     }
 }
