@@ -11,7 +11,7 @@
         <ApplicationHighDpiMode>PerMonitor</ApplicationHighDpiMode>
         <ApplicationIcon>appicon_dark.ico</ApplicationIcon>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-        <Version>0.10.3</Version>
+        <Version>0.10.4</Version>
         <BaseOutputPath>$(SolutionDir)out</BaseOutputPath>
     </PropertyGroup>
 
