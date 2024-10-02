@@ -489,6 +489,23 @@ namespace SpineTool
 
         #region ±ßÔµÐÞ¸´¹¤¾ßÒ³Ãæ
 
+        private SFML.Graphics.Image fixEdgeOriginalImage;
+        private SFML.Graphics.Image fixEdgeFixedImage;
+        private SFML.Graphics.Image fixEdgeFixedRegion;
+
+        private void button_FixEdgeLoadPng_Click(object sender, EventArgs e)
+        {
+            //if (openFileDialog_SelectPng.ShowDialog() == DialogResult.OK)
+            //{
+            //    var selectedPng = openFileDialog_SelectPng.FileName;
+            //    try
+            //    {
+            //        fixEdgeOriginalImage = new(selectedPng);
+                    
+            //    }
+            //}
+        }
+
         #endregion
 
     }
