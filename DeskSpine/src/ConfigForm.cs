@@ -213,6 +213,11 @@ namespace DeskSpine
             {
                 Value = Program.CurrentConfig;
 
+                // 恢复默认显示
+                Size = new(1600, 900);
+                CenterToScreen();
+                tabControl_Config.SelectTab(0);
+
                 // 默认锁定位置大小调整
                 numericUpDown_PositionX.Enabled = false;
                 numericUpDown_PositionY.Enabled = false;
