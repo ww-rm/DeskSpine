@@ -180,6 +180,7 @@
             openFileDialog_SelectSkel = new OpenFileDialog();
             openFileDialog_BalloonIconPath = new OpenFileDialog();
             toolTip1 = new ToolTip(components);
+            tabPage_VoiceConfig = new TabPage();
             contextMenuStrip.SuspendLayout();
             tableLayoutPanel_Window.SuspendLayout();
             tabControl_Config.SuspendLayout();
@@ -368,6 +369,7 @@
             tabControl_Config.Controls.Add(tabPage_SystemConfig);
             tabControl_Config.Controls.Add(tabPage_BasicConfig);
             tabControl_Config.Controls.Add(tabPage_SpineConfig);
+            tabControl_Config.Controls.Add(tabPage_VoiceConfig);
             tabControl_Config.Dock = DockStyle.Fill;
             tabControl_Config.Location = new Point(0, 0);
             tabControl_Config.Margin = new Padding(0);
@@ -1177,7 +1179,7 @@
             comboBox_AutoBackgroudColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_AutoBackgroudColor.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_AutoBackgroudColor.FormattingEnabled = true;
-            comboBox_AutoBackgroudColor.Location = new Point(0, 16);
+            comboBox_AutoBackgroudColor.Location = new Point(0, 14);
             comboBox_AutoBackgroudColor.Margin = new Padding(0, 0, 4, 0);
             comboBox_AutoBackgroudColor.Name = "comboBox_AutoBackgroudColor";
             comboBox_AutoBackgroudColor.Size = new Size(145, 35);
@@ -2035,7 +2037,7 @@
             comboBox_WindowType.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_WindowType.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_WindowType.FormattingEnabled = true;
-            comboBox_WindowType.Location = new Point(234, 78);
+            comboBox_WindowType.Location = new Point(234, 77);
             comboBox_WindowType.Margin = new Padding(0);
             comboBox_WindowType.Name = "comboBox_WindowType";
             comboBox_WindowType.Size = new Size(642, 35);
@@ -2068,7 +2070,7 @@
             comboBox_SpineVersion.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_SpineVersion.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SpineVersion.FormattingEnabled = true;
-            comboBox_SpineVersion.Location = new Point(234, 15);
+            comboBox_SpineVersion.Location = new Point(234, 14);
             comboBox_SpineVersion.Margin = new Padding(0);
             comboBox_SpineVersion.Name = "comboBox_SpineVersion";
             comboBox_SpineVersion.Size = new Size(642, 35);
@@ -2120,6 +2122,17 @@
             openFileDialog_BalloonIconPath.AddToRecent = false;
             openFileDialog_BalloonIconPath.Filter = "图像文件 (*.jpg; *.jpeg; *.png; *.bmp; *.ico)|*.jpg;*.jpeg;*.png;*.bmp;*.ico|所有文件 (*.*)|*.*";
             openFileDialog_BalloonIconPath.RestoreDirectory = true;
+            // 
+            // tabPage_VoiceConfig
+            // 
+            tabPage_VoiceConfig.AutoScroll = true;
+            tabPage_VoiceConfig.BackColor = SystemColors.Control;
+            tabPage_VoiceConfig.Location = new Point(4, 36);
+            tabPage_VoiceConfig.Margin = new Padding(0);
+            tabPage_VoiceConfig.Name = "tabPage_VoiceConfig";
+            tabPage_VoiceConfig.Size = new Size(1570, 747);
+            tabPage_VoiceConfig.TabIndex = 3;
+            tabPage_VoiceConfig.Text = "语音设置";
             // 
             // ConfigForm
             // 
@@ -2338,5 +2351,6 @@
         private ToolTip toolTip1;
         private ToolStripMenuItem commandSpineTool;
         private ToolStripSeparator toolStripSeparator3;
+        private TabPage tabPage_VoiceConfig;
     }
 }
