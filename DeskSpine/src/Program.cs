@@ -113,7 +113,7 @@ namespace DeskSpine
                 // 优先检测是否需要更换窗口类型, 重新创建窗口实例之后再设置其他配置
                 if (cur.SpineConfig.WindowType != value.SpineConfig.WindowType)
                 {
-                    WindowSpine.Dispose();
+                    WindowSpine.Close();
                     WindowSpine = SpineWindow.SpineWindow.New(value.SpineConfig.WindowType, SpineConfig.SlotCount);
                 }
 

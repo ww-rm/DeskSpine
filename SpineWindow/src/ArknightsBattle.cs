@@ -1,5 +1,4 @@
-﻿using SFML.Window;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SpineWindow
 {
-    public class ArknightsBattle : SpineWindow
+    public sealed class ArknightsBattle : SpineWindow
     {
         private string animation_Start = "";
         private string animation_Idle = "";
@@ -42,9 +41,9 @@ namespace SpineWindow
             mutex.ReleaseMutex();
         }
 
-        protected override void Trigger_SpineLoaded(int index)
+        protected override void SpineLoaded(int index)
         {
-            base.Trigger_SpineLoaded(index);
+            base.SpineLoaded(index);
 
             if (index != 0)
                 return;
@@ -71,28 +70,28 @@ namespace SpineWindow
             mutex.ReleaseMutex();
         }
 
-        protected override void Trigger_MouseButtonClick(MouseButtonEventArgs e)
+        protected override void Click(SFML.Window.Mouse.Button button)
         {
-            base.Trigger_MouseButtonClick(e);
+            base.Click(button);
 
-            switch (e.Button)
+            switch (button)
             {
-                case Mouse.Button.Left:
+                case SFML.Window.Mouse.Button.Left:
                     SetSkillAnimation(1);
                     break;
-                case Mouse.Button.Middle:
+                case SFML.Window.Mouse.Button.Middle:
                     SetSkillAnimation(3);
                     break;
             }
         }
 
-        protected override void Trigger_MouseButtonDoubleClick(MouseButtonEventArgs e)
+        protected override void DoubleClick(SFML.Window.Mouse.Button button)
         {
-            base.Trigger_MouseButtonDoubleClick(e);
+            base.DoubleClick(button);
 
-            switch (e.Button)
+            switch (button)
             {
-                case Mouse.Button.Left:
+                case SFML.Window.Mouse.Button.Left:
                     SetSkillAnimation(2);
                     break;
             }

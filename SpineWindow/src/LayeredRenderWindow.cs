@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace SpineWindow
 {
     
-    internal abstract class LayeredRenderWindow : IDisposable
+    public abstract class LayeredRenderWindow : IDisposable
     {
 #if DEBUG
         protected const string RegKeyName = "SpineWindow_d";
@@ -41,7 +41,7 @@ namespace SpineWindow
         /// <summary>
         /// LayeredRenderWindow 基类, 提供 Layered RenderWindow 的功能封装
         /// </summary>
-        public LayeredRenderWindow(uint slotCount)
+        public LayeredRenderWindow()
         {
             windowCreatedEvent.Reset();
             windowLoopTask = Task.Run(WindowLoopTask);
@@ -499,10 +499,8 @@ namespace SpineWindow
                 {
                     Position = Position + windowDelta;
                 }
-                else if (rightDown)
-                {
-                    Drag(SFML.Window.Mouse.Button.Right, worldSmallDelta, worldDelta);
-                }
+
+                Drag(leftDown ? SFML.Window.Mouse.Button.Left : SFML.Window.Mouse.Button.Right, worldSmallDelta, worldDelta);
             }
         }
 
@@ -633,7 +631,6 @@ namespace SpineWindow
         /// <summary>
         /// 结束拖动
         /// </summary>
-        /// <param name="button"></param>
         protected virtual void DragEnd(SFML.Window.Mouse.Button button) { }
 
         /// <summary>

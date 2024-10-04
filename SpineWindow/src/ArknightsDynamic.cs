@@ -1,5 +1,4 @@
-﻿using SFML.Window;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SpineWindow
 {
-    public class ArknightsDynamic : SpineWindow
+    public sealed class ArknightsDynamic : SpineWindow
     {
         private string animation_Idle = "Idle";
         private string animation_Interact = "Interact";
@@ -16,15 +15,15 @@ namespace SpineWindow
 
         private Random rnd = new();
 
-        private SFML.System.Clock clockSpecial = new();
+        private float specialElapsedTime = 0f;
         private const float meanWaitingTime = 30f;
         private float nextSpecialTime = 10f;
 
         public ArknightsDynamic(uint slotCount) : base(slotCount) { }
 
-        protected override void Trigger_SpineLoaded(int index)
+        protected override void SpineLoaded(int index)
         {
-            base.Trigger_SpineLoaded(index);
+            base.SpineLoaded(index);
 
             mutex.WaitOne();
             if (spineSlots[0] is not null) 
@@ -32,13 +31,14 @@ namespace SpineWindow
             mutex.ReleaseMutex();
         }
 
-        protected override void Trigger_StateUpdated()
+        protected override void Update(float delta)
         {
-            base.Trigger_StateUpdated();
+            base.Update(delta);
 
-            if (clockSpecial.ElapsedTime.AsSeconds() >= nextSpecialTime)
+            specialElapsedTime += delta;
+            if (specialElapsedTime >= nextSpecialTime)
             {
-                clockSpecial.Restart();
+                specialElapsedTime = 0;
                 nextSpecialTime = (float)(-meanWaitingTime * Math.Log(rnd.NextSingle()));
                 Debug.WriteLine($"Next time to special: {nextSpecialTime}");
                 mutex.WaitOne();
@@ -54,9 +54,9 @@ namespace SpineWindow
             }
         }
 
-        protected override void Trigger_MouseButtonClick(MouseButtonEventArgs e)
+        protected override void Click(SFML.Window.Mouse.Button button)
         {
-            base.Trigger_MouseButtonClick(e);
+            base.Click(button);
             mutex.WaitOne();
             if (spineSlots[0] is not null && spineSlots[0].CurrentAnimation != animation_Interact)
             {

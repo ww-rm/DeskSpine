@@ -1,4 +1,3 @@
-using SFML.Window;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,22 +6,22 @@ using System.Threading.Tasks;
 
 namespace SpineWindow
 {
-    public class AzurLaneDynamic : SpineWindow
+    public sealed class AzurLaneDynamic : SpineWindow
     {
         public AzurLaneDynamic(uint slotCount) : base(slotCount) { }
 
-        protected override void Trigger_SpineLoaded(int index)
+        protected override void SpineLoaded(int index)
         {
-            base.Trigger_SpineLoaded(index);
+            base.SpineLoaded(index);
 
             mutex.WaitOne();
             foreach (var sp in spineSlots) { if (sp is not null) sp.CurrentAnimation = "normal"; }
             mutex.ReleaseMutex();
         }
 
-        protected override void Trigger_MouseButtonClick(MouseButtonEventArgs e)
+        protected override void Click(SFML.Window.Mouse.Button button)
         {
-            base.Trigger_MouseButtonClick(e);
+            base.Click(button);
             mutex.WaitOne();
             foreach (var sp in spineSlots) { if (sp is not null) { sp.CurrentAnimation = "click"; sp.AddAnimation("normal"); } }
             mutex.ReleaseMutex();

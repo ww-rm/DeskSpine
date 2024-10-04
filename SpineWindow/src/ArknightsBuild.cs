@@ -1,5 +1,4 @@
-﻿using SFML.Window;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SpineWindow
 {
-    public class ArknightsBuild: SpineWindow
+    public sealed class ArknightsBuild : SpineWindow
     {
         private enum State
         {
@@ -32,15 +31,15 @@ namespace SpineWindow
         private State previousState = State.Idle;
         private Random rnd = new();
 
-        private SFML.System.Clock clockStand = new();
+        private float standElapsedTime = 0f;
         private const float meanWaitingTime = 30f;
         private float nextStandTime = 10f;
 
         public ArknightsBuild(uint slotCount) : base(slotCount) { }
 
-        protected override void Trigger_SpineLoaded(int index)
+        protected override void SpineLoaded(int index)
         {
-            base.Trigger_SpineLoaded(index);
+            base.SpineLoaded(index);
 
             if (index != 0)
                 return;
@@ -62,17 +61,16 @@ namespace SpineWindow
                 state = State.Idle;
             }
             mutex.ReleaseMutex();
-
-            clockStand.Restart();
         }
 
-        protected override void Trigger_StateUpdated()
+        protected override void Update(float delta)
         {
-            base.Trigger_StateUpdated();
+            base.Update(delta);
 
-            if (clockStand.ElapsedTime.AsSeconds() >= nextStandTime)
+            standElapsedTime += delta;
+            if (standElapsedTime >= nextStandTime)
             {
-                clockStand.Restart();
+                standElapsedTime = 0;
                 nextStandTime = (float)(-meanWaitingTime * Math.Log(rnd.NextSingle()));
                 Debug.WriteLine($"Next time to stand: {nextStandTime}");
                 if (state == State.Idle)
@@ -91,9 +89,9 @@ namespace SpineWindow
             }
         }
 
-        protected override void Trigger_MouseButtonClick(MouseButtonEventArgs e)
+        protected override void Click(SFML.Window.Mouse.Button button)
         {
-            base.Trigger_MouseButtonClick(e);
+            base.Click(button);
 
             mutex.WaitOne();
             if (spineSlots[0] is not null)
@@ -107,12 +105,12 @@ namespace SpineWindow
                     _ => spineSlots[0].CurrentAnimation,
                 };
 
-                switch (e.Button)
+                switch (button)
                 {
-                    case Mouse.Button.Left:
+                    case SFML.Window.Mouse.Button.Left:
                         spineSlots[0].CurrentAnimation = animation_MouseLeftClick;
                         break;
-                    case Mouse.Button.Right:
+                    case SFML.Window.Mouse.Button.Right:
                         spineSlots[0].CurrentAnimation = animation_MouseRightClick;
                         break;
                 }
@@ -130,9 +128,9 @@ namespace SpineWindow
             mutex.ReleaseMutex();
         }
 
-        protected override void Trigger_MouseButtonDoubleClick(MouseButtonEventArgs e)
+        protected override void DoubleClick(SFML.Window.Mouse.Button button)
         {
-            base.Trigger_MouseButtonDoubleClick(e);
+            base.DoubleClick(button);
 
             mutex.WaitOne();
             if (spineSlots[0] is not null)
@@ -146,12 +144,12 @@ namespace SpineWindow
                     _ => spineSlots[0].CurrentAnimation,
                 };
 
-                switch (e.Button)
+                switch (button)
                 {
-                    case Mouse.Button.Left:
+                    case SFML.Window.Mouse.Button.Left:
                         spineSlots[0].CurrentAnimation = animation_MouseLeftDoubleClick;
                         break;
-                    case Mouse.Button.Right:
+                    case SFML.Window.Mouse.Button.Right:
                         spineSlots[0].CurrentAnimation = animation_MouseRightDoubleClick;
                         break;
                 }
@@ -169,9 +167,9 @@ namespace SpineWindow
             mutex.ReleaseMutex();
         }
 
-        protected override void Trigger_MouseDragBegin(MouseMoveEventArgs e)
+        protected override void DragBegin(SFML.Window.Mouse.Button button)
         {
-            base.Trigger_MouseDragBegin(e);
+            base.DragBegin(button);
 
             mutex.WaitOne();
             if (spineSlots[0] is not null)
@@ -191,9 +189,9 @@ namespace SpineWindow
             mutex.ReleaseMutex();
         }
 
-        protected override void Trigger_MouseDragEnd(MouseButtonEventArgs e)
+        protected override void DragEnd(SFML.Window.Mouse.Button button)
         {
-            base.Trigger_MouseDragEnd(e);
+            base.DragEnd(button);
 
             mutex.WaitOne();
             if (spineSlots[0] is not null)
@@ -219,28 +217,26 @@ namespace SpineWindow
             mutex.ReleaseMutex();
         }
 
-        protected override void Trigger_FallAsleep()
+        protected override void SleepStateChange(bool sleep)
         {
-            base.Trigger_FallAsleep();
+            base.SleepStateChange(sleep);
 
             mutex.WaitOne();
-            if (spineSlots[0] is not null && state == State.Idle)
+            if (sleep)
             {
-                spineSlots[0].CurrentAnimation = animation_Sleep;
-                state = State.Sleeping;
+                if (spineSlots[0] is not null && state == State.Idle)
+                {
+                    spineSlots[0].CurrentAnimation = animation_Sleep;
+                    state = State.Sleeping;
+                }
             }
-            mutex.ReleaseMutex();
-        }
-
-        protected override void Trigger_WakeUp()
-        {
-            base.Trigger_WakeUp();
-
-            mutex.WaitOne();
-            if (spineSlots[0] is not null && state == State.Sleeping)
+            else
             {
-                spineSlots[0].CurrentAnimation = animation_Idle;
-                state = State.Idle;
+                if (spineSlots[0] is not null && state == State.Sleeping)
+                {
+                    spineSlots[0].CurrentAnimation = animation_Idle;
+                    state = State.Idle;
+                }
             }
             mutex.ReleaseMutex();
         }
