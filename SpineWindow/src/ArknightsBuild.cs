@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SpineWindow
 {
-    public sealed class ArknightsBuild : SpineWindow
+    public sealed class ArknightsBuild : SpineRenderWindow
     {
         private enum State
         {

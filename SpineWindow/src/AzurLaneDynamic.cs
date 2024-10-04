@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SpineWindow
 {
-    public sealed class AzurLaneDynamic : SpineWindow
+    public sealed class AzurLaneDynamic : SpineRenderWindow
     {
         public AzurLaneDynamic(uint slotCount) : base(slotCount) { }
 

@@ -84,12 +84,12 @@ namespace DeskSpine
                 // ª˘¥°…Ë÷√
                 v.BasicConfig.WallpaperMode = checkBox_WallpaperMode.Checked;
                 v.BasicConfig.MouseClickThrough = checkBox_MouseClickThrough.Checked;
-                v.BasicConfig.PositionX = numericUpDown_PositionX.Enabled ? (int)numericUpDown_PositionX.Value : Program.WindowSpine.Position.X;
-                v.BasicConfig.PositionY = numericUpDown_PositionY.Enabled ? (int)numericUpDown_PositionY.Value : Program.WindowSpine.Position.Y;
-                v.BasicConfig.SizeX = numericUpDown_SizeX.Enabled ? (uint)numericUpDown_SizeX.Value : Program.WindowSpine.Size.X;
-                v.BasicConfig.SizeY = numericUpDown_SizeY.Enabled ? (uint)numericUpDown_SizeY.Value : Program.WindowSpine.Size.Y;
-                v.BasicConfig.SpinePositionX = numericUpDown_SpinePositionX.Enabled ? (float)numericUpDown_SpinePositionX.Value : Program.WindowSpine.SpinePosition.X;
-                v.BasicConfig.SpinePositionY = numericUpDown_SpinePositionY.Enabled ? (float)numericUpDown_SpinePositionY.Value : Program.WindowSpine.SpinePosition.Y;
+                v.BasicConfig.PositionX = numericUpDown_PositionX.Enabled ? (int)numericUpDown_PositionX.Value : Program.spineWindow.Position.X;
+                v.BasicConfig.PositionY = numericUpDown_PositionY.Enabled ? (int)numericUpDown_PositionY.Value : Program.spineWindow.Position.Y;
+                v.BasicConfig.SizeX = numericUpDown_SizeX.Enabled ? (uint)numericUpDown_SizeX.Value : Program.spineWindow.Size.X;
+                v.BasicConfig.SizeY = numericUpDown_SizeY.Enabled ? (uint)numericUpDown_SizeY.Value : Program.spineWindow.Size.Y;
+                v.BasicConfig.SpinePositionX = numericUpDown_SpinePositionX.Enabled ? (float)numericUpDown_SpinePositionX.Value : Program.spineWindow.SpinePosition.X;
+                v.BasicConfig.SpinePositionY = numericUpDown_SpinePositionY.Enabled ? (float)numericUpDown_SpinePositionY.Value : Program.spineWindow.SpinePosition.Y;
                 v.BasicConfig.SpineFlip = checkBox_SpineFlip.Checked;
                 v.BasicConfig.SpineScale = trackBar_SpineScale.Value / 100.0f;
                 v.BasicConfig.Opacity = (byte)trackBar_Opacity.Value;
@@ -321,12 +321,12 @@ namespace DeskSpine
             var currentConfig = Program.CurrentConfig;
             if (commandShowSpine.Checked)
             {
-                Program.WindowSpine.Visible = false;
+                Program.spineWindow.Visible = false;
                 currentConfig.SystemConfig.Visible = false;
             }
             else
             {
-                Program.WindowSpine.Visible = true;
+                Program.spineWindow.Visible = true;
                 currentConfig.SystemConfig.Visible = true;
             }
             Program.LocalConfig = currentConfig;
@@ -337,12 +337,12 @@ namespace DeskSpine
             var currentConfig = Program.CurrentConfig;
             if (commandWallpaperMode.Checked)
             {
-                Program.WindowSpine.WallpaperMode = false;
+                Program.spineWindow.WallpaperMode = false;
                 currentConfig.BasicConfig.WallpaperMode = false;
             }
             else
             {
-                Program.WindowSpine.WallpaperMode = true;
+                Program.spineWindow.WallpaperMode = true;
                 currentConfig.BasicConfig.WallpaperMode = true;
             }
             Program.LocalConfig = currentConfig;
@@ -353,12 +353,12 @@ namespace DeskSpine
             var currentConfig = Program.CurrentConfig;
             if (commandMouseClickThrough.Checked)
             {
-                Program.WindowSpine.MouseClickThrough = false;
+                Program.spineWindow.MouseClickThrough = false;
                 currentConfig.BasicConfig.MouseClickThrough = false;
             }
             else
             {
-                Program.WindowSpine.MouseClickThrough = true;
+                Program.spineWindow.MouseClickThrough = true;
                 currentConfig.BasicConfig.MouseClickThrough = true;
             }
             Program.LocalConfig = currentConfig;
@@ -366,12 +366,12 @@ namespace DeskSpine
 
         private void commandSetFullScreen_Click(object sender, EventArgs e)
         {
-            var screenBounds = Screen.FromHandle(Program.WindowSpine.Handle).Bounds;
+            var screenBounds = Screen.FromHandle(Program.spineWindow.Handle).Bounds;
             var screenPosition = screenBounds.Location;
             var screenSize = screenBounds.Size;
             var currentConfig = Program.CurrentConfig;
-            Program.WindowSpine.Position = new(screenPosition.X, screenPosition.Y);
-            Program.WindowSpine.Size = new((uint)screenSize.Width, (uint)screenSize.Height);
+            Program.spineWindow.Position = new(screenPosition.X, screenPosition.Y);
+            Program.spineWindow.Size = new((uint)screenSize.Width, (uint)screenSize.Height);
             currentConfig.BasicConfig.PositionX = screenPosition.X;
             currentConfig.BasicConfig.PositionY = screenPosition.Y;
             currentConfig.BasicConfig.SizeX = (uint)screenSize.Width;
@@ -381,7 +381,7 @@ namespace DeskSpine
 
         private void commandResetSpine_Click(object sender, EventArgs e)
         {
-            Program.WindowSpine.ResetPositionAndSize();
+            Program.spineWindow.ResetPositionAndSize();
         }
 
 

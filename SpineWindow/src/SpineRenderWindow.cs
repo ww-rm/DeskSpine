@@ -33,14 +33,14 @@ namespace SpineWindow
     }
 
     /// <summary>
-    /// SpineWindow 抽象基类
+    /// SpineWindow 抽象基类, 提供对 Spine 对象的基本操作, 完成逻辑更新和渲染
     /// </summary>
-    public abstract class SpineWindow : LayeredRenderWindow
+    public abstract class SpineRenderWindow : LayeredRenderWindow
     {
         /// <summary>
         /// 创建指定类型 Spine 窗口
         /// </summary>
-        public static SpineWindow New(SpineWindowType type, uint slotCount)
+        public static SpineRenderWindow New(SpineWindowType type, uint slotCount)
         {
             return type switch
             {
@@ -76,9 +76,9 @@ namespace SpineWindow
         private Dictionary<uint, uint>?[] colorTables;              // 背景颜色表, 供自动生成背景颜色时使用
 
         /// <summary>
-        /// SpineWindow 基类, 提供 Spine 装载和动画交互
+        /// SpineRenderWindow 基类, 提供 Spine 更新和渲染
         /// </summary>
-        public SpineWindow(uint slotCount)
+        public SpineRenderWindow(uint slotCount)
         {
             spineSlots = new Spine.Spine[slotCount];
             colorTables = new Dictionary<uint, uint>[slotCount];

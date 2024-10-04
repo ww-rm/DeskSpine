@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SpineWindow
 {
-    public sealed class AzurLaneSD : SpineWindow
+    public sealed class AzurLaneSD : SpineRenderWindow
     {
         private enum State
         {

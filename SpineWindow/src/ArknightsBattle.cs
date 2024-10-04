@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SpineWindow
 {
-    public sealed class ArknightsBattle : SpineWindow
+    public sealed class ArknightsBattle : SpineRenderWindow
     {
         private string animation_Start = "";
         private string animation_Idle = "";

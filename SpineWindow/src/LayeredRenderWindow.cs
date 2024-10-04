@@ -9,7 +9,9 @@ using System.Threading.Tasks;
 
 namespace SpineWindow
 {
-    
+    /// <summary>
+    /// 对 SFML.Graphics.RenderWindow 的封装, 并提供分层窗口的基本功能
+    /// </summary>
     public abstract class LayeredRenderWindow : IDisposable
     {
 #if DEBUG
@@ -167,12 +169,12 @@ namespace SpineWindow
         }
 
         /// <summary>
-        /// 逻辑帧更新
+        /// 逻辑帧更新, 子类需要注意数据线程间同步
         /// </summary>
         protected abstract void UpdateFrame(float delta);
 
         /// <summary>
-        /// 渲染帧更新
+        /// 渲染帧更新, 子类需要注意数据线程间同步
         /// </summary>
         protected abstract void RenderFrame(SFML.Graphics.RenderTarget target);
 
