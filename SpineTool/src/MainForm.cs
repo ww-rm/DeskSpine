@@ -391,7 +391,7 @@ namespace SpineTool
             }
 
             exportSpineTaskCancelTokenSrc = new();
-            exportSpineTask = Task.Run(() => ExportSpineTask(this, exportFolder));
+            exportSpineTask = Task.Run(() => ExportSpineTask(exportFolder));
         }
         private void StopExportSpine(object? sender, EventArgs e) { StopExportSpine(); }
         private void StopExportSpine()
@@ -405,7 +405,6 @@ namespace SpineTool
             exportSpineTask = null;
         }
 
-        private static void ExportSpineTask(MainForm self, string exportFolder) { self.ExportSpineTask(exportFolder); }
         private void ExportSpineTask(string exportFolder)
         {
             string spineName = null;
@@ -587,7 +586,7 @@ namespace SpineTool
             }
 
             edgeProcessorTaskCancelTokenSrc = new();
-            edgeProcessorTask = Task.Run(() => ProcessEdgeTask(this));
+            edgeProcessorTask = Task.Run(ProcessEdgeTask);
         }
         private void StopProcessEdge(object? sender, EventArgs e) { StopProcessEdge(); }
         private void StopProcessEdge()
@@ -601,7 +600,6 @@ namespace SpineTool
             edgeProcessorTask = null;
         }
 
-        private static void ProcessEdgeTask(MainForm self) { self.ProcessEdgeTask(); }
         private void ProcessEdgeTask()
         {
             if (edgeProcessorOriginalImage is not null && edgeProcessorProcessedImage is not null && edgeProcessorProcessedRegion is not null)
