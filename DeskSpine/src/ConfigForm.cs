@@ -62,7 +62,7 @@ namespace DeskSpine
             _ = Handle; // 强制创建窗口
             shellNotifyIcon = new(notifyIcon);
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigForm));
-            notifyIcon.Icon = (Icon?)(Program.SystemUseLightTheme ? resources.GetObject("$this.Icon") : resources.GetObject("notifyIcon.Icon"));
+            notifyIcon.Icon = (Icon?)(SystemValue.SystemUseLightTheme ? resources.GetObject("$this.Icon") : resources.GetObject("notifyIcon.Icon"));
             timeAlarmTimer.Elapsed += TimeAlarmTimer_Elapsed;
         }
 
@@ -284,7 +284,7 @@ namespace DeskSpine
                 var iconRect = shellNotifyIcon.Rectangle;
                 var halfDeltaWidth = (wndSize.Width - iconRect.Width) / 2;
                 var halfDeltaHeight = (wndSize.Height - iconRect.Height) / 2;
-                Point location = Program.TaskbarDirection switch
+                Point location = SystemValue.TaskbarDirection switch
                 {
                     EdgeDirection.Left => new(iconRect.Right, iconRect.Top - halfDeltaHeight),
                     EdgeDirection.Top => new(iconRect.Left - halfDeltaWidth, iconRect.Bottom),
@@ -383,7 +383,6 @@ namespace DeskSpine
         {
             Program.spineWindow.ResetPositionAndSize();
         }
-
 
         private void commandSpineTool_Click(object sender, EventArgs e)
         {
@@ -518,7 +517,7 @@ namespace DeskSpine
             {
                 // WM_SETTINGCHANGE
                 case 0x001A:
-                    var useLightTheme = Program.SystemUseLightTheme;
+                    var useLightTheme = SystemValue.SystemUseLightTheme;
                     var resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigForm));
                     Program.PerfMonitorForm.UseLightTheme = useLightTheme;
                     notifyIcon.Icon = (Icon?)(useLightTheme ? resources.GetObject("$this.Icon") : resources.GetObject("notifyIcon.Icon"));

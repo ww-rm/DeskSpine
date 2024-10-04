@@ -132,12 +132,18 @@ namespace DeskSpine
         public BasicConfig BasicConfig { get; set; } = new();
         public SpineConfig SpineConfig { get; set; } = new();
 
+        /// <summary>
+        /// 创建配置新实例并拥有合适的默认值
+        /// </summary>
         public Config()
         {
             SystemConfig.BalloonIconPath = Path.Combine(Program.ProgramResourceDirectory, @"image\timealarm.ico");
             SpineConfig.SkelPath0 = Path.Combine(Program.ProgramResourceDirectory, @"spine\guanghui_2\guanghui_2.skel");
         }
 
+        /// <summary>
+        /// 从本地文件加载配置
+        /// </summary>
         public bool Load(string configPath)
         {
             if (File.Exists(configPath))
@@ -164,6 +170,9 @@ namespace DeskSpine
             return false;
         }
 
+        /// <summary>
+        /// 保存配置至本地文件
+        /// </summary>
         public bool Save(string configPath)
         {
             try

@@ -1,19 +1,7 @@
 using Microsoft.Win32;
-using System.Runtime.InteropServices;
 
 namespace DeskSpine
 {
-    /// <summary>
-    /// 任务栏方向枚举
-    /// </summary>
-    public enum EdgeDirection
-    {
-        Left = 0,       // ABE_LEFT
-        Top = 1,        // ABE_TOP
-        Right = 2,      // ABE_RIGHT
-        Bottom = 3      // ABE_BOTTOM
-    }
-
     public static class Program
     {
 #if DEBUG
@@ -21,16 +9,58 @@ namespace DeskSpine
 #else
         public const string ProgramName = "DeskSpine";
 #endif
-        public static string LocalAppdataDirectory { get; } = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        public static string ProgramDirectory { get; } = Path.GetDirectoryName(Application.ExecutablePath);
-        public static string ProgramDataDirectory { get; } = Path.Combine(LocalAppdataDirectory, ProgramName);
-        public static string ProgramResourceDirectory { get; } = Path.Combine(ProgramDirectory, "res");
-        public static string ProgramConfigPath { get; } = Path.Combine(ProgramDataDirectory, "config.json");
 
-        public static PerfMonitor.PerfMonitorForm PerfMonitorForm { get; private set; } // 性能浮窗
-        public static SpineWindow.SpineRenderWindow spineWindow { get; private set; }   // Spine 窗口
-        public static ConfigForm ConfigForm { get; private set; }                       // 设置窗口 (主窗口)
-        private static Mutex programMutex;                                              // 程序单一启动锁
+        /// <summary>
+        /// 程序可执行文件所在目录
+        /// </summary>
+        public static readonly string ProgramDirectory = Path.GetDirectoryName(Application.ExecutablePath);
+
+        /// <summary>
+        /// 程序数据存放目录
+        /// </summary>
+        public static readonly string ProgramDataDirectory = Path.Combine(SystemValue.LocalAppdataDirectory, ProgramName);
+
+        /// <summary>
+        /// 程序资源目录
+        /// </summary>
+        public static readonly string ProgramResourceDirectory = Path.Combine(ProgramDirectory, "res");
+
+        /// <summary>
+        /// 程序配置文件路径
+        /// </summary>
+        public static readonly string ProgramConfigPath = Path.Combine(ProgramDataDirectory, "config.json");
+
+        public static PerfMonitor.PerfMonitorForm PerfMonitorForm { get; private set; }     // 性能浮窗
+        public static ConfigForm ConfigForm { get; private set; }                           // 设置窗口 (主窗口)
+        public static SpineWindow.SpineRenderWindow spineWindow { get; private set; }       // Spine 窗口
+        private static Mutex programMutex;                                                  // 程序单一启动锁
+
+        /// <summary>
+        /// 程序入口
+        /// </summary>
+        [STAThread]
+        public static void Main()
+        {
+            // To customize application configuration such as set high DPI settings or default font,
+            // see https://aka.ms/applicationconfiguration.
+            ApplicationConfiguration.Initialize();
+
+            programMutex = new Mutex(true, ProgramName, out bool createNew);
+            if (!createNew)
+            {
+                MessageBox.Show("程序已在运行, 请勿重复启动", ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!Directory.Exists(ProgramDataDirectory)) 
+                Directory.CreateDirectory(ProgramDataDirectory);
+
+            PerfMonitorForm = new() { UseLightTheme = SystemValue.SystemUseLightTheme };
+            ConfigForm = new ConfigForm();
+            InitFromConfig(LocalConfig);
+
+            Application.Run();
+        }
 
         /// <summary>
         /// 是否开机自启
@@ -238,84 +268,5 @@ namespace DeskSpine
             // 设置窗口可见状态
             spineWindow.Visible = config.SystemConfig.Visible;
         }
-
-        /// <summary>
-        /// 程序入口
-        /// </summary>
-        [STAThread]
-        public static void Main()
-        {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-
-            programMutex = new Mutex(true, ProgramName, out bool createNew);
-            if (!createNew)
-            {
-                MessageBox.Show("程序已在运行, 请勿重复启动", ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (!Directory.Exists(ProgramDataDirectory))
-                Directory.CreateDirectory(ProgramDataDirectory);
-            PerfMonitorForm = new() { UseLightTheme = SystemUseLightTheme };
-            ConfigForm = new ConfigForm();
-            InitFromConfig(LocalConfig);
-
-            Application.Run();
-        }
-
-        /// <summary>
-        /// 获取系统主题颜色
-        /// </summary>
-        public static bool SystemUseLightTheme
-        {
-            get
-            {
-                using (RegistryKey personalizeKey = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"))
-                    return int.Parse(personalizeKey.GetValue("SystemUsesLightTheme", "0").ToString()) != 0;
-            }
-        }
-
-        /// <summary>
-        /// 任务栏方向
-        /// </summary>
-        public static EdgeDirection TaskbarDirection
-        {
-            get
-            {
-                // ABM_GETTASKBARPOS = 0x5
-                APPBARDATA abData = new APPBARDATA();
-                abData.cbSize = Marshal.SizeOf(abData);
-                if (SHAppBarMessage(5, ref abData) != 0)
-                {
-                    return (EdgeDirection)abData.uEdge;
-                }
-                return EdgeDirection.Bottom;
-            }
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct RECT
-        {
-            public int left;
-            public int top;
-            public int right;
-            public int bottom;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct APPBARDATA
-        {
-            public int cbSize;
-            public IntPtr hWnd;
-            public int uCallbackMessage;
-            public int uEdge;
-            public RECT rc;
-            public IntPtr lParam;
-        }
-
-        [DllImport("shell32.dll", SetLastError = true)]
-        private static extern uint SHAppBarMessage(uint dwMessage, ref APPBARDATA pData);
     }
 }
