@@ -344,7 +344,7 @@ namespace SpineTool
                 return;
 
             exporterPreviewTaskCancelTokenSrc = new();
-            exporterPreviewTask = Task.Run(() => ExporterPreviewTask(this));
+            exporterPreviewTask = Task.Run(ExporterPreviewTask);
         }
         private void StopPreview()
         {
@@ -357,7 +357,6 @@ namespace SpineTool
             exporterPreviewTask = null;
         }
 
-        private static void ExporterPreviewTask(MainForm self) { self.ExporterPreviewTask(); }
         private void ExporterPreviewTask()
         {
             exporterPreviewer.SetActive(true);
