@@ -29,7 +29,7 @@ In addition, some extra features are provided.
 
 ## Installation
 
-Please go to the Release page to download the latest `msi` installer.
+Please go to the (Release)[https://github.com/ww-rm/DeskSpine/releases] page to download the latest `msi` installer.
 
 After installation, you can find the program in the desktop or Start menu. Once launched, you should see a tray icon appear shortly, and, unless something goes wrong, a default animated character will appear on your desktop.
 

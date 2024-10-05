@@ -29,7 +29,7 @@
 
 ## 安装
 
-请前往 Release 页面下载最新的 `msi` 安装包.
+请前往 (Release)[https://github.com/ww-rm/DeskSpine/releases] 页面下载最新的 `msi` 安装包.
 
 安装完成后桌面以及开始菜单可以找到程序启动方式, 启动后过一会可以看到通知栏区域有常驻图标, 不出意外桌面也会显示默认的动画小人.
 
