@@ -7,10 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeskSpine", "DeskSpine\Desk
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SpineRuntimes", "SpineRuntimes", "{4046E39D-7A44-426F-97B3-A58EC6ECE746}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpineRuntime36", "SpineRuntime36\SpineRuntime36.csproj", "{3FD95E6A-BD86-42E1-AEE3-192BE563F40F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpineRuntime38", "SpineRuntime38\SpineRuntime38.csproj", "{9F4A4099-DBC3-4917-A79C-590940821EB0}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spine", "Spine\Spine.csproj", "{E27EF00F-5AA8-4889-9790-2F4780102CA1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E89865C7-066F-42C5-B311-3B007C193689}"
@@ -28,6 +24,10 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpineTool", "SpineTool\SpineTool.csproj", "{9BDF889D-AD18-4BF0-B50D-F1C98C268034}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpineRuntime36", "SpineRuntimes\SpineRuntime36\SpineRuntime36.csproj", "{90C07A22-4FC7-4E92-9D35-0EF02A72D82B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpineRuntime38", "SpineRuntimes\SpineRuntime38\SpineRuntime38.csproj", "{45643CCD-3D3C-4446-9486-FA8651E3A3F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -38,14 +38,6 @@ Global
 		{BA2B551A-3D96-4FB4-8970-70D6AC53E8D0}.Debug|x64.Build.0 = Debug|x64
 		{BA2B551A-3D96-4FB4-8970-70D6AC53E8D0}.Release|x64.ActiveCfg = Release|x64
 		{BA2B551A-3D96-4FB4-8970-70D6AC53E8D0}.Release|x64.Build.0 = Release|x64
-		{3FD95E6A-BD86-42E1-AEE3-192BE563F40F}.Debug|x64.ActiveCfg = Debug|x64
-		{3FD95E6A-BD86-42E1-AEE3-192BE563F40F}.Debug|x64.Build.0 = Debug|x64
-		{3FD95E6A-BD86-42E1-AEE3-192BE563F40F}.Release|x64.ActiveCfg = Release|x64
-		{3FD95E6A-BD86-42E1-AEE3-192BE563F40F}.Release|x64.Build.0 = Release|x64
-		{9F4A4099-DBC3-4917-A79C-590940821EB0}.Debug|x64.ActiveCfg = Debug|x64
-		{9F4A4099-DBC3-4917-A79C-590940821EB0}.Debug|x64.Build.0 = Debug|x64
-		{9F4A4099-DBC3-4917-A79C-590940821EB0}.Release|x64.ActiveCfg = Release|x64
-		{9F4A4099-DBC3-4917-A79C-590940821EB0}.Release|x64.Build.0 = Release|x64
 		{E27EF00F-5AA8-4889-9790-2F4780102CA1}.Debug|x64.ActiveCfg = Debug|x64
 		{E27EF00F-5AA8-4889-9790-2F4780102CA1}.Debug|x64.Build.0 = Debug|x64
 		{E27EF00F-5AA8-4889-9790-2F4780102CA1}.Release|x64.ActiveCfg = Release|x64
@@ -64,13 +56,21 @@ Global
 		{9BDF889D-AD18-4BF0-B50D-F1C98C268034}.Debug|x64.Build.0 = Debug|x64
 		{9BDF889D-AD18-4BF0-B50D-F1C98C268034}.Release|x64.ActiveCfg = Release|x64
 		{9BDF889D-AD18-4BF0-B50D-F1C98C268034}.Release|x64.Build.0 = Release|x64
+		{90C07A22-4FC7-4E92-9D35-0EF02A72D82B}.Debug|x64.ActiveCfg = Debug|x64
+		{90C07A22-4FC7-4E92-9D35-0EF02A72D82B}.Debug|x64.Build.0 = Debug|x64
+		{90C07A22-4FC7-4E92-9D35-0EF02A72D82B}.Release|x64.ActiveCfg = Release|x64
+		{90C07A22-4FC7-4E92-9D35-0EF02A72D82B}.Release|x64.Build.0 = Release|x64
+		{45643CCD-3D3C-4446-9486-FA8651E3A3F0}.Debug|x64.ActiveCfg = Debug|x64
+		{45643CCD-3D3C-4446-9486-FA8651E3A3F0}.Debug|x64.Build.0 = Debug|x64
+		{45643CCD-3D3C-4446-9486-FA8651E3A3F0}.Release|x64.ActiveCfg = Release|x64
+		{45643CCD-3D3C-4446-9486-FA8651E3A3F0}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{3FD95E6A-BD86-42E1-AEE3-192BE563F40F} = {4046E39D-7A44-426F-97B3-A58EC6ECE746}
-		{9F4A4099-DBC3-4917-A79C-590940821EB0} = {4046E39D-7A44-426F-97B3-A58EC6ECE746}
+		{90C07A22-4FC7-4E92-9D35-0EF02A72D82B} = {4046E39D-7A44-426F-97B3-A58EC6ECE746}
+		{45643CCD-3D3C-4446-9486-FA8651E3A3F0} = {4046E39D-7A44-426F-97B3-A58EC6ECE746}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5A1475E9-E605-4D55-BC24-CCB687DBDCA8}
