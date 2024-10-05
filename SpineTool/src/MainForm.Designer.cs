@@ -34,6 +34,8 @@
             tabPage_Exporter = new TabPage();
             splitContainer_Exporter = new SplitContainer();
             tableLayoutPanel_ExporterOptions = new TableLayoutPanel();
+            checkBox_ExporterFlipX = new CheckBox();
+            label18 = new Label();
             button_Export = new Button();
             label2 = new Label();
             comboBox_SpineVersion = new ComboBox();
@@ -203,35 +205,61 @@
             tableLayoutPanel_ExporterOptions.ColumnCount = 2;
             tableLayoutPanel_ExporterOptions.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 51.1538467F));
             tableLayoutPanel_ExporterOptions.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 48.8461533F));
-            tableLayoutPanel_ExporterOptions.Controls.Add(button_Export, 0, 8);
+            tableLayoutPanel_ExporterOptions.Controls.Add(checkBox_ExporterFlipX, 1, 3);
+            tableLayoutPanel_ExporterOptions.Controls.Add(label18, 0, 3);
+            tableLayoutPanel_ExporterOptions.Controls.Add(button_Export, 0, 9);
             tableLayoutPanel_ExporterOptions.Controls.Add(label2, 0, 1);
             tableLayoutPanel_ExporterOptions.Controls.Add(comboBox_SpineVersion, 1, 1);
             tableLayoutPanel_ExporterOptions.Controls.Add(label6, 0, 2);
             tableLayoutPanel_ExporterOptions.Controls.Add(checkBox_UsePMA, 1, 2);
-            tableLayoutPanel_ExporterOptions.Controls.Add(label4, 0, 3);
-            tableLayoutPanel_ExporterOptions.Controls.Add(numericUpDown_SizeX, 1, 3);
-            tableLayoutPanel_ExporterOptions.Controls.Add(label5, 0, 4);
-            tableLayoutPanel_ExporterOptions.Controls.Add(numericUpDown_SizeY, 1, 4);
+            tableLayoutPanel_ExporterOptions.Controls.Add(label4, 0, 4);
+            tableLayoutPanel_ExporterOptions.Controls.Add(numericUpDown_SizeX, 1, 4);
+            tableLayoutPanel_ExporterOptions.Controls.Add(label5, 0, 5);
+            tableLayoutPanel_ExporterOptions.Controls.Add(numericUpDown_SizeY, 1, 5);
             tableLayoutPanel_ExporterOptions.Controls.Add(panel1, 0, 0);
-            tableLayoutPanel_ExporterOptions.Controls.Add(label_ExportDuration, 0, 5);
-            tableLayoutPanel_ExporterOptions.Controls.Add(numericUpDown_ExportDuration, 1, 5);
-            tableLayoutPanel_ExporterOptions.Controls.Add(label7, 0, 6);
-            tableLayoutPanel_ExporterOptions.Controls.Add(numericUpDown_Fps, 1, 6);
+            tableLayoutPanel_ExporterOptions.Controls.Add(label_ExportDuration, 0, 6);
+            tableLayoutPanel_ExporterOptions.Controls.Add(numericUpDown_ExportDuration, 1, 6);
+            tableLayoutPanel_ExporterOptions.Controls.Add(label7, 0, 7);
+            tableLayoutPanel_ExporterOptions.Controls.Add(numericUpDown_Fps, 1, 7);
             tableLayoutPanel_ExporterOptions.Dock = DockStyle.Fill;
             tableLayoutPanel_ExporterOptions.Location = new Point(0, 0);
             tableLayoutPanel_ExporterOptions.Name = "tableLayoutPanel_ExporterOptions";
-            tableLayoutPanel_ExporterOptions.RowCount = 9;
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 33.109684F));
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.360316F));
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.360316F));
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.360316F));
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.360316F));
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.360316F));
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.360316F));
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.364205F));
-            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.364205F));
+            tableLayoutPanel_ExporterOptions.RowCount = 10;
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 31.54427F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 7.605439F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 7.605439F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 7.6051507F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 7.605439F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 7.605439F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 7.605439F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 7.605439F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 7.608977F));
+            tableLayoutPanel_ExporterOptions.RowStyles.Add(new RowStyle(SizeType.Percent, 7.608977F));
             tableLayoutPanel_ExporterOptions.Size = new Size(529, 756);
             tableLayoutPanel_ExporterOptions.TabIndex = 0;
+            // 
+            // checkBox_ExporterFlipX
+            // 
+            checkBox_ExporterFlipX.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            checkBox_ExporterFlipX.AutoSize = true;
+            checkBox_ExporterFlipX.Location = new Point(273, 370);
+            checkBox_ExporterFlipX.Name = "checkBox_ExporterFlipX";
+            checkBox_ExporterFlipX.Size = new Size(253, 21);
+            checkBox_ExporterFlipX.TabIndex = 50;
+            toolTip1.SetToolTip(checkBox_ExporterFlipX, "将模型左右镜像");
+            checkBox_ExporterFlipX.UseVisualStyleBackColor = true;
+            checkBox_ExporterFlipX.CheckedChanged += checkBox_ExporterFlipX_CheckedChanged;
+            // 
+            // label18
+            // 
+            label18.Anchor = AnchorStyles.Left;
+            label18.AutoSize = true;
+            label18.Location = new Point(20, 367);
+            label18.Margin = new Padding(20, 0, 4, 0);
+            label18.Name = "label18";
+            label18.Size = new Size(112, 27);
+            label18.TabIndex = 49;
+            label18.Text = "左右翻转：";
             // 
             // button_Export
             // 
@@ -239,10 +267,10 @@
             button_Export.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             tableLayoutPanel_ExporterOptions.SetColumnSpan(button_Export, 2);
             button_Export.Dock = DockStyle.Fill;
-            button_Export.Location = new Point(10, 694);
+            button_Export.Location = new Point(10, 697);
             button_Export.Margin = new Padding(10, 3, 4, 3);
             button_Export.Name = "button_Export";
-            button_Export.Size = new Size(515, 59);
+            button_Export.Size = new Size(515, 56);
             button_Export.TabIndex = 5;
             button_Export.Text = "点击导出...";
             button_Export.UseVisualStyleBackColor = true;
@@ -252,7 +280,7 @@
             // 
             label2.Anchor = AnchorStyles.Left;
             label2.AutoSize = true;
-            label2.Location = new Point(20, 268);
+            label2.Location = new Point(20, 253);
             label2.Margin = new Padding(20, 0, 4, 0);
             label2.Name = "label2";
             label2.Size = new Size(131, 27);
@@ -264,7 +292,7 @@
             comboBox_SpineVersion.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_SpineVersion.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SpineVersion.FormattingEnabled = true;
-            comboBox_SpineVersion.Location = new Point(273, 265);
+            comboBox_SpineVersion.Location = new Point(273, 250);
             comboBox_SpineVersion.Name = "comboBox_SpineVersion";
             comboBox_SpineVersion.Size = new Size(253, 35);
             comboBox_SpineVersion.TabIndex = 34;
@@ -274,7 +302,7 @@
             // 
             label6.Anchor = AnchorStyles.Left;
             label6.AutoSize = true;
-            label6.Location = new Point(20, 331);
+            label6.Location = new Point(20, 310);
             label6.Margin = new Padding(20, 0, 4, 0);
             label6.Name = "label6";
             label6.Size = new Size(118, 27);
@@ -285,7 +313,7 @@
             // 
             checkBox_UsePMA.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             checkBox_UsePMA.AutoSize = true;
-            checkBox_UsePMA.Location = new Point(273, 334);
+            checkBox_UsePMA.Location = new Point(273, 313);
             checkBox_UsePMA.Name = "checkBox_UsePMA";
             checkBox_UsePMA.Size = new Size(253, 21);
             checkBox_UsePMA.TabIndex = 41;
@@ -297,7 +325,7 @@
             // 
             label4.Anchor = AnchorStyles.Left;
             label4.AutoSize = true;
-            label4.Location = new Point(20, 394);
+            label4.Location = new Point(20, 424);
             label4.Margin = new Padding(20, 0, 4, 0);
             label4.Name = "label4";
             label4.Size = new Size(132, 27);
@@ -307,7 +335,7 @@
             // numericUpDown_SizeX
             // 
             numericUpDown_SizeX.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            numericUpDown_SizeX.Location = new Point(273, 391);
+            numericUpDown_SizeX.Location = new Point(273, 421);
             numericUpDown_SizeX.Maximum = new decimal(new int[] { 8192, 0, 0, 0 });
             numericUpDown_SizeX.Minimum = new decimal(new int[] { 100, 0, 0, 0 });
             numericUpDown_SizeX.Name = "numericUpDown_SizeX";
@@ -322,7 +350,7 @@
             // 
             label5.Anchor = AnchorStyles.Left;
             label5.AutoSize = true;
-            label5.Location = new Point(20, 457);
+            label5.Location = new Point(20, 481);
             label5.Margin = new Padding(20, 0, 4, 0);
             label5.Name = "label5";
             label5.Size = new Size(132, 27);
@@ -332,7 +360,7 @@
             // numericUpDown_SizeY
             // 
             numericUpDown_SizeY.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            numericUpDown_SizeY.Location = new Point(273, 454);
+            numericUpDown_SizeY.Location = new Point(273, 478);
             numericUpDown_SizeY.Maximum = new decimal(new int[] { 8192, 0, 0, 0 });
             numericUpDown_SizeY.Minimum = new decimal(new int[] { 100, 0, 0, 0 });
             numericUpDown_SizeY.Name = "numericUpDown_SizeY";
@@ -352,7 +380,7 @@
             panel1.Location = new Point(0, 0);
             panel1.Margin = new Padding(0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(529, 250);
+            panel1.Size = new Size(529, 238);
             panel1.TabIndex = 46;
             // 
             // tableLayoutPanel1
@@ -940,7 +968,7 @@
             label_ExportDuration.Anchor = AnchorStyles.Left;
             label_ExportDuration.AutoSize = true;
             label_ExportDuration.Cursor = Cursors.Hand;
-            label_ExportDuration.Location = new Point(20, 520);
+            label_ExportDuration.Location = new Point(20, 538);
             label_ExportDuration.Margin = new Padding(20, 0, 4, 0);
             label_ExportDuration.Name = "label_ExportDuration";
             label_ExportDuration.Size = new Size(172, 27);
@@ -953,7 +981,7 @@
             // 
             numericUpDown_ExportDuration.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             numericUpDown_ExportDuration.DecimalPlaces = 3;
-            numericUpDown_ExportDuration.Location = new Point(273, 517);
+            numericUpDown_ExportDuration.Location = new Point(273, 535);
             numericUpDown_ExportDuration.Maximum = new decimal(new int[] { 300, 0, 0, 0 });
             numericUpDown_ExportDuration.Name = "numericUpDown_ExportDuration";
             numericUpDown_ExportDuration.Size = new Size(253, 33);
@@ -966,7 +994,7 @@
             // 
             label7.Anchor = AnchorStyles.Left;
             label7.AutoSize = true;
-            label7.Location = new Point(20, 583);
+            label7.Location = new Point(20, 595);
             label7.Margin = new Padding(20, 0, 4, 0);
             label7.Name = "label7";
             label7.Size = new Size(112, 27);
@@ -976,7 +1004,7 @@
             // numericUpDown_Fps
             // 
             numericUpDown_Fps.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            numericUpDown_Fps.Location = new Point(273, 580);
+            numericUpDown_Fps.Location = new Point(273, 592);
             numericUpDown_Fps.Maximum = new decimal(new int[] { 120, 0, 0, 0 });
             numericUpDown_Fps.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown_Fps.Name = "numericUpDown_Fps";
@@ -1549,5 +1577,7 @@
         private CheckBox checkBox_EdgeProcessorSwitchPng;
         private PictureBox pictureBox_EdgeProcessorViewer;
         private SaveFileDialog saveFileDialog_SavePng;
+        private Label label18;
+        private CheckBox checkBox_ExporterFlipX;
     }
 }

@@ -203,6 +203,17 @@ namespace SpineTool
             expoterMutex.ReleaseMutex();
         }
 
+        private void checkBox_ExporterFlipX_CheckedChanged(object sender, EventArgs e)
+        {
+            expoterMutex.WaitOne();
+            foreach (var sp in exporterSpines)
+            {
+                if (sp is null) continue;
+                sp.FlipX = checkBox_ExporterFlipX.Checked;
+            }
+            expoterMutex.ReleaseMutex();
+        }
+
         private void numericUpDown_SizeX_ValueChanged(object sender, EventArgs e) { FixPreviewPosition(true); }
         private void numericUpDown_SizeY_ValueChanged(object sender, EventArgs e) { FixPreviewPosition(true); }
 
