@@ -138,80 +138,49 @@ namespace DeskSpine
 
             set
             {
-                var cur = CurrentConfig;
+                // 系统设置
+                AutoRun = value.SystemConfig.AutuRun;
+                ConfigForm.BalloonIconPath = value.SystemConfig.BalloonIconPath;
+                ConfigForm.TimeAlarm = value.SystemConfig.TimeAlarm;
 
                 // 优先检测是否需要更换窗口类型, 重新创建窗口实例之后再设置其他配置
-                if (cur.SpineConfig.WindowType != value.SpineConfig.WindowType)
+                if (spineWindow.Type != value.SpineConfig.WindowType)
                 {
                     spineWindow.Close();
                     spineWindow = SpineWindow.SpineRenderWindow.New(value.SpineConfig.WindowType, SpineConfig.SlotCount);
                 }
 
-                // 如果窗口或者版本发生了变化, 需要把 Spine 内容清空
-                if (cur.SpineConfig.WindowType != value.SpineConfig.WindowType ||
-                    cur.SpineConfig.SpineVersion != value.SpineConfig.SpineVersion)
-                {
-                    for (int i = 0; i < SpineConfig.SlotCount; i++)
-                        cur.SpineConfig.SetSkelPath(i, null);
-                }
+                // 窗口设置
+                spineWindow.WallpaperMode = value.BasicConfig.WallpaperMode;
+                spineWindow.MouseClickThrough = value.BasicConfig.MouseClickThrough;
+                spineWindow.Position = new(value.BasicConfig.PositionX, value.BasicConfig.PositionY);
+                spineWindow.Size = new(value.BasicConfig.SizeX, value.BasicConfig.SizeY);
+                spineWindow.Opacity = value.BasicConfig.Opacity;
+                spineWindow.MaxFps = value.BasicConfig.MaxFps;
+                spineWindow.BackgroudColor = value.BasicConfig.BackgroundColor;         // 要先设置 BackgroudColor 再设置 AutoBackgroudColor
+                spineWindow.AutoBackgroudColor = value.BasicConfig.AutoBackgroudColor;
 
                 // 检查是否需要更换资源
                 for (int i = 0; i < spineWindow.SlotCount; i++)
                 {
-                    if (cur.SpineConfig.GetSkelPath(i) != value.SpineConfig.GetSkelPath(i))
+                    var skelPath = value.SpineConfig.GetSkelPath(i);
+                    if (string.IsNullOrEmpty(skelPath))
                     {
                         spineWindow.UnloadSpine(i);
-                        var skelPath = value.SpineConfig.GetSkelPath(i);
-                        if (!string.IsNullOrEmpty(skelPath))
-                        {
-                            try { spineWindow.LoadSpine(value.SpineConfig.SpineVersion, skelPath, index: i); }
-                            catch (Exception ex) { MessageBox.Show($"{skelPath} 加载失败\n\n{ex}", "Spine 资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-                        }
+                    }
+                    else
+                    {
+                        try { spineWindow.LoadSpine(value.SpineConfig.SpineVersion, skelPath, i); }
+                        catch (Exception ex) { MessageBox.Show($"{skelPath} 加载失败\n\n{ex}", "Spine 资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); }
                     }
                 }
 
-                // 重新取一次现在的运行时配置, 因为窗口重建和 Spine 重新加载会导致运行时配置发生变化
-                cur = CurrentConfig;
-
-                // 系统设置
-                if (cur.SystemConfig.AutuRun != value.SystemConfig.AutuRun)
-                    AutoRun = value.SystemConfig.AutuRun;
-                if (cur.SystemConfig.BalloonIconPath != value.SystemConfig.BalloonIconPath)
-                {
-                    try { ConfigForm.BalloonIconPath = value.SystemConfig.BalloonIconPath; ConfigForm.ShowBalloonTip("图标修改成功", "来看看效果吧~"); }
-                    catch (Exception ex) { MessageBox.Show($"{value.SystemConfig.BalloonIconPath} 加载失败\n\n{ex}", "气泡图标资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); }
-                }
-                if (cur.SystemConfig.TimeAlarm != value.SystemConfig.TimeAlarm)
-                    ConfigForm.TimeAlarm = value.SystemConfig.TimeAlarm;
-
-                // 基础设置
-                if (cur.BasicConfig.WallpaperMode != value.BasicConfig.WallpaperMode)
-                    spineWindow.WallpaperMode = value.BasicConfig.WallpaperMode;
-                if (cur.BasicConfig.MouseClickThrough != value.BasicConfig.MouseClickThrough)
-                    spineWindow.MouseClickThrough = value.BasicConfig.MouseClickThrough;
-                if (cur.BasicConfig.PositionX != value.BasicConfig.PositionX || cur.BasicConfig.PositionY != value.BasicConfig.PositionY)
-                    spineWindow.Position = new(value.BasicConfig.PositionX, value.BasicConfig.PositionY);
-                if (cur.BasicConfig.SizeX != value.BasicConfig.SizeX || cur.BasicConfig.SizeY != value.BasicConfig.SizeY)
-                    spineWindow.Size = new(value.BasicConfig.SizeX, value.BasicConfig.SizeY);
-                if (cur.BasicConfig.Opacity != value.BasicConfig.Opacity)
-                    spineWindow.Opacity = value.BasicConfig.Opacity;
-                if (cur.BasicConfig.MaxFps != value.BasicConfig.MaxFps)
-                    spineWindow.MaxFps = value.BasicConfig.MaxFps;
-                if (cur.BasicConfig.AutoBackgroudColor != value.BasicConfig.AutoBackgroudColor)
-                    spineWindow.AutoBackgroudColor = value.BasicConfig.AutoBackgroudColor;
-                if (cur.BasicConfig.BackgroundColor != value.BasicConfig.BackgroundColor)
-                    spineWindow.BackgroudColor = value.BasicConfig.BackgroundColor;     // 要先设置 AutoBackgroudColor 再设置 BackgroudColor
-
-                // scale 的设置有代价, 并且会重置动画, 所以有改动时再设置
-                if (Math.Abs(cur.BasicConfig.SpineScale - value.BasicConfig.SpineScale) > 1e-3)
-                    spineWindow.SpineScale = value.BasicConfig.SpineScale;
+                // 精灵设置
+                spineWindow.SpineScale = value.BasicConfig.SpineScale;
                 spineWindow.SpinePosition = new(value.BasicConfig.SpinePositionX, value.BasicConfig.SpinePositionY);
                 spineWindow.SpineFlip = value.BasicConfig.SpineFlip;
                 spineWindow.SpineUsePMA = value.BasicConfig.SpineUsePMA;
-
-                // 最后设置窗口可见性
-                if (cur.SystemConfig.Visible != value.SystemConfig.Visible)
-                    spineWindow.Visible = value.SystemConfig.Visible;
+                spineWindow.Visible = value.SystemConfig.Visible;
 
                 // 保存本地
                 LocalConfig = CurrentConfig;

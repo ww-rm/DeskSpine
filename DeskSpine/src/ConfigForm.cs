@@ -34,8 +34,9 @@ namespace DeskSpine
             get => balloonIconPath;
             set
             {
-                var path = string.IsNullOrEmpty(value) ? null : value;
-                if (path is null)
+                value = string.IsNullOrEmpty(value) ? null : value;
+                if (value == balloonIconPath) return;
+                if (value is null)
                 {
                     balloonIconPath = null;
                     balloonIcon = null;
@@ -43,10 +44,18 @@ namespace DeskSpine
                 else
                 {
                     Bitmap newIcon = null;
-                    try { newIcon = new Bitmap(path); }
-                    catch { throw; }
-                    balloonIconPath = path;
-                    balloonIcon = newIcon;
+                    try
+                    {
+                        newIcon = new Bitmap(value);
+                        balloonIcon?.Dispose();
+                        balloonIconPath = value;
+                        balloonIcon = newIcon;
+                        ShowBalloonTip("图标修改成功", "来看看效果吧~");
+                    }
+                    catch (Exception ex) 
+                    { 
+                        MessageBox.Show($"{value} 加载失败\n\n{ex}", "气泡图标资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                    }
                 }
             }
         }

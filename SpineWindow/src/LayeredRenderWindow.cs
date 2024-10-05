@@ -268,8 +268,9 @@ namespace SpineWindow
             {
                 // BUG: SetLayeredWindowAttributes 的 R 和 B 分量必须相等才能让背景部分的透明和穿透同时生效
                 // https://stackoverflow.com/questions/76415771/setlayeredwindowattributes-click-through-only-works-with-specific-colors
-                value.A = 0;
-                value.B = value.R;
+                value.B = value.R; value.A = 0;
+                if (value == backgroundColor) return;
+
                 windowMutex.WaitOne();
                 backgroundColor = value;
                 windowMutex.ReleaseMutex();
@@ -289,7 +290,15 @@ namespace SpineWindow
         public bool Visible
         {
             get { windowMutex.WaitOne(); var v = visible; windowMutex.ReleaseMutex(); return v; }
-            set { windowMutex.WaitOne(); visible = value; windowMutex.ReleaseMutex(); window.SetVisible(value); VisibleChange(value); }
+            set 
+            { 
+                if (value == visible) return; 
+                windowMutex.WaitOne(); 
+                visible = value; 
+                windowMutex.ReleaseMutex(); 
+                window.SetVisible(value); 
+                VisibleChange(value); 
+            }
         }
         private bool visible = false;
 
@@ -299,7 +308,7 @@ namespace SpineWindow
         public uint MaxFps
         {
             get => maxFps;
-            set { maxFps = value; window.SetFramerateLimit(value); }
+            set { if (value == maxFps) return; maxFps = value; window.SetFramerateLimit(value); }
         }
         private uint maxFps = 30;
 
@@ -310,13 +319,11 @@ namespace SpineWindow
         {
             get
             {
-                uint crKey = 0;
-                byte bAlpha = 0;
-                uint dwFlags = 0;
+                uint crKey = 0; byte bAlpha = 0; uint dwFlags = 0;
                 Win32.GetLayeredWindowAttributes(window.SystemHandle, ref crKey, ref bAlpha, ref dwFlags);
                 return ((dwFlags & Win32.LWA_ALPHA) != 0) ? bAlpha : (byte)255;
             }
-            set => Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, value, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
+            set { if (value == Opacity) return; Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, value, Win32.LWA_COLORKEY | Win32.LWA_ALPHA); }
         }
 
         /// <summary>
@@ -328,11 +335,16 @@ namespace SpineWindow
             set
             {
                 var exStyle = Win32.GetWindowLong(window.SystemHandle, Win32.GWL_EXSTYLE);
-                if (value)
+                if (value && (exStyle & Win32.WS_EX_TRANSPARENT) == 0)
+                {
                     exStyle |= Win32.WS_EX_TRANSPARENT;
-                else
+                    Win32.SetWindowLong(window.SystemHandle, Win32.GWL_EXSTYLE, exStyle);
+                }
+                else if (!value && (exStyle & Win32.WS_EX_TRANSPARENT) != 0)
+                {
                     exStyle &= ~Win32.WS_EX_TRANSPARENT;
-                Win32.SetWindowLong(window.SystemHandle, Win32.GWL_EXSTYLE, exStyle);
+                    Win32.SetWindowLong(window.SystemHandle, Win32.GWL_EXSTYLE, exStyle);
+                }
             }
         }
 
@@ -349,6 +361,8 @@ namespace SpineWindow
             }
             set
             {
+                if (value == WallpaperMode) return;
+
                 var hWnd = window.SystemHandle;
                 var progman = Win32.FindWindow("Progman", null);
                 if (progman == IntPtr.Zero)

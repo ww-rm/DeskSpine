@@ -190,7 +190,7 @@ namespace SpineWindow
             set
             {
                 mutex.WaitOne();
-                foreach (var sp in spineSlots) { if (sp is not null) { sp.Scale = value; } }
+                foreach (var sp in spineSlots) { if (sp is not null && Math.Abs(value - sp.Scale) > 1e-3) { sp.Scale = value; } }
                 mutex.ReleaseMutex();
             }
         }
@@ -241,20 +241,25 @@ namespace SpineWindow
         /// <summary>
         /// 加载 Spine 到指定槽位
         /// </summary>
-        public void LoadSpine(string version, string skelPath, string? atlasPath = null, int index = 0)
+        public void LoadSpine(string version, string skelPath, int index)
         {
             if (index >= spineSlots.Length)
                 throw new ArgumentOutOfRangeException($"Max spine slot count: {spineSlots.Length}, got index {index}");
 
-            Debug.WriteLine($"Loading spine[{index}]({version}) from {skelPath}, {atlasPath}");
+            if (version == spineSlots[index]?.Version && skelPath == spineSlots[index]?.SkelPath)
+                return;
+
+            Debug.WriteLine($"Loading spine[{index}]({version}) from {skelPath}");
             Spine.Spine spineNew;
-            try { spineNew = Spine.Spine.New(version, skelPath, atlasPath, 0.15f); }
+            try { spineNew = Spine.Spine.New(version, skelPath, defaultMix: 0.15f); }
             catch { throw; }
 
-            // 尝试用已有的 Spine 对象恢复位置
+            // 尝试用已有的 Spine 对象恢复位置大小信息
             var originalPosition = SpinePosition;
             spineNew.X = originalPosition.X;
             spineNew.Y = originalPosition.Y;
+            spineNew.Scale = SpineScale;
+            spineNew.FlipX = SpineFlip;
 
             mutex.WaitOne();
             spineSlots[index] = spineNew;
@@ -277,11 +282,14 @@ namespace SpineWindow
             if (index >= spineSlots.Length)
                 throw new ArgumentOutOfRangeException($"Max spine slot count: {spineSlots.Length}, got index {index}");
 
-            Debug.WriteLine($"Unload spine[{index}]");
+            if (spineSlots[index]?.SkelPath is null) return;
+
             mutex.WaitOne();
             spineSlots[index] = null;
             colorTables[index] = null;
             mutex.ReleaseMutex();
+
+            Debug.WriteLine($"Unload spine[{index}]");
         }
 
         /// <summary>
@@ -303,7 +311,7 @@ namespace SpineWindow
         public AutoBackgroudColorType AutoBackgroudColor
         {
             get => autoBackgroudColor;
-            set { autoBackgroudColor = value; SetProperAutoBackgroudColor(); }
+            set { if (value == autoBackgroudColor) return; autoBackgroudColor = value; SetProperAutoBackgroudColor(); }
         }
         private AutoBackgroudColorType autoBackgroudColor = AutoBackgroudColorType.Gray;
 
