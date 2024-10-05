@@ -8,6 +8,8 @@ using System.Text.RegularExpressions;
 using System.Numerics;
 using System.Collections;
 using System.Collections.ObjectModel;
+using SFML.System;
+using SFML.Window;
 
 namespace Spine
 {
@@ -70,7 +72,7 @@ namespace Spine
     /// <summary>
     /// Spine 基类, 使用静态方法 New 来创建具体版本对象
     /// </summary>
-    public abstract class Spine : SFML.Graphics.Drawable
+    public abstract class Spine : SFML.Graphics.Drawable, IDisposable
     {
         /// <summary>
         /// 用于解决 PMA 和渐变动画问题的片段着色器
@@ -184,6 +186,10 @@ namespace Spine
             foreach (Match match in matches)
                 pngPaths.Add(Path.Combine(atlasDir, match.Value));
         }
+
+        ~Spine() { Dispose(false); }
+        public void Dispose() { Dispose(true); GC.SuppressFinalize(this); }
+        protected virtual void Dispose(bool disposing) { }
 
         /// <summary>
         /// 缩放比例

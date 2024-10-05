@@ -87,10 +87,14 @@ namespace SpineWindow
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            if (disposing)
+            mutex.WaitOne();
+            for (int i = 0; i < spineSlots.Length; i++)
             {
-                mutex.Dispose();
+                spineSlots[i]?.Dispose();
+                spineSlots[i] = null;
             }
+            mutex.ReleaseMutex();
+            mutex.Dispose();
         }
 
         protected sealed override void UpdateFrame(float delta)
@@ -260,6 +264,7 @@ namespace SpineWindow
             spineNew.Y = originalPosition.Y;
             spineNew.Scale = SpineScale;
             spineNew.FlipX = SpineFlip;
+            spineNew.UsePremultipliedAlpha = SpineUsePMA;
 
             mutex.WaitOne();
             spineSlots[index] = spineNew;
@@ -285,6 +290,7 @@ namespace SpineWindow
             if (spineSlots[index]?.SkelPath is null) return;
 
             mutex.WaitOne();
+            spineSlots[index]?.Dispose();
             spineSlots[index] = null;
             colorTables[index] = null;
             mutex.ReleaseMutex();

@@ -204,8 +204,7 @@ namespace DeskSpine
             // 不需要管注册表里存储的信息, 会在内部自动生效
 
             // 系统配置
-            try { ConfigForm.BalloonIconPath = config.SystemConfig.BalloonIconPath; }
-            catch (Exception ex) { MessageBox.Show($"{config.SystemConfig.BalloonIconPath} 加载失败\n\n{ex}", "气泡图标资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            ConfigForm.BalloonIconPath = config.SystemConfig.BalloonIconPath; 
             ConfigForm.TimeAlarm = config.SystemConfig.TimeAlarm;
 
             // 基础配置
@@ -214,8 +213,8 @@ namespace DeskSpine
             spineWindow.MouseClickThrough = config.BasicConfig.MouseClickThrough;
             spineWindow.Opacity = config.BasicConfig.Opacity;
             spineWindow.MaxFps = config.BasicConfig.MaxFps;
+            spineWindow.BackgroudColor = config.BasicConfig.BackgroundColor; // 要先设置 BackgroudColor 再设置 AutoBackgroudColor
             spineWindow.AutoBackgroudColor = config.BasicConfig.AutoBackgroudColor;
-            spineWindow.BackgroudColor = config.BasicConfig.BackgroundColor;   // 要先设置 AutoBackgroudColor 再设置 BackgroudColor
 
             // 加载 Spine 资源
             var spVersion = config.SpineConfig.SpineVersion;

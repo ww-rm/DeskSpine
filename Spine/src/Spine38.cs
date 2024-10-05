@@ -74,6 +74,12 @@ namespace Spine
             CurrentAnimation = DefaultAnimationName;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            atlas.Dispose();
+        }
+
         public override float Scale
         {
             get
