@@ -21,7 +21,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\PerfMonitor\PerfMonitor.csproj" />
-        <ProjectReference Include="..\SpineWindow\SpineWindow.csproj" />
+        <ProjectReference Include="..\TinyEngine\TinyEngine.csproj" />
     </ItemGroup>
 
     <ItemGroup>

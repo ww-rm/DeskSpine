@@ -70,6 +70,20 @@ namespace Spine
     }
 
     /// <summary>
+    /// 支持的 Spine 版本
+    /// </summary>
+    public enum SpineVersion
+    {
+        V36 = 0x0306,
+        V37 = 0x0307,
+        V38 = 0x0308, 
+        V39 = 0x0309,
+        V40 = 0x0400,
+        V41 = 0x0401,
+        V42 = 0x0402
+    }
+
+    /// <summary>
     /// Spine 基类, 使用静态方法 New 来创建具体版本对象
     /// </summary>
     public abstract class Spine : SFML.Graphics.Drawable, IDisposable
@@ -102,26 +116,25 @@ namespace Spine
         /// <summary>
         /// 创建特定版本的 Spine
         /// </summary>
-        public static Spine New(string version, string skelPath, string? atlasPath = null, float defaultMix = 0)
+        public static Spine New(SpineVersion version, string skelPath, string? atlasPath = null, float defaultMix = 0)
         {
-            if (version.StartsWith("3.6")) return new Spine36(skelPath, atlasPath, defaultMix);
-            if (version.StartsWith("3.8")) return new Spine38(skelPath, atlasPath, defaultMix);
-            throw new NotImplementedException($"Not implemented version: {version}");
+            return version switch
+            {
+                SpineVersion.V36 => new Spine36(skelPath, atlasPath, defaultMix),
+                SpineVersion.V37 => throw new NotImplementedException(),
+                SpineVersion.V38 => new Spine38(skelPath, atlasPath, defaultMix),
+                SpineVersion.V39 => throw new NotImplementedException(),
+                SpineVersion.V40 => throw new NotImplementedException(),
+                SpineVersion.V41 => throw new NotImplementedException(),
+                SpineVersion.V42 => throw new NotImplementedException(),
+                _ => throw new NotImplementedException($"Not implemented version: {version}"),
+            };
         }
 
         /// <summary>
         /// 获取所属版本
         /// </summary>
-        public string Version
-        {
-            get
-            {
-                var t = GetType();
-                if (t == typeof(Spine36)) return "3.6.x";
-                if (t == typeof(Spine38)) return "3.8.x";
-                throw new InvalidOperationException($"Unknown Spine version {this}");
-            }
-        }
+        public abstract SpineVersion Version { get; }
 
         /// <summary>
         /// skel 文件完整路径

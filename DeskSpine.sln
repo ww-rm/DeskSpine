@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpineWindow", "SpineWindow\SpineWindow.csproj", "{AD2E6ECD-2820-47EC-B4D8-69503A5D995D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PerfMonitor", "PerfMonitor\PerfMonitor.csproj", "{0F3E0EF6-DE9C-4A20-8CB5-3962E79A4DD3}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{788D5DF9-47F3-4BF9-8A99-FEFDE7656444}"
@@ -27,6 +25,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpineRuntime36", "SpineRuntimes\SpineRuntime36\SpineRuntime36.csproj", "{90C07A22-4FC7-4E92-9D35-0EF02A72D82B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpineRuntime38", "SpineRuntimes\SpineRuntime38\SpineRuntime38.csproj", "{45643CCD-3D3C-4446-9486-FA8651E3A3F0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyEngine", "TinyEngine\TinyEngine.csproj", "{BA9A55E4-4078-41A5-A818-460DD8174D66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,10 +42,6 @@ Global
 		{E27EF00F-5AA8-4889-9790-2F4780102CA1}.Debug|x64.Build.0 = Debug|x64
 		{E27EF00F-5AA8-4889-9790-2F4780102CA1}.Release|x64.ActiveCfg = Release|x64
 		{E27EF00F-5AA8-4889-9790-2F4780102CA1}.Release|x64.Build.0 = Release|x64
-		{AD2E6ECD-2820-47EC-B4D8-69503A5D995D}.Debug|x64.ActiveCfg = Debug|x64
-		{AD2E6ECD-2820-47EC-B4D8-69503A5D995D}.Debug|x64.Build.0 = Debug|x64
-		{AD2E6ECD-2820-47EC-B4D8-69503A5D995D}.Release|x64.ActiveCfg = Release|x64
-		{AD2E6ECD-2820-47EC-B4D8-69503A5D995D}.Release|x64.Build.0 = Release|x64
 		{0F3E0EF6-DE9C-4A20-8CB5-3962E79A4DD3}.Debug|x64.ActiveCfg = Debug|x64
 		{0F3E0EF6-DE9C-4A20-8CB5-3962E79A4DD3}.Debug|x64.Build.0 = Debug|x64
 		{0F3E0EF6-DE9C-4A20-8CB5-3962E79A4DD3}.Release|x64.ActiveCfg = Release|x64
@@ -64,6 +60,10 @@ Global
 		{45643CCD-3D3C-4446-9486-FA8651E3A3F0}.Debug|x64.Build.0 = Debug|x64
 		{45643CCD-3D3C-4446-9486-FA8651E3A3F0}.Release|x64.ActiveCfg = Release|x64
 		{45643CCD-3D3C-4446-9486-FA8651E3A3F0}.Release|x64.Build.0 = Release|x64
+		{BA9A55E4-4078-41A5-A818-460DD8174D66}.Debug|x64.ActiveCfg = Debug|x64
+		{BA9A55E4-4078-41A5-A818-460DD8174D66}.Debug|x64.Build.0 = Debug|x64
+		{BA9A55E4-4078-41A5-A818-460DD8174D66}.Release|x64.ActiveCfg = Release|x64
+		{BA9A55E4-4078-41A5-A818-460DD8174D66}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

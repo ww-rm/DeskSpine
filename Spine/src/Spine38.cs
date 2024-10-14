@@ -45,6 +45,8 @@ namespace Spine
 
         private SkeletonClipping clipping = new();
 
+        public override SpineVersion Version { get => SpineVersion.V38; }
+
         public Spine38(string skelPath, string? atlasPath = null, float defaultMix = 0) : base(skelPath, atlasPath)
         {
             atlas = new Atlas(AtlasPath, textureLoader);

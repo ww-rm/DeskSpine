@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,20 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpineWindow
+namespace TinyEngine
 {
     /// <summary>
-    /// 对 SFML.Graphics.RenderWindow 的封装, 并提供分层窗口的基本功能
+    /// 可渲染场景对象, 装有可渲染对象的容器
     /// </summary>
+    public class RenderScene : Renderable 
+    {
+        public Dictionary<string, Renderable> Renderables { get => components; }
+    }
+
     public abstract class LayeredRenderWindow : IDisposable
     {
-#if DEBUG
-        protected const string RegKeyName = "SpineWindow_d";
-#else
-        protected const string RegKeyName = "SpineWindow";
-#endif
-
-        private Mutex windowMutex = new();                              // 互斥锁, 用于同步临界数据
+        private Mutex mutex = new();                                    // 互斥锁, 用于同步临界数据
         private SFML.Graphics.RenderWindow? window;                     // SFML 窗口对象
         private Task? windowLoopTask;                                   // 窗口循环线程
         private CancellationTokenSource cancelTokenSrc = new();         // 取消令牌, 用于结束窗口线程
@@ -35,10 +33,7 @@ namespace SpineWindow
         private SFML.System.Vector2i? lastWindowMovedPosition = null;   // 上一次移动鼠标的位置
         private bool isDragging = false;                                // 是否处于拖动状态
 
-        /// <summary>
-        /// 窗口句柄
-        /// </summary>
-        public IntPtr Handle { get => window.SystemHandle; }
+        protected RenderScene scene = new();                            // 场景对象, 管理所有可渲染对象
 
         /// <summary>
         /// LayeredRenderWindow 基类, 提供 Layered RenderWindow 的功能封装
@@ -54,7 +49,6 @@ namespace SpineWindow
         /// 关闭窗口并释放所有资源
         /// </summary>
         public void Close() { Dispose(); }
-
         ~LayeredRenderWindow() { Dispose(false); }
         public void Dispose() { Dispose(true); GC.SuppressFinalize(this); }
         protected virtual void Dispose(bool disposing)
@@ -64,7 +58,7 @@ namespace SpineWindow
                 cancelTokenSrc.Cancel();
                 windowLoopTask.Wait();
 
-                windowMutex.Dispose();
+                mutex.Dispose();
                 window.Dispose();
                 windowLoopTask.Dispose();
                 cancelTokenSrc.Dispose();
@@ -79,7 +73,7 @@ namespace SpineWindow
         /// <summary>
         /// 创建窗口并进入主循环
         /// </summary>
-        private void WindowLoopTask() 
+        private void WindowLoopTask()
         {
             CreateWindow();
             while (true)
@@ -90,10 +84,10 @@ namespace SpineWindow
                     break;
                 }
 
-                window.DispatchEvents();
+                mutex.WaitOne();
 
-                windowMutex.WaitOne(); var v = visible; windowMutex.ReleaseMutex();
-                if (v)
+                window.DispatchEvents();
+                if (visible)
                 {
                     UpdateFrame();
                     RenderFrame();
@@ -102,6 +96,8 @@ namespace SpineWindow
                 {
                     Thread.Sleep(10);   // 防止空转占用较高 cpu
                 }
+
+                mutex.ReleaseMutex();
             }
         }
 
@@ -123,8 +119,6 @@ namespace SpineWindow
             Win32.SetWindowPos(hWnd, Win32.HWND_TOPMOST, 0, 0, 0, 0, Win32.SWP_NOMOVE | Win32.SWP_NOSIZE);
             window.SetVisible(visible);
             window.SetFramerateLimit(maxFps);
-            window.Position = PositionReg;
-            window.Size = SizeReg;
             var view = window.GetView();
             view.Center = new(0, 200);
             view.Size = new(window.Size.X, -window.Size.Y); // SFML 窗口 y 轴默认向下
@@ -138,107 +132,48 @@ namespace SpineWindow
         }
 
         /// <summary>
-        /// 父类逻辑帧更新
+        /// 逻辑帧更新
         /// </summary>
         private void UpdateFrame()
         {
+            // 检测睡眠事件
+            var lastInputTime = (float)Win32.GetLastInputElapsedTime().TotalSeconds;
+            if (lastInputTime >= TimeToSleep && lastLastInputTime < TimeToSleep)
+                scene.SleepStateChange(true);
+            else if (lastInputTime < TimeToSleep && lastLastInputTime >= TimeToSleep)
+                scene.SleepStateChange(false);
+            lastLastInputTime = lastInputTime;
+
             // 更新内部对象状态
             var delta = clock.ElapsedTime.AsSeconds();
             clock.Restart();
-            UpdateFrame(delta);
-            Update(delta);
-
-            // 检测用户距离上次输入经过时间
-            var lastInputTime = (float)Win32.GetLastInputElapsedTime().TotalSeconds;
-            if (lastInputTime >= TimeToSleep && lastLastInputTime < TimeToSleep)
-                SleepStateChange(true);
-            else if (lastInputTime < TimeToSleep && lastLastInputTime >= TimeToSleep)
-                SleepStateChange(false);
-            lastLastInputTime = lastInputTime;
+            scene.Update(delta);
         }
 
         /// <summary>
-        /// 父类渲染帧更新
+        /// 渲染帧更新
         /// </summary>
         private void RenderFrame()
         {
-            windowMutex.WaitOne(); var c = backgroundColor; windowMutex.ReleaseMutex();
-            window.Clear(c);
-            RenderFrame(window);
+            window.Clear(backgroundColor);
+            scene.Render(window);
             window.Display();
         }
 
         /// <summary>
-        /// 逻辑帧更新, 子类需要注意数据线程间同步
+        /// 锁定线程资源
         /// </summary>
-        protected abstract void UpdateFrame(float delta);
+        public void Lock() { mutex.WaitOne(); }
 
         /// <summary>
-        /// 渲染帧更新, 子类需要注意数据线程间同步
+        /// 解锁线程资源
         /// </summary>
-        protected abstract void RenderFrame(SFML.Graphics.RenderTarget target);
+        public void Unlock() { mutex.ReleaseMutex(); }
 
         /// <summary>
-        /// 窗口位置在注册表的存储值
+        /// 窗口句柄
         /// </summary>
-        private static SFML.System.Vector2i PositionReg
-        {
-            get
-            {
-                SFML.System.Vector2i ret = new(0, 0);
-                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey($"Software\\{RegKeyName}"))
-                {
-                    if (spkey is not null)
-                    {
-                        int.TryParse(spkey.GetValue("PositionX", "0").ToString(), out ret.X);
-                        int.TryParse(spkey.GetValue("PositionY", "0").ToString(), out ret.Y);
-                    }
-                }
-                return ret;
-            }
-            set
-            {
-                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey($"Software\\{RegKeyName}"))
-                {
-                    if (spkey is not null)
-                    {
-                        spkey.SetValue("PositionX", value.X.ToString());
-                        spkey.SetValue("PositionY", value.Y.ToString());
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// 窗口大小在注册表的存储值
-        /// </summary>
-        private static SFML.System.Vector2u SizeReg
-        {
-            get
-            {
-                SFML.System.Vector2u ret = new(0, 0);
-                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey($"Software\\{RegKeyName}"))
-                {
-                    if (spkey is not null)
-                    {
-                        uint.TryParse(spkey.GetValue("SizeX", "1000").ToString(), out ret.X);
-                        uint.TryParse(spkey.GetValue("SizeY", "1000").ToString(), out ret.Y);
-                    }
-                }
-                return ret;
-            }
-            set
-            {
-                using (RegistryKey spkey = Registry.CurrentUser.CreateSubKey($"Software\\{RegKeyName}"))
-                {
-                    if (spkey is not null)
-                    {
-                        spkey.SetValue("SizeX", value.X.ToString());
-                        spkey.SetValue("SizeY", value.Y.ToString());
-                    }
-                }
-            }
-        }
+        public IntPtr Handle { get => window.SystemHandle; }
 
         /// <summary>
         /// 窗口位置
@@ -246,7 +181,7 @@ namespace SpineWindow
         public SFML.System.Vector2i Position
         {
             get => window.Position;
-            set { window.Position = value; PositionReg = value; }
+            set => window.Position = value;
         }
 
         /// <summary>
@@ -263,7 +198,7 @@ namespace SpineWindow
         /// </summary>
         public SFML.Graphics.Color BackgroudColor
         {
-            get { windowMutex.WaitOne(); var v = backgroundColor; windowMutex.ReleaseMutex(); return v; }
+            get => backgroundColor;
             set
             {
                 // BUG: SetLayeredWindowAttributes 的 R 和 B 分量必须相等才能让背景部分的透明和穿透同时生效
@@ -271,9 +206,7 @@ namespace SpineWindow
                 value.B = value.R; value.A = 0;
                 if (value == backgroundColor) return;
 
-                windowMutex.WaitOne();
                 backgroundColor = value;
-                windowMutex.ReleaseMutex();
                 Win32.SetLayeredWindowAttributes(window.SystemHandle, crKey, Opacity, Win32.LWA_COLORKEY | Win32.LWA_ALPHA);
             }
         }
@@ -289,16 +222,8 @@ namespace SpineWindow
         /// </summary>
         public bool Visible
         {
-            get { windowMutex.WaitOne(); var v = visible; windowMutex.ReleaseMutex(); return v; }
-            set 
-            { 
-                if (value == visible) return; 
-                windowMutex.WaitOne(); 
-                visible = value; 
-                windowMutex.ReleaseMutex(); 
-                window.SetVisible(value); 
-                VisibleChange(value); 
-            }
+            get => visible;
+            set { if (value == visible) return; visible = value; window.SetVisible(value); scene.VisibleChange(value); }
         }
         private bool visible = false;
 
@@ -412,7 +337,6 @@ namespace SpineWindow
             window.MouseMoved += (object? s, SFML.Window.MouseMoveEventArgs e) => Window_MouseMoved(e);
             window.MouseButtonReleased += (object? s, SFML.Window.MouseButtonEventArgs e) => Window_MouseButtonReleased(e);
             window.MouseWheelScrolled += (object? s, SFML.Window.MouseWheelScrollEventArgs e) => Window_MouseWheelScrolled(e);
-            window.Closed += (object? s, EventArgs e) => Window_Closed(e);
         }
 
         /********************************* 窗口基本事件 *********************************/
@@ -430,7 +354,6 @@ namespace SpineWindow
                 var view = window.GetView();
                 view.Size = new(window.Size.X, -window.Size.Y);
                 window.SetView(view);
-                SizeReg = window.Size;
             }
         }
 
@@ -481,7 +404,7 @@ namespace SpineWindow
             {
                 isDragging = true;
                 doubleClickChecking = false;
-                DragBegin(leftDown ? SFML.Window.Mouse.Button.Left : SFML.Window.Mouse.Button.Right); // 左键优先级高于右键
+                scene.DragBegin(leftDown ? SFML.Window.Mouse.Button.Left : SFML.Window.Mouse.Button.Right); // 左键优先级高于右键
             }
 
             if (isDragging)
@@ -516,7 +439,7 @@ namespace SpineWindow
                     Position = Position + windowDelta;
                 }
 
-                Drag(leftDown ? SFML.Window.Mouse.Button.Left : SFML.Window.Mouse.Button.Right, worldSmallDelta, worldDelta);
+                scene.Drag(leftDown ? SFML.Window.Mouse.Button.Left : SFML.Window.Mouse.Button.Right, worldSmallDelta, worldDelta);
             }
         }
 
@@ -537,7 +460,7 @@ namespace SpineWindow
                 }
 
                 isDragging = false;
-                DragEnd(e.Button);
+                scene.DragEnd(e.Button);
             }
             else
             {
@@ -576,7 +499,7 @@ namespace SpineWindow
                             break;
                     }
 
-                    DoubleClick(e.Button);
+                    scene.DoubleClick(e.Button);
                 }
                 else
                 {
@@ -591,67 +514,14 @@ namespace SpineWindow
                             break;
                     }
 
-                    Click(e.Button);
+                    scene.Click(e.Button);
                 }
             }
         }
 
         private void Window_MouseWheelScrolled(SFML.Window.MouseWheelScrollEventArgs e)
         {
-            Scroll(e.Wheel, e.Delta);
+            scene.Scroll(e.Wheel, e.Delta);
         }
-
-        private void Window_Closed(EventArgs e)
-        {
-            PositionReg = Position;
-            SizeReg = Size;
-        }
-
-        /********************************* 子类可重写事件 *********************************/
-
-        /// <summary>
-        /// 状态更新
-        /// </summary>
-        protected virtual void Update(float delta) { }
-
-        /// <summary>
-        /// 画面显示/隐藏
-        /// </summary>
-        protected virtual void VisibleChange(bool visible) { }
-
-        /// <summary>
-        /// 睡眠/唤醒
-        /// </summary>
-        protected virtual void SleepStateChange(bool sleep) { }
-
-        /// <summary>
-        /// 鼠标单击
-        /// </summary>
-        protected virtual void Click(SFML.Window.Mouse.Button button) { }
-
-        /// <summary>
-        /// 鼠标双击
-        /// </summary>
-        protected virtual void DoubleClick(SFML.Window.Mouse.Button button) { }
-
-        /// <summary>
-        /// 开始拖动
-        /// </summary>
-        protected virtual void DragBegin(SFML.Window.Mouse.Button button) { }
-
-        /// <summary>
-        /// 拖动
-        /// </summary>
-        protected virtual void Drag(SFML.Window.Mouse.Button button, SFML.System.Vector2f delta, SFML.System.Vector2f deltaFromSrc) { }
-
-        /// <summary>
-        /// 结束拖动
-        /// </summary>
-        protected virtual void DragEnd(SFML.Window.Mouse.Button button) { }
-
-        /// <summary>
-        /// 滚轮滚动
-        /// </summary>
-        protected virtual void Scroll(SFML.Window.Mouse.Wheel wheel, float delta) { }
     }
 }

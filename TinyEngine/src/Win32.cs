@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpineWindow
+namespace TinyEngine
 {
     /// <summary>
     /// Win32 Sdk 包装类

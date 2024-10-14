@@ -53,9 +53,9 @@
             tableLayoutPanel_SystemConfig = new TableLayoutPanel();
             label53 = new Label();
             label52 = new Label();
-            checkBox_TimeAlarm = new CheckBox();
+            checkBox_HourlyChime = new CheckBox();
             label51 = new Label();
-            label50 = new Label();
+            label_BalloonIcon = new Label();
             label4 = new Label();
             label3 = new Label();
             label1 = new Label();
@@ -107,15 +107,6 @@
             label11 = new Label();
             label10 = new Label();
             numericUpDown_PositionX = new NumericUpDown();
-            tableLayoutPanel8 = new TableLayoutPanel();
-            comboBox_AutoBackgroudColor = new ComboBox();
-            tableLayoutPanel_BackgroundColor = new TableLayoutPanel();
-            numericUpDown_BackgroundColorB = new NumericUpDown();
-            numericUpDown_BackgroundColorG = new NumericUpDown();
-            numericUpDown_BackgroundColorR = new NumericUpDown();
-            label47 = new Label();
-            label48 = new Label();
-            label49 = new Label();
             label17 = new Label();
             tableLayoutPanel10 = new TableLayoutPanel();
             trackBar_Opacity = new TrackBar();
@@ -126,6 +117,13 @@
             label_MaxFps = new Label();
             trackBar_MaxFps = new TrackBar();
             label15 = new Label();
+            tableLayoutPanel_BackgroundColor = new TableLayoutPanel();
+            numericUpDown_BackgroundColorB = new NumericUpDown();
+            numericUpDown_BackgroundColorG = new NumericUpDown();
+            numericUpDown_BackgroundColorR = new NumericUpDown();
+            label47 = new Label();
+            label48 = new Label();
+            label49 = new Label();
             tabPage_SpineConfig = new TabPage();
             tableLayoutPanel_SpineConfigParts = new TableLayoutPanel();
             tableLayoutPanel_SpineSlot = new TableLayoutPanel();
@@ -176,11 +174,11 @@
             label40 = new Label();
             comboBox_SpineVersion = new ComboBox();
             label39 = new Label();
+            tabPage_VoiceConfig = new TabPage();
             tableLayoutPanel_Buttons = new TableLayoutPanel();
             openFileDialog_SelectSkel = new OpenFileDialog();
             openFileDialog_BalloonIconPath = new OpenFileDialog();
             toolTip1 = new ToolTip(components);
-            tabPage_VoiceConfig = new TabPage();
             contextMenuStrip.SuspendLayout();
             tableLayoutPanel_Window.SuspendLayout();
             tabControl_Config.SuspendLayout();
@@ -200,15 +198,14 @@
             tableLayoutPanel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_PositionY).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_PositionX).BeginInit();
-            tableLayoutPanel8.SuspendLayout();
-            tableLayoutPanel_BackgroundColor.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown_BackgroundColorB).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown_BackgroundColorG).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown_BackgroundColorR).BeginInit();
             tableLayoutPanel10.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar_Opacity).BeginInit();
             tableLayoutPanel11.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar_MaxFps).BeginInit();
+            tableLayoutPanel_BackgroundColor.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown_BackgroundColorB).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown_BackgroundColorG).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown_BackgroundColorR).BeginInit();
             tabPage_SpineConfig.SuspendLayout();
             tableLayoutPanel_SpineConfigParts.SuspendLayout();
             tableLayoutPanel_SpineSlot.SuspendLayout();
@@ -398,9 +395,9 @@
             tableLayoutPanel_SystemConfig.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 44.33121F));
             tableLayoutPanel_SystemConfig.Controls.Add(label53, 2, 3);
             tableLayoutPanel_SystemConfig.Controls.Add(label52, 2, 2);
-            tableLayoutPanel_SystemConfig.Controls.Add(checkBox_TimeAlarm, 1, 3);
+            tableLayoutPanel_SystemConfig.Controls.Add(checkBox_HourlyChime, 1, 3);
             tableLayoutPanel_SystemConfig.Controls.Add(label51, 0, 3);
-            tableLayoutPanel_SystemConfig.Controls.Add(label50, 0, 2);
+            tableLayoutPanel_SystemConfig.Controls.Add(label_BalloonIcon, 0, 2);
             tableLayoutPanel_SystemConfig.Controls.Add(label4, 2, 1);
             tableLayoutPanel_SystemConfig.Controls.Add(label3, 2, 0);
             tableLayoutPanel_SystemConfig.Controls.Add(label1, 0, 0);
@@ -442,17 +439,17 @@
             label52.TabIndex = 35;
             label52.Text = "设置弹出气泡消息时的图标";
             // 
-            // checkBox_TimeAlarm
+            // checkBox_HourlyChime
             // 
-            checkBox_TimeAlarm.Anchor = AnchorStyles.Left;
-            checkBox_TimeAlarm.AutoSize = true;
-            checkBox_TimeAlarm.Location = new Point(235, 232);
-            checkBox_TimeAlarm.Margin = new Padding(0);
-            checkBox_TimeAlarm.Name = "checkBox_TimeAlarm";
-            checkBox_TimeAlarm.Size = new Size(22, 21);
-            checkBox_TimeAlarm.TabIndex = 33;
-            toolTip1.SetToolTip(checkBox_TimeAlarm, "整点的时候会弹出气泡消息提醒时间");
-            checkBox_TimeAlarm.UseVisualStyleBackColor = true;
+            checkBox_HourlyChime.Anchor = AnchorStyles.Left;
+            checkBox_HourlyChime.AutoSize = true;
+            checkBox_HourlyChime.Location = new Point(235, 232);
+            checkBox_HourlyChime.Margin = new Padding(0);
+            checkBox_HourlyChime.Name = "checkBox_HourlyChime";
+            checkBox_HourlyChime.Size = new Size(22, 21);
+            checkBox_HourlyChime.TabIndex = 33;
+            toolTip1.SetToolTip(checkBox_HourlyChime, "整点的时候会弹出气泡消息提醒时间");
+            checkBox_HourlyChime.UseVisualStyleBackColor = true;
             // 
             // label51
             // 
@@ -465,16 +462,18 @@
             label51.TabIndex = 32;
             label51.Text = "整点报时";
             // 
-            // label50
+            // label_BalloonIcon
             // 
-            label50.Anchor = AnchorStyles.Left;
-            label50.AutoSize = true;
-            label50.Location = new Point(32, 159);
-            label50.Margin = new Padding(32, 0, 4, 0);
-            label50.Name = "label50";
-            label50.Size = new Size(132, 27);
-            label50.TabIndex = 6;
-            label50.Text = "气泡消息图标";
+            label_BalloonIcon.Anchor = AnchorStyles.Left;
+            label_BalloonIcon.AutoSize = true;
+            label_BalloonIcon.Cursor = Cursors.Hand;
+            label_BalloonIcon.Location = new Point(32, 159);
+            label_BalloonIcon.Margin = new Padding(32, 0, 4, 0);
+            label_BalloonIcon.Name = "label_BalloonIcon";
+            label_BalloonIcon.Size = new Size(132, 27);
+            label_BalloonIcon.TabIndex = 6;
+            label_BalloonIcon.Text = "气泡消息图标";
+            label_BalloonIcon.Click += label_BalloonIcon_Click;
             // 
             // label4
             // 
@@ -587,10 +586,10 @@
             tabPage_BasicConfig.AutoScroll = true;
             tabPage_BasicConfig.BackColor = SystemColors.Control;
             tabPage_BasicConfig.Controls.Add(tableLayoutPanel_BasicConfig);
-            tabPage_BasicConfig.Location = new Point(4, 36);
+            tabPage_BasicConfig.Location = new Point(4, 33);
             tabPage_BasicConfig.Margin = new Padding(0);
             tabPage_BasicConfig.Name = "tabPage_BasicConfig";
-            tabPage_BasicConfig.Size = new Size(1570, 747);
+            tabPage_BasicConfig.Size = new Size(1570, 750);
             tabPage_BasicConfig.TabIndex = 1;
             tabPage_BasicConfig.Text = "基础设置";
             // 
@@ -626,13 +625,13 @@
             tableLayoutPanel_BasicConfig.Controls.Add(label_Position, 0, 2);
             tableLayoutPanel_BasicConfig.Controls.Add(label9, 2, 3);
             tableLayoutPanel_BasicConfig.Controls.Add(tableLayoutPanel6, 1, 2);
-            tableLayoutPanel_BasicConfig.Controls.Add(tableLayoutPanel8, 1, 9);
             tableLayoutPanel_BasicConfig.Controls.Add(label17, 2, 8);
             tableLayoutPanel_BasicConfig.Controls.Add(tableLayoutPanel10, 1, 7);
             tableLayoutPanel_BasicConfig.Controls.Add(label14, 0, 7);
             tableLayoutPanel_BasicConfig.Controls.Add(label16, 0, 8);
             tableLayoutPanel_BasicConfig.Controls.Add(tableLayoutPanel11, 1, 8);
             tableLayoutPanel_BasicConfig.Controls.Add(label15, 2, 7);
+            tableLayoutPanel_BasicConfig.Controls.Add(tableLayoutPanel_BackgroundColor, 1, 9);
             tableLayoutPanel_BasicConfig.Dock = DockStyle.Top;
             tableLayoutPanel_BasicConfig.Location = new Point(0, 0);
             tableLayoutPanel_BasicConfig.Margin = new Padding(0);
@@ -1158,132 +1157,6 @@
             numericUpDown_PositionX.TabIndex = 4;
             numericUpDown_PositionX.TextAlign = HorizontalAlignment.Right;
             // 
-            // tableLayoutPanel8
-            // 
-            tableLayoutPanel8.ColumnCount = 2;
-            tableLayoutPanel8.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 23.1046925F));
-            tableLayoutPanel8.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 76.89531F));
-            tableLayoutPanel8.Controls.Add(comboBox_AutoBackgroudColor, 0, 0);
-            tableLayoutPanel8.Controls.Add(tableLayoutPanel_BackgroundColor, 1, 0);
-            tableLayoutPanel8.Dock = DockStyle.Fill;
-            tableLayoutPanel8.Location = new Point(234, 576);
-            tableLayoutPanel8.Margin = new Padding(0);
-            tableLayoutPanel8.Name = "tableLayoutPanel8";
-            tableLayoutPanel8.RowCount = 1;
-            tableLayoutPanel8.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel8.Size = new Size(645, 64);
-            tableLayoutPanel8.TabIndex = 17;
-            // 
-            // comboBox_AutoBackgroudColor
-            // 
-            comboBox_AutoBackgroudColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            comboBox_AutoBackgroudColor.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBox_AutoBackgroudColor.FormattingEnabled = true;
-            comboBox_AutoBackgroudColor.Location = new Point(0, 14);
-            comboBox_AutoBackgroudColor.Margin = new Padding(0, 0, 4, 0);
-            comboBox_AutoBackgroudColor.Name = "comboBox_AutoBackgroudColor";
-            comboBox_AutoBackgroudColor.Size = new Size(145, 35);
-            comboBox_AutoBackgroudColor.TabIndex = 0;
-            toolTip1.SetToolTip(comboBox_AutoBackgroudColor, "除自定义以外的选项，均是自动随机一个合适的背景颜色，保证不与精灵本身像素颜色相同\r\n画面类似绿幕抠图，因此背景颜色影响抠图效果");
-            comboBox_AutoBackgroudColor.SelectedValueChanged += comboBox_AutoBackgroudColor_SelectedValueChanged;
-            // 
-            // tableLayoutPanel_BackgroundColor
-            // 
-            tableLayoutPanel_BackgroundColor.BackColor = SystemColors.Control;
-            tableLayoutPanel_BackgroundColor.ColumnCount = 6;
-            tableLayoutPanel_BackgroundColor.ColumnStyles.Add(new ColumnStyle());
-            tableLayoutPanel_BackgroundColor.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
-            tableLayoutPanel_BackgroundColor.ColumnStyles.Add(new ColumnStyle());
-            tableLayoutPanel_BackgroundColor.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
-            tableLayoutPanel_BackgroundColor.ColumnStyles.Add(new ColumnStyle());
-            tableLayoutPanel_BackgroundColor.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
-            tableLayoutPanel_BackgroundColor.Controls.Add(numericUpDown_BackgroundColorB, 5, 0);
-            tableLayoutPanel_BackgroundColor.Controls.Add(numericUpDown_BackgroundColorG, 3, 0);
-            tableLayoutPanel_BackgroundColor.Controls.Add(numericUpDown_BackgroundColorR, 1, 0);
-            tableLayoutPanel_BackgroundColor.Controls.Add(label47, 0, 0);
-            tableLayoutPanel_BackgroundColor.Controls.Add(label48, 2, 0);
-            tableLayoutPanel_BackgroundColor.Controls.Add(label49, 4, 0);
-            tableLayoutPanel_BackgroundColor.Dock = DockStyle.Fill;
-            tableLayoutPanel_BackgroundColor.Location = new Point(153, 0);
-            tableLayoutPanel_BackgroundColor.Margin = new Padding(4, 0, 0, 0);
-            tableLayoutPanel_BackgroundColor.Name = "tableLayoutPanel_BackgroundColor";
-            tableLayoutPanel_BackgroundColor.RowCount = 1;
-            tableLayoutPanel_BackgroundColor.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel_BackgroundColor.Size = new Size(492, 64);
-            tableLayoutPanel_BackgroundColor.TabIndex = 1;
-            // 
-            // numericUpDown_BackgroundColorB
-            // 
-            numericUpDown_BackgroundColorB.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            numericUpDown_BackgroundColorB.Location = new Point(369, 15);
-            numericUpDown_BackgroundColorB.Margin = new Padding(11, 4, 11, 4);
-            numericUpDown_BackgroundColorB.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
-            numericUpDown_BackgroundColorB.Name = "numericUpDown_BackgroundColorB";
-            numericUpDown_BackgroundColorB.Size = new Size(112, 33);
-            numericUpDown_BackgroundColorB.TabIndex = 9;
-            numericUpDown_BackgroundColorB.TextAlign = HorizontalAlignment.Right;
-            numericUpDown_BackgroundColorB.Value = new decimal(new int[] { 128, 0, 0, 0 });
-            numericUpDown_BackgroundColorB.ValueChanged += numericUpDown_BackgroundColorB_ValueChanged;
-            // 
-            // numericUpDown_BackgroundColorG
-            // 
-            numericUpDown_BackgroundColorG.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            numericUpDown_BackgroundColorG.Location = new Point(206, 15);
-            numericUpDown_BackgroundColorG.Margin = new Padding(11, 4, 11, 4);
-            numericUpDown_BackgroundColorG.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
-            numericUpDown_BackgroundColorG.Name = "numericUpDown_BackgroundColorG";
-            numericUpDown_BackgroundColorG.Size = new Size(111, 33);
-            numericUpDown_BackgroundColorG.TabIndex = 8;
-            numericUpDown_BackgroundColorG.TextAlign = HorizontalAlignment.Right;
-            numericUpDown_BackgroundColorG.Value = new decimal(new int[] { 128, 0, 0, 0 });
-            numericUpDown_BackgroundColorG.ValueChanged += numericUpDown_BackgroundColorG_ValueChanged;
-            // 
-            // numericUpDown_BackgroundColorR
-            // 
-            numericUpDown_BackgroundColorR.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            numericUpDown_BackgroundColorR.Location = new Point(41, 15);
-            numericUpDown_BackgroundColorR.Margin = new Padding(11, 4, 11, 4);
-            numericUpDown_BackgroundColorR.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
-            numericUpDown_BackgroundColorR.Name = "numericUpDown_BackgroundColorR";
-            numericUpDown_BackgroundColorR.Size = new Size(111, 33);
-            numericUpDown_BackgroundColorR.TabIndex = 7;
-            numericUpDown_BackgroundColorR.TextAlign = HorizontalAlignment.Right;
-            numericUpDown_BackgroundColorR.Value = new decimal(new int[] { 128, 0, 0, 0 });
-            numericUpDown_BackgroundColorR.ValueChanged += numericUpDown_BackgroundColorR_ValueChanged;
-            // 
-            // label47
-            // 
-            label47.Anchor = AnchorStyles.None;
-            label47.AutoSize = true;
-            label47.Location = new Point(0, 18);
-            label47.Margin = new Padding(0);
-            label47.Name = "label47";
-            label47.Size = new Size(30, 27);
-            label47.TabIndex = 4;
-            label47.Text = "R:";
-            // 
-            // label48
-            // 
-            label48.Anchor = AnchorStyles.None;
-            label48.AutoSize = true;
-            label48.Location = new Point(163, 18);
-            label48.Margin = new Padding(0);
-            label48.Name = "label48";
-            label48.Size = new Size(32, 27);
-            label48.TabIndex = 5;
-            label48.Text = "G:";
-            // 
-            // label49
-            // 
-            label49.Anchor = AnchorStyles.None;
-            label49.AutoSize = true;
-            label49.Location = new Point(328, 18);
-            label49.Margin = new Padding(0);
-            label49.Name = "label49";
-            label49.Size = new Size(30, 27);
-            label49.TabIndex = 6;
-            label49.Text = "B:";
-            // 
             // label17
             // 
             label17.Anchor = AnchorStyles.Left;
@@ -1415,15 +1288,112 @@
             label15.TabIndex = 12;
             label15.Text = "窗口整体不透明度";
             // 
+            // tableLayoutPanel_BackgroundColor
+            // 
+            tableLayoutPanel_BackgroundColor.BackColor = SystemColors.Control;
+            tableLayoutPanel_BackgroundColor.ColumnCount = 6;
+            tableLayoutPanel_BackgroundColor.ColumnStyles.Add(new ColumnStyle());
+            tableLayoutPanel_BackgroundColor.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
+            tableLayoutPanel_BackgroundColor.ColumnStyles.Add(new ColumnStyle());
+            tableLayoutPanel_BackgroundColor.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
+            tableLayoutPanel_BackgroundColor.ColumnStyles.Add(new ColumnStyle());
+            tableLayoutPanel_BackgroundColor.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3333321F));
+            tableLayoutPanel_BackgroundColor.Controls.Add(numericUpDown_BackgroundColorB, 5, 0);
+            tableLayoutPanel_BackgroundColor.Controls.Add(numericUpDown_BackgroundColorG, 3, 0);
+            tableLayoutPanel_BackgroundColor.Controls.Add(numericUpDown_BackgroundColorR, 1, 0);
+            tableLayoutPanel_BackgroundColor.Controls.Add(label47, 0, 0);
+            tableLayoutPanel_BackgroundColor.Controls.Add(label48, 2, 0);
+            tableLayoutPanel_BackgroundColor.Controls.Add(label49, 4, 0);
+            tableLayoutPanel_BackgroundColor.Dock = DockStyle.Fill;
+            tableLayoutPanel_BackgroundColor.Location = new Point(238, 576);
+            tableLayoutPanel_BackgroundColor.Margin = new Padding(4, 0, 0, 0);
+            tableLayoutPanel_BackgroundColor.Name = "tableLayoutPanel_BackgroundColor";
+            tableLayoutPanel_BackgroundColor.RowCount = 1;
+            tableLayoutPanel_BackgroundColor.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel_BackgroundColor.Size = new Size(641, 64);
+            tableLayoutPanel_BackgroundColor.TabIndex = 1;
+            // 
+            // numericUpDown_BackgroundColorB
+            // 
+            numericUpDown_BackgroundColorB.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            numericUpDown_BackgroundColorB.Location = new Point(469, 15);
+            numericUpDown_BackgroundColorB.Margin = new Padding(11, 4, 11, 4);
+            numericUpDown_BackgroundColorB.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericUpDown_BackgroundColorB.Name = "numericUpDown_BackgroundColorB";
+            numericUpDown_BackgroundColorB.Size = new Size(161, 33);
+            numericUpDown_BackgroundColorB.TabIndex = 9;
+            numericUpDown_BackgroundColorB.TextAlign = HorizontalAlignment.Right;
+            numericUpDown_BackgroundColorB.Value = new decimal(new int[] { 128, 0, 0, 0 });
+            numericUpDown_BackgroundColorB.ValueChanged += numericUpDown_BackgroundColorB_ValueChanged;
+            // 
+            // numericUpDown_BackgroundColorG
+            // 
+            numericUpDown_BackgroundColorG.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            numericUpDown_BackgroundColorG.Location = new Point(256, 15);
+            numericUpDown_BackgroundColorG.Margin = new Padding(11, 4, 11, 4);
+            numericUpDown_BackgroundColorG.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericUpDown_BackgroundColorG.Name = "numericUpDown_BackgroundColorG";
+            numericUpDown_BackgroundColorG.Size = new Size(161, 33);
+            numericUpDown_BackgroundColorG.TabIndex = 8;
+            numericUpDown_BackgroundColorG.TextAlign = HorizontalAlignment.Right;
+            numericUpDown_BackgroundColorG.Value = new decimal(new int[] { 128, 0, 0, 0 });
+            numericUpDown_BackgroundColorG.ValueChanged += numericUpDown_BackgroundColorG_ValueChanged;
+            // 
+            // numericUpDown_BackgroundColorR
+            // 
+            numericUpDown_BackgroundColorR.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            numericUpDown_BackgroundColorR.Location = new Point(41, 15);
+            numericUpDown_BackgroundColorR.Margin = new Padding(11, 4, 11, 4);
+            numericUpDown_BackgroundColorR.Maximum = new decimal(new int[] { 255, 0, 0, 0 });
+            numericUpDown_BackgroundColorR.Name = "numericUpDown_BackgroundColorR";
+            numericUpDown_BackgroundColorR.Size = new Size(161, 33);
+            numericUpDown_BackgroundColorR.TabIndex = 7;
+            numericUpDown_BackgroundColorR.TextAlign = HorizontalAlignment.Right;
+            numericUpDown_BackgroundColorR.Value = new decimal(new int[] { 128, 0, 0, 0 });
+            numericUpDown_BackgroundColorR.ValueChanged += numericUpDown_BackgroundColorR_ValueChanged;
+            // 
+            // label47
+            // 
+            label47.Anchor = AnchorStyles.None;
+            label47.AutoSize = true;
+            label47.Location = new Point(0, 18);
+            label47.Margin = new Padding(0);
+            label47.Name = "label47";
+            label47.Size = new Size(30, 27);
+            label47.TabIndex = 4;
+            label47.Text = "R:";
+            // 
+            // label48
+            // 
+            label48.Anchor = AnchorStyles.None;
+            label48.AutoSize = true;
+            label48.Location = new Point(213, 18);
+            label48.Margin = new Padding(0);
+            label48.Name = "label48";
+            label48.Size = new Size(32, 27);
+            label48.TabIndex = 5;
+            label48.Text = "G:";
+            // 
+            // label49
+            // 
+            label49.Anchor = AnchorStyles.None;
+            label49.AutoSize = true;
+            label49.Location = new Point(428, 18);
+            label49.Margin = new Padding(0);
+            label49.Name = "label49";
+            label49.Size = new Size(30, 27);
+            label49.TabIndex = 6;
+            label49.Text = "B:";
+            // 
             // tabPage_SpineConfig
             // 
             tabPage_SpineConfig.AutoScroll = true;
             tabPage_SpineConfig.BackColor = SystemColors.Control;
             tabPage_SpineConfig.Controls.Add(tableLayoutPanel_SpineConfigParts);
-            tabPage_SpineConfig.Location = new Point(4, 36);
+            tabPage_SpineConfig.Location = new Point(4, 33);
             tabPage_SpineConfig.Margin = new Padding(0);
             tabPage_SpineConfig.Name = "tabPage_SpineConfig";
-            tabPage_SpineConfig.Size = new Size(1570, 747);
+            tabPage_SpineConfig.Size = new Size(1570, 750);
             tabPage_SpineConfig.TabIndex = 2;
             tabPage_SpineConfig.Text = "Spine 设置";
             // 
@@ -2037,7 +2007,7 @@
             comboBox_WindowType.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_WindowType.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_WindowType.FormattingEnabled = true;
-            comboBox_WindowType.Location = new Point(234, 77);
+            comboBox_WindowType.Location = new Point(234, 78);
             comboBox_WindowType.Margin = new Padding(0);
             comboBox_WindowType.Name = "comboBox_WindowType";
             comboBox_WindowType.Size = new Size(642, 35);
@@ -2070,7 +2040,7 @@
             comboBox_SpineVersion.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             comboBox_SpineVersion.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox_SpineVersion.FormattingEnabled = true;
-            comboBox_SpineVersion.Location = new Point(234, 14);
+            comboBox_SpineVersion.Location = new Point(234, 15);
             comboBox_SpineVersion.Margin = new Padding(0);
             comboBox_SpineVersion.Name = "comboBox_SpineVersion";
             comboBox_SpineVersion.Size = new Size(642, 35);
@@ -2086,6 +2056,17 @@
             label39.Size = new Size(111, 27);
             label39.TabIndex = 32;
             label39.Text = "Spine 版本";
+            // 
+            // tabPage_VoiceConfig
+            // 
+            tabPage_VoiceConfig.AutoScroll = true;
+            tabPage_VoiceConfig.BackColor = SystemColors.Control;
+            tabPage_VoiceConfig.Location = new Point(4, 33);
+            tabPage_VoiceConfig.Margin = new Padding(0);
+            tabPage_VoiceConfig.Name = "tabPage_VoiceConfig";
+            tabPage_VoiceConfig.Size = new Size(1570, 750);
+            tabPage_VoiceConfig.TabIndex = 3;
+            tabPage_VoiceConfig.Text = "语音设置";
             // 
             // tableLayoutPanel_Buttons
             // 
@@ -2122,17 +2103,6 @@
             openFileDialog_BalloonIconPath.AddToRecent = false;
             openFileDialog_BalloonIconPath.Filter = "图像文件 (*.jpg; *.jpeg; *.png; *.bmp; *.ico)|*.jpg;*.jpeg;*.png;*.bmp;*.ico|所有文件 (*.*)|*.*";
             openFileDialog_BalloonIconPath.RestoreDirectory = true;
-            // 
-            // tabPage_VoiceConfig
-            // 
-            tabPage_VoiceConfig.AutoScroll = true;
-            tabPage_VoiceConfig.BackColor = SystemColors.Control;
-            tabPage_VoiceConfig.Location = new Point(4, 36);
-            tabPage_VoiceConfig.Margin = new Padding(0);
-            tabPage_VoiceConfig.Name = "tabPage_VoiceConfig";
-            tabPage_VoiceConfig.Size = new Size(1570, 747);
-            tabPage_VoiceConfig.TabIndex = 3;
-            tabPage_VoiceConfig.Text = "语音设置";
             // 
             // ConfigForm
             // 
@@ -2178,18 +2148,17 @@
             tableLayoutPanel6.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_PositionY).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_PositionX).EndInit();
-            tableLayoutPanel8.ResumeLayout(false);
-            tableLayoutPanel_BackgroundColor.ResumeLayout(false);
-            tableLayoutPanel_BackgroundColor.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown_BackgroundColorB).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown_BackgroundColorG).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown_BackgroundColorR).EndInit();
             tableLayoutPanel10.ResumeLayout(false);
             tableLayoutPanel10.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar_Opacity).EndInit();
             tableLayoutPanel11.ResumeLayout(false);
             tableLayoutPanel11.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)trackBar_MaxFps).EndInit();
+            tableLayoutPanel_BackgroundColor.ResumeLayout(false);
+            tableLayoutPanel_BackgroundColor.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown_BackgroundColorB).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown_BackgroundColorG).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown_BackgroundColorR).EndInit();
             tabPage_SpineConfig.ResumeLayout(false);
             tableLayoutPanel_SpineConfigParts.ResumeLayout(false);
             tableLayoutPanel_SpineSlot.ResumeLayout(false);
@@ -2246,8 +2215,6 @@
         private Label label16;
         private Label label18;
         private Label label19;
-        private TableLayoutPanel tableLayoutPanel8;
-        private ComboBox comboBox_AutoBackgroudColor;
         private Label label23;
         private TableLayoutPanel tableLayoutPanel9;
         private NumericUpDown numericUpDown_SpinePositionY;
@@ -2340,9 +2307,9 @@
         private NumericUpDown numericUpDown_BackgroundColorG;
         private NumericUpDown numericUpDown_BackgroundColorR;
         private TextBox textBox_BalloonIconPath;
-        private Label label50;
+        private Label label_BalloonIcon;
         private Button button_SelectBalloonIconPath;
-        private CheckBox checkBox_TimeAlarm;
+        private CheckBox checkBox_HourlyChime;
         private Label label51;
         private TableLayoutPanel tableLayoutPanel_BalloonIconPath;
         private Label label53;

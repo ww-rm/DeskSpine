@@ -4,31 +4,44 @@ namespace DeskSpine
 {
     public partial class ConfigForm : Form
     {
-        protected static Dictionary<string, SpineWindow.AutoBackgroudColorType> comboBox_AutoBackgroudColor_KV = new()
+        /// <summary>
+        /// 版本下拉框映射表
+        /// </summary>
+        protected static Dictionary<string, Spine.SpineVersion> comboBox_SpineVersion_KV = new()
         {
-            { "黑色", SpineWindow.AutoBackgroudColorType.Black },
-            { "白色", SpineWindow.AutoBackgroudColorType.White },
-            { "灰色", SpineWindow.AutoBackgroudColorType.Gray },
-            { "自定义", SpineWindow.AutoBackgroudColorType.None },
+            { "3.6.x", Spine.SpineVersion.V36 },
+            { "3.8.x", Spine.SpineVersion.V38 },
         };
 
-        protected static Dictionary<string, string> comboBox_SpineVersion_KV = new()
+        /// <summary>
+        /// 交互方案下拉框映射表
+        /// </summary>
+        protected static Dictionary<string, TinyEngine.AnimatorType> comboBox_WindowType_KV = new()
         {
-            { "3.6.x", "3.6.x" },
-            { "3.8.x", "3.8.x" },
-        };
-
-        protected static Dictionary<string, SpineWindow.SpineWindowType> comboBox_WindowType_KV = new()
-        {
-            { "碧蓝航线_后宅小人", SpineWindow.SpineWindowType.AzurLaneSD },
-            { "碧蓝航线_动态立绘", SpineWindow.SpineWindowType.AzurLaneDynamic },
-            { "明日方舟_动态立绘", SpineWindow.SpineWindowType.ArknightsDynamic },
-            { "明日方舟_基建小人", SpineWindow.SpineWindowType.ArknightsBuild },
-            { "明日方舟_战斗小人", SpineWindow.SpineWindowType.ArknightsBattle },
+            { "碧蓝航线_后宅小人", TinyEngine.AnimatorType.AzurLaneSD },
+            { "碧蓝航线_动态立绘", TinyEngine.AnimatorType.AzurLaneDynamic },
+            { "明日方舟_动态立绘", TinyEngine.AnimatorType.ArknightsDynamic },
+            { "明日方舟_基建小人", TinyEngine.AnimatorType.ArknightsBuild },
+            { "明日方舟_战斗小人", TinyEngine.AnimatorType.ArknightsBattle },
         };
 
         private ShellNotifyIcon shellNotifyIcon;
+        private System.Timers.Timer hourlyChimeTimer = new(100) { AutoReset = true };
+        private bool hasChimed = false;
 
+        public ConfigForm()
+        {
+            InitializeComponent();
+            _ = Handle; // 强制创建窗口
+            shellNotifyIcon = new(notifyIcon);
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigForm));
+            notifyIcon.Icon = (Icon?)(SystemValue.SystemUseLightTheme ? resources.GetObject("$this.Icon") : resources.GetObject("notifyIcon.Icon"));
+            hourlyChimeTimer.Elapsed += TimeAlarmTimer_Elapsed;
+        }
+
+        /// <summary>
+        /// 气泡图标
+        /// </summary>
         public string? BalloonIconPath
         {
             get => balloonIconPath;
@@ -50,30 +63,16 @@ namespace DeskSpine
                         balloonIcon?.Dispose();
                         balloonIconPath = value;
                         balloonIcon = newIcon;
-                        ShowBalloonTip("图标修改成功", "来看看效果吧~");
                     }
-                    catch (Exception ex) 
-                    { 
-                        MessageBox.Show($"{value} 加载失败\n\n{ex}", "气泡图标资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"{value} 加载失败\n\n{ex}", "气泡图标资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
         }
         private string? balloonIconPath;
         private Bitmap? balloonIcon;
-
-        private System.Timers.Timer timeAlarmTimer = new(100) { AutoReset = true };
-        private bool hasAlarmed = false;
-
-        public ConfigForm()
-        {
-            InitializeComponent();
-            _ = Handle; // 强制创建窗口
-            shellNotifyIcon = new(notifyIcon);
-            var resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigForm));
-            notifyIcon.Icon = (Icon?)(SystemValue.SystemUseLightTheme ? resources.GetObject("$this.Icon") : resources.GetObject("notifyIcon.Icon"));
-            timeAlarmTimer.Elapsed += TimeAlarmTimer_Elapsed;
-        }
 
         /// <summary>
         /// 获取和填充设置项
@@ -88,35 +87,30 @@ namespace DeskSpine
                 v.SystemConfig.AutuRun = checkBox_AutoRun.Checked;
                 v.SystemConfig.Visible = checkBox_Visible.Checked;
                 v.SystemConfig.BalloonIconPath = string.IsNullOrEmpty(textBox_BalloonIconPath.Text) ? null : textBox_BalloonIconPath.Text;
-                v.SystemConfig.TimeAlarm = checkBox_TimeAlarm.Checked;
+                v.SystemConfig.TimeAlarm = checkBox_HourlyChime.Checked;
 
                 // 基础设置
                 v.BasicConfig.WallpaperMode = checkBox_WallpaperMode.Checked;
                 v.BasicConfig.MouseClickThrough = checkBox_MouseClickThrough.Checked;
-                v.BasicConfig.PositionX = numericUpDown_PositionX.Enabled ? (int)numericUpDown_PositionX.Value : Program.spineWindow.Position.X;
-                v.BasicConfig.PositionY = numericUpDown_PositionY.Enabled ? (int)numericUpDown_PositionY.Value : Program.spineWindow.Position.Y;
-                v.BasicConfig.SizeX = numericUpDown_SizeX.Enabled ? (uint)numericUpDown_SizeX.Value : Program.spineWindow.Size.X;
-                v.BasicConfig.SizeY = numericUpDown_SizeY.Enabled ? (uint)numericUpDown_SizeY.Value : Program.spineWindow.Size.Y;
-                v.BasicConfig.SpinePositionX = numericUpDown_SpinePositionX.Enabled ? (float)numericUpDown_SpinePositionX.Value : Program.spineWindow.SpinePosition.X;
-                v.BasicConfig.SpinePositionY = numericUpDown_SpinePositionY.Enabled ? (float)numericUpDown_SpinePositionY.Value : Program.spineWindow.SpinePosition.Y;
+                v.BasicConfig.PositionX = numericUpDown_PositionX.Enabled ? (int)numericUpDown_PositionX.Value : Program.SpineWindow.Position.X;
+                v.BasicConfig.PositionY = numericUpDown_PositionY.Enabled ? (int)numericUpDown_PositionY.Value : Program.SpineWindow.Position.Y;
+                v.BasicConfig.SizeX = numericUpDown_SizeX.Enabled ? (uint)numericUpDown_SizeX.Value : Program.SpineWindow.Size.X;
+                v.BasicConfig.SizeY = numericUpDown_SizeY.Enabled ? (uint)numericUpDown_SizeY.Value : Program.SpineWindow.Size.Y;
+                v.BasicConfig.SpinePositionX = numericUpDown_SpinePositionX.Enabled ? (float)numericUpDown_SpinePositionX.Value : Program.SpineWindow.Spine.Position.X;
+                v.BasicConfig.SpinePositionY = numericUpDown_SpinePositionY.Enabled ? (float)numericUpDown_SpinePositionY.Value : Program.SpineWindow.Spine.Position.Y;
                 v.BasicConfig.SpineFlip = checkBox_SpineFlip.Checked;
                 v.BasicConfig.SpineScale = trackBar_SpineScale.Value / 100.0f;
                 v.BasicConfig.Opacity = (byte)trackBar_Opacity.Value;
                 v.BasicConfig.MaxFps = (uint)trackBar_MaxFps.Value;
                 v.BasicConfig.SpineUsePMA = checkBox_SpineUsePMA.Checked;
-
-                // 获取自动背景颜色
-                v.BasicConfig.AutoBackgroudColor = (SpineWindow.AutoBackgroudColorType)comboBox_AutoBackgroudColor.SelectedValue;
-
-                // 获取实际背景颜色
                 v.BasicConfig.BackgroundColor = new((byte)numericUpDown_BackgroundColorR.Value,
                                                     (byte)numericUpDown_BackgroundColorG.Value,
                                                     (byte)numericUpDown_BackgroundColorB.Value,
                                                     0);
 
                 // Spine 设置
-                v.SpineConfig.SpineVersion = (string)comboBox_SpineVersion.SelectedValue;
-                v.SpineConfig.WindowType = (SpineWindow.SpineWindowType)comboBox_WindowType.SelectedValue;
+                v.SpineConfig.SpineVersion = (Spine.SpineVersion)comboBox_SpineVersion.SelectedValue;
+                v.SpineConfig.InteractMode = (TinyEngine.AnimatorType)comboBox_WindowType.SelectedValue;
 
                 // 设置 Spine 路径
                 v.SpineConfig.SkelPath0 = string.IsNullOrEmpty(textBox_SkelPath0.Text) ? null : textBox_SkelPath0.Text;
@@ -139,7 +133,7 @@ namespace DeskSpine
                 checkBox_AutoRun.Checked = value.SystemConfig.AutuRun;
                 checkBox_Visible.Checked = value.SystemConfig.Visible;
                 textBox_BalloonIconPath.Text = value.SystemConfig.BalloonIconPath;
-                checkBox_TimeAlarm.Checked = value.SystemConfig.TimeAlarm;
+                checkBox_HourlyChime.Checked = value.SystemConfig.TimeAlarm;
 
                 // 基础设置
                 checkBox_WallpaperMode.Checked = value.BasicConfig.WallpaperMode;
@@ -155,14 +149,13 @@ namespace DeskSpine
                 trackBar_Opacity.Value = value.BasicConfig.Opacity;
                 trackBar_MaxFps.Value = (int)value.BasicConfig.MaxFps;
                 checkBox_SpineUsePMA.Checked = value.BasicConfig.SpineUsePMA;
-                comboBox_AutoBackgroudColor.SelectedValue = value.BasicConfig.AutoBackgroudColor;
                 numericUpDown_BackgroundColorR.Value = value.BasicConfig.BackgroundColor.R;
                 numericUpDown_BackgroundColorG.Value = value.BasicConfig.BackgroundColor.G;
                 numericUpDown_BackgroundColorB.Value = value.BasicConfig.BackgroundColor.B;
 
                 // Spine 设置
                 comboBox_SpineVersion.SelectedValue = value.SpineConfig.SpineVersion;
-                comboBox_WindowType.SelectedValue = value.SpineConfig.WindowType;
+                comboBox_WindowType.SelectedValue = value.SpineConfig.InteractMode;
                 textBox_SkelPath0.Text = value.SpineConfig.SkelPath0;
                 textBox_SkelPath1.Text = value.SpineConfig.SkelPath1;
                 textBox_SkelPath2.Text = value.SpineConfig.SkelPath2;
@@ -176,19 +169,33 @@ namespace DeskSpine
             }
         }
 
-        public bool TimeAlarm { get => timeAlarmTimer.Enabled; set => timeAlarmTimer.Enabled = value; }
+        /// <summary>
+        /// 整点报时功能
+        /// </summary>
+        public bool HourlyChime { get => hourlyChimeTimer.Enabled; set => hourlyChimeTimer.Enabled = value; }
 
+        /// <summary>
+        /// 使用设置项弹出气泡消息
+        /// </summary>
         public void ShowBalloonTip(string title, string info)
         {
             if (balloonIcon is null) { ShowBalloonTip(title, info, ToolTipIcon.None); }
             else { ShowBalloonTip(title, info, balloonIcon.GetHicon()); }
         }
+
+        /// <summary>
+        /// 使用指定图标弹出气泡消息
+        /// </summary>
         public void ShowBalloonTip(string title, string info, IntPtr balloonIcon)
         {
             title ??= ""; info ??= "";
             if (title.Length <= 0 && info.Length <= 0) info = "~";
             shellNotifyIcon.ShowBalloonTip(title, info, balloonIcon);
         }
+
+        /// <summary>
+        /// 使用系统图标弹出气泡消息
+        /// </summary>
         public void ShowBalloonTip(string title, string info, ToolTipIcon balloonIcon)
         {
             title ??= ""; info ??= "";
@@ -200,11 +207,6 @@ namespace DeskSpine
 
         private void ConfigForm_Load(object sender, EventArgs e)
         {
-            comboBox_AutoBackgroudColor.DataSource = new BindingSource(comboBox_AutoBackgroudColor_KV, null);
-            comboBox_AutoBackgroudColor.DisplayMember = "Key";
-            comboBox_AutoBackgroudColor.ValueMember = "Value";
-            comboBox_AutoBackgroudColor.SelectedValue = SpineWindow.AutoBackgroudColorType.Gray;
-
             comboBox_SpineVersion.DataSource = new BindingSource(comboBox_SpineVersion_KV, null);
             comboBox_SpineVersion.DisplayMember = "Key";
             comboBox_SpineVersion.ValueMember = "Value";
@@ -213,7 +215,7 @@ namespace DeskSpine
             comboBox_WindowType.DataSource = new BindingSource(comboBox_WindowType_KV, null);
             comboBox_WindowType.DisplayMember = "Key";
             comboBox_WindowType.ValueMember = "Value";
-            comboBox_WindowType.SelectedValue = SpineWindow.SpineWindowType.AzurLaneSD;
+            comboBox_WindowType.SelectedValue = TinyEngine.AnimatorType.AzurLaneSD;
         }
 
         private void ConfigForm_VisibleChanged(object sender, EventArgs e)
@@ -269,15 +271,15 @@ namespace DeskSpine
             DateTime now = DateTime.Now;
             if (now.Minute == 0)
             {
-                if (!hasAlarmed)
+                if (!hasChimed)
                 {
-                    hasAlarmed = true;
+                    hasChimed = true;
                     ShowBalloonTip($"北京时间 {now.Hour:d2}: {now.Minute:d2}", "Take a break~");
                 }
             }
             else
             {
-                hasAlarmed = false;
+                hasChimed = false;
             }
         }
 
@@ -330,12 +332,12 @@ namespace DeskSpine
             var currentConfig = Program.CurrentConfig;
             if (commandShowSpine.Checked)
             {
-                Program.spineWindow.Visible = false;
+                Program.SpineWindow.Visible = false;
                 currentConfig.SystemConfig.Visible = false;
             }
             else
             {
-                Program.spineWindow.Visible = true;
+                Program.SpineWindow.Visible = true;
                 currentConfig.SystemConfig.Visible = true;
             }
             Program.LocalConfig = currentConfig;
@@ -346,12 +348,12 @@ namespace DeskSpine
             var currentConfig = Program.CurrentConfig;
             if (commandWallpaperMode.Checked)
             {
-                Program.spineWindow.WallpaperMode = false;
+                Program.SpineWindow.WallpaperMode = false;
                 currentConfig.BasicConfig.WallpaperMode = false;
             }
             else
             {
-                Program.spineWindow.WallpaperMode = true;
+                Program.SpineWindow.WallpaperMode = true;
                 currentConfig.BasicConfig.WallpaperMode = true;
             }
             Program.LocalConfig = currentConfig;
@@ -362,12 +364,12 @@ namespace DeskSpine
             var currentConfig = Program.CurrentConfig;
             if (commandMouseClickThrough.Checked)
             {
-                Program.spineWindow.MouseClickThrough = false;
+                Program.SpineWindow.MouseClickThrough = false;
                 currentConfig.BasicConfig.MouseClickThrough = false;
             }
             else
             {
-                Program.spineWindow.MouseClickThrough = true;
+                Program.SpineWindow.MouseClickThrough = true;
                 currentConfig.BasicConfig.MouseClickThrough = true;
             }
             Program.LocalConfig = currentConfig;
@@ -375,12 +377,12 @@ namespace DeskSpine
 
         private void commandSetFullScreen_Click(object sender, EventArgs e)
         {
-            var screenBounds = Screen.FromHandle(Program.spineWindow.Handle).Bounds;
+            var screenBounds = Screen.FromHandle(Program.SpineWindow.Handle).Bounds;
             var screenPosition = screenBounds.Location;
             var screenSize = screenBounds.Size;
             var currentConfig = Program.CurrentConfig;
-            Program.spineWindow.Position = new(screenPosition.X, screenPosition.Y);
-            Program.spineWindow.Size = new((uint)screenSize.Width, (uint)screenSize.Height);
+            Program.SpineWindow.Position = new(screenPosition.X, screenPosition.Y);
+            Program.SpineWindow.Size = new((uint)screenSize.Width, (uint)screenSize.Height);
             currentConfig.BasicConfig.PositionX = screenPosition.X;
             currentConfig.BasicConfig.PositionY = screenPosition.Y;
             currentConfig.BasicConfig.SizeX = (uint)screenSize.Width;
@@ -390,7 +392,7 @@ namespace DeskSpine
 
         private void commandResetSpine_Click(object sender, EventArgs e)
         {
-            Program.spineWindow.ResetPositionAndSize();
+            Program.SpineWindow.ResetPositionAndSize();
         }
 
         private void commandSpineTool_Click(object sender, EventArgs e)
@@ -439,6 +441,11 @@ namespace DeskSpine
             }
         }
 
+        private void label_BalloonIcon_Click(object sender, EventArgs e)
+        {
+            ShowBalloonTip("这是现在的图标噢", "叮~~~");
+        }
+
         #endregion
 
         #region 基础设置控件事件
@@ -462,22 +469,6 @@ namespace DeskSpine
         private void trackBar_SpineScale_ValueChanged(object sender, EventArgs e) { label_SpineScale.Text = $"{trackBar_SpineScale.Value}"; }
         private void trackBar_Opacity_ValueChanged(object sender, EventArgs e) { label_Opacity.Text = $"{trackBar_Opacity.Value}"; }
         private void trackBar_MaxFps_ValueChanged(object sender, EventArgs e) { label_MaxFps.Text = $"{trackBar_MaxFps.Value}"; }
-
-        private void comboBox_AutoBackgroudColor_SelectedValueChanged(object sender, EventArgs e)
-        {
-            if (comboBox_AutoBackgroudColor.SelectedValue is SpineWindow.AutoBackgroudColorType t && t == SpineWindow.AutoBackgroudColorType.None)
-            {
-                numericUpDown_BackgroundColorR.Enabled = true;
-                numericUpDown_BackgroundColorG.Enabled = true;
-                numericUpDown_BackgroundColorB.Enabled = true;
-            }
-            else
-            {
-                numericUpDown_BackgroundColorR.Enabled = false;
-                numericUpDown_BackgroundColorG.Enabled = false;
-                numericUpDown_BackgroundColorB.Enabled = false;
-            }
-        }
 
         private void numericUpDown_BackgroundColorR_ValueChanged(object sender, EventArgs e)
         {
@@ -533,5 +524,6 @@ namespace DeskSpine
                     break;
             }
         }
+
     }
 }

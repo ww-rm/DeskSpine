@@ -60,28 +60,21 @@ namespace DeskSpine
     {
         public bool WallpaperMode { get; set; } = false;
         public bool MouseClickThrough { get; set; } = false;
-        public float SpineScale { get; set; } = 1f;
-        public bool SpineFlip { get; set; } = false;
-        public byte Opacity { get; set; } = 255;
-        public uint MaxFps { get; set; } = 30;
-        public SpineWindow.AutoBackgroudColorType AutoBackgroudColor { get; set; } = SpineWindow.AutoBackgroudColorType.Gray;
 
         [JsonConverter(typeof(BackgroundColorConverter))] // 结构体不会自动保存字段, 需要用自定义的转换器
         public SFML.Graphics.Color BackgroundColor { get; set; } = new(128, 128, 128, 0);
+        public int PositionX { get; set; } = 0;
+        public int PositionY { get; set; } = 0;
+        public uint SizeX { get; set; } = 1000;
+        public uint SizeY { get; set; } = 1000;
+        public byte Opacity { get; set; } = 255;
+        public uint MaxFps { get; set; } = 30;
+        public float SpinePositionX { get; set; } = 0;
+        public float SpinePositionY { get; set; } = 0;
+        public float SpineScale { get; set; } = 1f;
+        public bool SpineFlip { get; set; } = false;
         public bool SpineUsePMA { get; set; } = false;
 
-        [JsonIgnore]
-        public int PositionX { get; set; } = 0;
-        [JsonIgnore]
-        public int PositionY { get; set; } = 0;
-        [JsonIgnore]
-        public uint SizeX { get; set; } = 1000;
-        [JsonIgnore]
-        public uint SizeY { get; set; } = 1000;
-        [JsonIgnore]
-        public float SpinePositionX { get; set; } = 0;
-        [JsonIgnore]
-        public float SpinePositionY { get; set; } = 0;
     }
 
     /// <summary>
@@ -92,8 +85,8 @@ namespace DeskSpine
         public const int SlotCount = 10;
         private string?[] skelPaths = new string?[SlotCount];
 
-        public string SpineVersion { get; set; } = "3.8.x";
-        public SpineWindow.SpineWindowType WindowType { get; set; } = SpineWindow.SpineWindowType.AzurLaneSD;
+        public Spine.SpineVersion SpineVersion { get; set; } = Spine.SpineVersion.V38;
+        public TinyEngine.AnimatorType InteractMode { get; set; } = TinyEngine.AnimatorType.AzurLaneSD;
 
         public string? SkelPath0 { get => skelPaths[0]; set => skelPaths[0] = value; }
         public string? SkelPath1 { get => skelPaths[1]; set => skelPaths[1] = value; }
@@ -138,7 +131,7 @@ namespace DeskSpine
         public Config()
         {
             SystemConfig.BalloonIconPath = Path.Combine(Program.ProgramResourceDirectory, @"image\timealarm.ico");
-            SpineConfig.SkelPath0 = Path.Combine(Program.ProgramResourceDirectory, @"spine\guanghui_2\guanghui_2.skel");
+            SpineConfig.SkelPath0 = Path.Combine(Program.ProgramResourceDirectory, @"spine\AzueLaneSD\guanghui_2\guanghui_2.skel");
         }
 
         /// <summary>
