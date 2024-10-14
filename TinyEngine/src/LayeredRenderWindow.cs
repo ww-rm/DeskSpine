@@ -13,9 +13,15 @@ namespace TinyEngine
     /// </summary>
     public class RenderScene : Renderable 
     {
+        /// <summary>
+        /// 场景内对象
+        /// </summary>
         public Dictionary<string, Renderable> Renderables { get => components; }
     }
 
+    /// <summary>
+    /// 分层可渲染窗口
+    /// </summary>
     public abstract class LayeredRenderWindow : IDisposable
     {
         private Mutex mutex = new();                                    // 互斥锁, 用于同步临界数据
@@ -84,6 +90,7 @@ namespace TinyEngine
                     break;
                 }
 
+                // 操作都在锁内进行
                 mutex.WaitOne();
 
                 window.DispatchEvents();
@@ -94,7 +101,7 @@ namespace TinyEngine
                 }
                 else
                 {
-                    Thread.Sleep(10);   // 防止空转占用较高 cpu
+                    Thread.Sleep(33);   // 防止空转占用较高 cpu
                 }
 
                 mutex.ReleaseMutex();
@@ -107,7 +114,7 @@ namespace TinyEngine
         private void CreateWindow()
         {
             // 创建窗口
-            window = new(new(512, 512), "SFML.RenderWindow.DeskSpine", SFML.Window.Styles.None);
+            window = new(new(1000, 1000), "SFML.RenderWindow.DeskSpine", SFML.Window.Styles.None);
 
             // 设置窗口属性默认值
             var hWnd = window.SystemHandle;
@@ -339,7 +346,7 @@ namespace TinyEngine
             window.MouseWheelScrolled += (object? s, SFML.Window.MouseWheelScrollEventArgs e) => Window_MouseWheelScrolled(e);
         }
 
-        /********************************* 窗口基本事件 *********************************/
+        /********************************* 窗口输入事件 *********************************/
 
         private void Window_Resized(SFML.Window.SizeEventArgs e)
         {

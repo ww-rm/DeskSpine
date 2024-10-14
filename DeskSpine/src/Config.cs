@@ -50,7 +50,7 @@ namespace DeskSpine
         public bool AutuRun { get; set; } = false;
         public bool Visible { get; set; } = true;
         public string? BalloonIconPath { get; set; }
-        public bool TimeAlarm = true;
+        public bool HourlyChime = true;
     }
 
     /// <summary>
@@ -60,19 +60,18 @@ namespace DeskSpine
     {
         public bool WallpaperMode { get; set; } = false;
         public bool MouseClickThrough { get; set; } = false;
-
-        [JsonConverter(typeof(BackgroundColorConverter))] // 结构体不会自动保存字段, 需要用自定义的转换器
-        public SFML.Graphics.Color BackgroundColor { get; set; } = new(128, 128, 128, 0);
         public int PositionX { get; set; } = 0;
         public int PositionY { get; set; } = 0;
         public uint SizeX { get; set; } = 1000;
         public uint SizeY { get; set; } = 1000;
-        public byte Opacity { get; set; } = 255;
-        public uint MaxFps { get; set; } = 30;
         public float SpinePositionX { get; set; } = 0;
         public float SpinePositionY { get; set; } = 0;
-        public float SpineScale { get; set; } = 1f;
         public bool SpineFlip { get; set; } = false;
+        public float SpineScale { get; set; } = 1f;
+        public byte Opacity { get; set; } = 255;
+        public uint MaxFps { get; set; } = 30;
+        [JsonConverter(typeof(BackgroundColorConverter))] // 结构体不会自动保存字段, 需要用自定义的转换器
+        public SFML.Graphics.Color BackgroundColor { get; set; } = new(128, 128, 128, 0);
         public bool SpineUsePMA { get; set; } = false;
 
     }
@@ -130,7 +129,7 @@ namespace DeskSpine
         /// </summary>
         public Config()
         {
-            SystemConfig.BalloonIconPath = Path.Combine(Program.ProgramResourceDirectory, @"image\timealarm.ico");
+            SystemConfig.BalloonIconPath = Path.Combine(Program.ProgramResourceDirectory, @"image\hourlychime.ico");
             SpineConfig.SkelPath0 = Path.Combine(Program.ProgramResourceDirectory, @"spine\AzueLaneSD\guanghui_2\guanghui_2.skel");
         }
 

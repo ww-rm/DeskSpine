@@ -195,7 +195,9 @@ namespace TinyEngine
         {
             base.Update(delta);
             foreach (var sp in slots)
+            {
                 sp?.Update(delta);
+            }
         }
 
         public override void Drag(SFML.Window.Mouse.Button button, SFML.System.Vector2f delta, SFML.System.Vector2f deltaFromSrc)

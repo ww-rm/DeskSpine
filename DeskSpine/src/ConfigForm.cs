@@ -36,7 +36,7 @@ namespace DeskSpine
             shellNotifyIcon = new(notifyIcon);
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigForm));
             notifyIcon.Icon = (Icon?)(SystemValue.SystemUseLightTheme ? resources.GetObject("$this.Icon") : resources.GetObject("notifyIcon.Icon"));
-            hourlyChimeTimer.Elapsed += TimeAlarmTimer_Elapsed;
+            hourlyChimeTimer.Elapsed += HourlyChimeTimer_Elapsed;
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace DeskSpine
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"{value} 加载失败\n\n{ex}", "气泡图标资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(this, $"{value} 加载失败\n\n{ex}", "气泡图标资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -87,7 +87,7 @@ namespace DeskSpine
                 v.SystemConfig.AutuRun = checkBox_AutoRun.Checked;
                 v.SystemConfig.Visible = checkBox_Visible.Checked;
                 v.SystemConfig.BalloonIconPath = string.IsNullOrEmpty(textBox_BalloonIconPath.Text) ? null : textBox_BalloonIconPath.Text;
-                v.SystemConfig.TimeAlarm = checkBox_HourlyChime.Checked;
+                v.SystemConfig.HourlyChime = checkBox_HourlyChime.Checked;
 
                 // 基础设置
                 v.BasicConfig.WallpaperMode = checkBox_WallpaperMode.Checked;
@@ -102,11 +102,11 @@ namespace DeskSpine
                 v.BasicConfig.SpineScale = trackBar_SpineScale.Value / 100.0f;
                 v.BasicConfig.Opacity = (byte)trackBar_Opacity.Value;
                 v.BasicConfig.MaxFps = (uint)trackBar_MaxFps.Value;
-                v.BasicConfig.SpineUsePMA = checkBox_SpineUsePMA.Checked;
                 v.BasicConfig.BackgroundColor = new((byte)numericUpDown_BackgroundColorR.Value,
                                                     (byte)numericUpDown_BackgroundColorG.Value,
                                                     (byte)numericUpDown_BackgroundColorB.Value,
                                                     0);
+                v.BasicConfig.SpineUsePMA = checkBox_SpineUsePMA.Checked;
 
                 // Spine 设置
                 v.SpineConfig.SpineVersion = (Spine.SpineVersion)comboBox_SpineVersion.SelectedValue;
@@ -133,7 +133,7 @@ namespace DeskSpine
                 checkBox_AutoRun.Checked = value.SystemConfig.AutuRun;
                 checkBox_Visible.Checked = value.SystemConfig.Visible;
                 textBox_BalloonIconPath.Text = value.SystemConfig.BalloonIconPath;
-                checkBox_HourlyChime.Checked = value.SystemConfig.TimeAlarm;
+                checkBox_HourlyChime.Checked = value.SystemConfig.HourlyChime;
 
                 // 基础设置
                 checkBox_WallpaperMode.Checked = value.BasicConfig.WallpaperMode;
@@ -148,10 +148,10 @@ namespace DeskSpine
                 trackBar_SpineScale.Value = (int)(value.BasicConfig.SpineScale * 100);
                 trackBar_Opacity.Value = value.BasicConfig.Opacity;
                 trackBar_MaxFps.Value = (int)value.BasicConfig.MaxFps;
-                checkBox_SpineUsePMA.Checked = value.BasicConfig.SpineUsePMA;
                 numericUpDown_BackgroundColorR.Value = value.BasicConfig.BackgroundColor.R;
                 numericUpDown_BackgroundColorG.Value = value.BasicConfig.BackgroundColor.G;
                 numericUpDown_BackgroundColorB.Value = value.BasicConfig.BackgroundColor.B;
+                checkBox_SpineUsePMA.Checked = value.BasicConfig.SpineUsePMA;
 
                 // Spine 设置
                 comboBox_SpineVersion.SelectedValue = value.SpineConfig.SpineVersion;
@@ -250,8 +250,14 @@ namespace DeskSpine
 
         private void button_OpenDataFolder_Click(object sender, EventArgs e)
         {
-            try { Process.Start("explorer.exe", Program.ProgramDataDirectory); }
-            catch (Exception ex) { MessageBox.Show($"无法打开文件夹: {ex.Message}", Program.ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            try 
+            { 
+                Process.Start("explorer.exe", Program.ProgramDataDirectory); 
+            }
+            catch (Exception ex) 
+            {
+                MessageBox.Show(this, $"无法打开文件夹: {ex.Message}", Program.ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error); 
+            }
         }
 
         private void button_Ok_Click(object sender, EventArgs e)
@@ -266,7 +272,7 @@ namespace DeskSpine
             Value = Program.CurrentConfig; // 刷新页面值
         }
 
-        private void TimeAlarmTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        private void HourlyChimeTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
             DateTime now = DateTime.Now;
             if (now.Minute == 0)
@@ -380,19 +386,15 @@ namespace DeskSpine
             var screenBounds = Screen.FromHandle(Program.SpineWindow.Handle).Bounds;
             var screenPosition = screenBounds.Location;
             var screenSize = screenBounds.Size;
-            var currentConfig = Program.CurrentConfig;
             Program.SpineWindow.Position = new(screenPosition.X, screenPosition.Y);
             Program.SpineWindow.Size = new((uint)screenSize.Width, (uint)screenSize.Height);
-            currentConfig.BasicConfig.PositionX = screenPosition.X;
-            currentConfig.BasicConfig.PositionY = screenPosition.Y;
-            currentConfig.BasicConfig.SizeX = (uint)screenSize.Width;
-            currentConfig.BasicConfig.SizeY = (uint)screenSize.Height;
-            Program.LocalConfig = currentConfig;
+            Program.LocalConfig = Program.CurrentConfig;
         }
 
         private void commandResetSpine_Click(object sender, EventArgs e)
         {
             Program.SpineWindow.ResetPositionAndSize();
+            Program.LocalConfig = Program.CurrentConfig;
         }
 
         private void commandSpineTool_Click(object sender, EventArgs e)
@@ -404,7 +406,7 @@ namespace DeskSpine
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"SpineTool 启动失败\n\n{ex}", Program.ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, $"SpineTool 启动失败\n\n{ex}", Program.ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -443,7 +445,7 @@ namespace DeskSpine
 
         private void label_BalloonIcon_Click(object sender, EventArgs e)
         {
-            ShowBalloonTip("这是现在的图标噢", "叮~~~");
+            ShowBalloonTip("叮——", "这是现在的图标噢");
         }
 
         #endregion

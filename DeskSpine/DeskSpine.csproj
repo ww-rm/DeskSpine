@@ -25,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="res\image\timealarm.ico">
+        <None Update="res\image\hourlychime.ico">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="res\spine\ArknightsDynamic\skadi2\dyn_illust_char_1012_skadi2.atlas">

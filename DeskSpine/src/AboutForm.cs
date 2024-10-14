@@ -119,7 +119,7 @@ namespace DeskSpine
             else
             {
                 Clipboard.SetText(url);
-                MessageBox.Show("链接已复制到剪贴板，请前往浏览器进行访问", "复制成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(this, "链接已复制到剪贴板，请前往浏览器进行访问", "复制成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }

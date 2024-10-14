@@ -15,7 +15,7 @@ namespace TinyEngine
     public abstract class Renderable
     {
         /// <summary>
-        /// 可渲染对象集合
+        /// 可渲染组件集合
         /// </summary>
         protected readonly Dictionary<string, Renderable> components = [];
 

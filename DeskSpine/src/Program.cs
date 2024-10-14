@@ -107,7 +107,7 @@ namespace DeskSpine
                 config.SystemConfig.AutuRun = AutoRun;
                 config.SystemConfig.Visible = SpineWindow.Visible;
                 config.SystemConfig.BalloonIconPath = ConfigForm.BalloonIconPath;
-                config.SystemConfig.TimeAlarm = ConfigForm.HourlyChime;
+                config.SystemConfig.HourlyChime = ConfigForm.HourlyChime;
 
                 // 基础设置
                 var position = SpineWindow.Position;
@@ -141,10 +141,12 @@ namespace DeskSpine
 
             set
             {
+                // XXX: 不确定是否需要 Lock/Unlock
+
                 // 系统设置
                 AutoRun = value.SystemConfig.AutuRun;
                 ConfigForm.BalloonIconPath = value.SystemConfig.BalloonIconPath;
-                ConfigForm.HourlyChime = value.SystemConfig.TimeAlarm;
+                ConfigForm.HourlyChime = value.SystemConfig.HourlyChime;
 
                 // 基础设置
                 SpineWindow.WallpaperMode = value.BasicConfig.WallpaperMode;
@@ -161,14 +163,32 @@ namespace DeskSpine
 
                 // Spine 设置
                 SpineWindow.Spine.AnimatorType = value.SpineConfig.InteractMode;
-                try { SpineWindow.Spine.Version = value.SpineConfig.SpineVersion; }
-                catch (Exception ex) { MessageBox.Show($"{value.SpineConfig.SpineVersion} 加载失败\n\n{ex}", "Spine 资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+                try
+                {
+                    SpineWindow.Spine.Version = value.SpineConfig.SpineVersion;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        ConfigForm,
+                        $"版本 {value.SpineConfig.SpineVersion} 加载失败\n\n{ex}",
+                        "Spine 资源加载失败",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
 
                 for (int i = 0; i < SpineConfig.SlotCount; i++)
                 {
                     var skelPath = value.SpineConfig.GetSkelPath(i);
-                    try { SpineWindow.Spine.SetSpine(skelPath, i); }
-                    catch (Exception ex) { MessageBox.Show($"{skelPath} 加载失败\n\n{ex}", "Spine 资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+                    try 
+                    { 
+                        SpineWindow.Spine.SetSpine(skelPath, i); 
+                    }
+                    catch (Exception ex) 
+                    { 
+                        MessageBox.Show(ConfigForm, $"{skelPath} 加载失败\n\n{ex}", "Spine 资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                    }
                 }
 
                 // 最后调整窗口可见性
@@ -195,7 +215,7 @@ namespace DeskSpine
         {
             // 系统配置
             ConfigForm.BalloonIconPath = value.SystemConfig.BalloonIconPath; 
-            ConfigForm.HourlyChime = value.SystemConfig.TimeAlarm;
+            ConfigForm.HourlyChime = value.SystemConfig.HourlyChime;
 
             // 基础配置
             SpineWindow.WallpaperMode = value.BasicConfig.WallpaperMode;
@@ -212,14 +232,32 @@ namespace DeskSpine
 
             // Spine 设置
             SpineWindow.Spine.AnimatorType = value.SpineConfig.InteractMode;
-            try { SpineWindow.Spine.Version = value.SpineConfig.SpineVersion; }
-            catch (Exception ex) { MessageBox.Show($"{value.SpineConfig.SpineVersion} 加载失败\n\n{ex}", "Spine 资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            try 
+            { 
+                SpineWindow.Spine.Version = value.SpineConfig.SpineVersion; 
+            }
+            catch (Exception ex) 
+            { 
+                MessageBox.Show(
+                    ConfigForm, 
+                    $"版本 {value.SpineConfig.SpineVersion} 加载失败\n\n{ex}", 
+                    "Spine 资源加载失败", 
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Error
+                );
+            }
 
             for (int i = 0; i < SpineConfig.SlotCount; i++)
             {
                 var skelPath = value.SpineConfig.GetSkelPath(i);
-                try { SpineWindow.Spine.SetSpine(skelPath, i); }
-                catch (Exception ex) { MessageBox.Show($"{skelPath} 加载失败\n\n{ex}", "Spine 资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+                try 
+                { 
+                    SpineWindow.Spine.SetSpine(skelPath, i); 
+                }
+                catch (Exception ex) 
+                { 
+                    MessageBox.Show(ConfigForm, $"{skelPath} 加载失败\n\n{ex}", "Spine 资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                }
             }
 
             // 最后调整窗口可见性

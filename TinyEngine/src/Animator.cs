@@ -61,11 +61,11 @@ namespace TinyEngine
     {
         private State state = State.Idle;
         private State previousState = State.Idle;
-        private Random rnd = new();
 
-        private float standElapsedTime = 0f;
+        private Random rnd = new();
+        private float randomElapsedTime = 0f;
         private const float meanWaitingTime = 30f;
-        private float nextStandTime = 10f;
+        private float nextRandomTime = 10f;
 
         private const string Animation_Idle = "normal";
         private const string Animation_Dragging = "tuozhuai";
@@ -86,12 +86,12 @@ namespace TinyEngine
 
             if (slots[0] is null) return;
 
-            standElapsedTime += delta;
-            if (standElapsedTime >= nextStandTime)
+            randomElapsedTime += delta;
+            if (randomElapsedTime >= nextRandomTime)
             {
-                standElapsedTime = 0;
-                nextStandTime = (float)(-meanWaitingTime * Math.Log(rnd.NextSingle()));
-                Debug.WriteLine($"Next time to stand: {nextStandTime}");
+                randomElapsedTime = 0;
+                nextRandomTime = (float)(-meanWaitingTime * Math.Log(rnd.NextSingle()));
+                Debug.WriteLine($"Next time to stand: {nextRandomTime}");
                 if (state == State.Idle)
                 {
                     if (slots[0].CurrentAnimation == Animation_Idle)
@@ -279,6 +279,56 @@ namespace TinyEngine
             if (button == SFML.Window.Mouse.Button.Left)
             {
                 foreach (var sp in slots) { if (sp is not null) { sp.CurrentAnimation = "click"; sp.AddAnimation("normal"); } }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 明日方舟动态立绘
+    /// </summary>
+    internal class ArknightsDynamic : Animator
+    {
+        private Random rnd = new();
+        private float randomElapsedTime = 0f;
+        private const float meanWaitingTime = 30f;
+        private float nextRandomTime = 10f;
+
+        private const string Animation_Idle = "Idle";
+        private const string Animation_MouseLeftClick = "Interact";
+        private const string Animation_Random = "Special";
+
+        public ArknightsDynamic(Spine.Spine[] slots) : base(slots) { }
+
+        public override void Reset() { foreach (var sp in slots) if (sp is not null) sp.CurrentAnimation = Animation_Idle; }
+
+        public override void Update(float delta)
+        {
+            base.Update(delta);
+            if (slots[0] is null) return;
+
+            randomElapsedTime += delta;
+            if (randomElapsedTime >= nextRandomTime)
+            {
+                randomElapsedTime = 0;
+                nextRandomTime = (float)(-meanWaitingTime * Math.Log(rnd.NextSingle()));
+                Debug.WriteLine($"Next time to stand: {nextRandomTime}");
+                if (slots[0].CurrentAnimation == Animation_Idle)
+                {
+                    slots[0].CurrentAnimation = Animation_Random;
+                    slots[0].AddAnimation(Animation_Idle);
+                }
+            }
+        }
+
+        public override void Click(SFML.Window.Mouse.Button button)
+        {
+            base.Click(button);
+            if (slots[0] is null) return;
+
+            if (button == SFML.Window.Mouse.Button.Left && slots[0].CurrentAnimation != Animation_MouseLeftClick)
+            {
+                slots[0].CurrentAnimation = Animation_MouseLeftClick;
+                slots[0].AddAnimation(Animation_Idle);
             }
         }
     }
