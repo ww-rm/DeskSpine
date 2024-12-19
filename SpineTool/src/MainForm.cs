@@ -95,7 +95,7 @@ namespace SpineTool
                 Spine.Spine newSpine = null;
 
                 // 尝试加载
-                try { newSpine = Spine.Spine.New((string)comboBox_SpineVersion.SelectedValue, skelPath); }
+                try { newSpine = Spine.Spine.New((Spine.SpineVersion)comboBox_SpineVersion.SelectedValue, skelPath); }
                 catch (Exception ex) { MessageBox.Show($"{skelPath} 加载失败，资源未修改\n\n{ex}", "Spine 资源加载失败", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 
                 // 成功加载新模型
@@ -162,7 +162,7 @@ namespace SpineTool
             if (!comboBox_SpineVersion.Enabled)
                 return;
 
-            if (comboBox_SpineVersion.SelectedValue is string ver)
+            if (comboBox_SpineVersion.SelectedValue is Spine.SpineVersion ver)
             {
                 expoterMutex.WaitOne();
                 for (int i = 0; i < exporterSpines.Length; i++)
