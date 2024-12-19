@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -116,13 +117,8 @@ namespace TinyEngine
             var progman = FindWindow("Progman", null);
             if (progman == IntPtr.Zero)
                 return IntPtr.Zero;
-            IntPtr hWnd = IntPtr.Zero;
-            do
-            {
-                hWnd = FindWindowEx(IntPtr.Zero, hWnd, "WorkerW", null);
-                if (hWnd != IntPtr.Zero && GetWindow(hWnd, GW_OWNER) == progman)
-                    break;
-            } while (hWnd != IntPtr.Zero);
+            IntPtr hWnd = FindWindowEx(progman, 0, "WorkerW", null);
+            Debug.WriteLine($"{hWnd:x8}");
             return hWnd;
         }
     }
