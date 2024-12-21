@@ -208,11 +208,6 @@ namespace Spine
             foreach (var slot in skeleton.DrawOrder)
             {
                 var attachment = slot.Attachment;
-                if (attachment is null)
-                { 
-                    clipping.ClipEnd(slot); 
-                    continue; 
-                }
 
                 SFML.Graphics.Texture texture;
                 
@@ -263,6 +258,7 @@ namespace Spine
                 }
                 else
                 {
+                    clipping.ClipEnd(slot);
                     continue;
                 }
 
