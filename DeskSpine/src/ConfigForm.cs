@@ -210,7 +210,7 @@ namespace DeskSpine
             comboBox_SpineVersion.DataSource = new BindingSource(comboBox_SpineVersion_KV, null);
             comboBox_SpineVersion.DisplayMember = "Key";
             comboBox_SpineVersion.ValueMember = "Value";
-            comboBox_SpineVersion.SelectedValue = "3.8.x";
+            comboBox_SpineVersion.SelectedValue = Spine.SpineVersion.V38;
 
             comboBox_WindowType.DataSource = new BindingSource(comboBox_WindowType_KV, null);
             comboBox_WindowType.DisplayMember = "Key";

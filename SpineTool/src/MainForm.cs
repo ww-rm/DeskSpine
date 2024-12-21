@@ -27,15 +27,15 @@ namespace SpineTool
             comboBox_SpineVersion.DataSource = new BindingSource(comboBox_SpineVersion_KV, null);
             comboBox_SpineVersion.DisplayMember = "Key";
             comboBox_SpineVersion.ValueMember = "Value";
-            comboBox_SpineVersion.SelectedValue = "3.8.x";
+            comboBox_SpineVersion.SelectedValue = Spine.SpineVersion.V38;
         }
 
         #region 动画导出工具页面
 
-        protected static Dictionary<string, string> comboBox_SpineVersion_KV = new()
+        protected static Dictionary<string, Spine.SpineVersion> comboBox_SpineVersion_KV = new()
         {
-            { "3.6.x", "3.6.x" },
-            { "3.8.x", "3.8.x" },
+            { "3.6.x", Spine.SpineVersion.V36 },
+            { "3.8.x", Spine.SpineVersion.V38 },
         };
 
         // 帧缓冲区
