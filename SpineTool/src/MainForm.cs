@@ -318,6 +318,11 @@ namespace SpineTool
 
         private void FixPreviewPosition(bool resetViewSize = false)
         {
+            // 这里由于代码执行顺序, 再还未创建 exporterPreviewer 的时候可能会被调用, 因此需要判断一下
+            // panel_PreviewContainer_SizeChanged 会在执行 InitializeComponent 的时候触发一次
+            if (exporterPreviewer is null)
+                return;
+
             var sizeX = (float)numericUpDown_SizeX.Value;
             var sizeY = (float)numericUpDown_SizeY.Value;
 
